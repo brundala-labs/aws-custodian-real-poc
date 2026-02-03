@@ -55,11 +55,39 @@ st.markdown(f"""
         box-sizing: border-box;
     }}
 
+    /* Exclude SVG and icon elements from font override */
+    svg, svg *, [data-testid="stExpanderToggleIcon"],
+    [data-testid="stExpanderToggleIcon"] * {{
+        font-family: inherit !important;
+    }}
+
     .material-symbols-outlined {{
         font-family: 'Material Symbols Outlined' !important;
         font-size: 24px;
         vertical-align: middle;
         color: {DARK_BLUE};
+    }}
+
+    /* Fix expander styling */
+    .streamlit-expanderHeader {{
+        border: 1px solid {BORDER} !important;
+        border-radius: 8px !important;
+        background: {BG} !important;
+    }}
+
+    [data-testid="stExpander"] {{
+        border: 1px solid {BORDER} !important;
+        border-radius: 8px !important;
+        margin: 0.5rem 1rem !important;
+    }}
+
+    [data-testid="stExpander"] summary {{
+        padding: 0.75rem 1rem !important;
+    }}
+
+    [data-testid="stExpander"] svg {{
+        width: 16px !important;
+        height: 16px !important;
     }}
 
     /* Hide Streamlit elements */
