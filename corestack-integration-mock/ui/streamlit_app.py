@@ -1295,6 +1295,155 @@ with tab_executive:
     from live AWS resources and presents them alongside CoreStack-native policies.
     """)
 
+    # ── Business Challenge ────────────────────────────────────────────────────
+    st.markdown(f'<h4 style="color: {CORESTACK_BLUE}; margin-top: 2rem;"><span class="material-symbols-outlined" style="vertical-align: middle;">warning</span> Business Challenge</h4>', unsafe_allow_html=True)
+
+    with st.container(border=True):
+        challenge_cols = st.columns([1, 1])
+
+        with challenge_cols[0]:
+            st.markdown("""
+            **The Problem**
+
+            Organizations today face significant challenges in cloud governance:
+
+            - **Tool Fragmentation**: Multiple security tools generate siloed reports
+            - **Visibility Gaps**: No unified view across policy engines
+            - **Manual Correlation**: Teams spend hours consolidating findings
+            - **Compliance Fatigue**: Difficult to track overall security posture
+            - **Delayed Response**: Slow detection of policy violations
+            """)
+
+        with challenge_cols[1]:
+            st.markdown("""
+            **The Impact**
+
+            Without unified governance, organizations experience:
+
+            - Increased security risk from missed violations
+            - Higher operational costs from manual processes
+            - Audit failures due to incomplete evidence
+            - Slower time-to-remediation for issues
+            - Difficulty demonstrating compliance to stakeholders
+            """)
+
+    # ── Solution Overview ─────────────────────────────────────────────────────
+    st.markdown(f'<h4 style="color: {CORESTACK_BLUE}; margin-top: 2rem;"><span class="material-symbols-outlined" style="vertical-align: middle;">lightbulb</span> Solution Overview</h4>', unsafe_allow_html=True)
+
+    with st.container(border=True):
+        st.markdown("""
+        **CoreStack Unified Governance** solves these challenges by providing:
+
+        - **Single Pane of Glass**: Aggregate findings from Cloud Custodian, AWS Config, Azure Policy, and more
+        - **Normalized Data Model**: Consistent schema across all policy engines
+        - **Real-Time Visibility**: Continuous compliance monitoring and alerting
+        - **Evidence Collection**: Automated capture of violation details for audits
+        - **Flexible Output**: API, embeddable links, and interactive dashboards
+        """)
+
+    # ── Key Benefits ──────────────────────────────────────────────────────────
+    st.markdown(f'<h4 style="color: {CORESTACK_BLUE}; margin-top: 2rem;"><span class="material-symbols-outlined" style="vertical-align: middle;">verified</span> Key Benefits</h4>', unsafe_allow_html=True)
+
+    benefit_cols = st.columns(4)
+
+    with benefit_cols[0]:
+        with st.container(border=True):
+            st.markdown(f'<div style="text-align: center;"><span class="material-symbols-outlined" style="font-size: 48px; color: {CORESTACK_SUCCESS};">speed</span></div>', unsafe_allow_html=True)
+            st.markdown("**80% Faster**")
+            st.caption("Reduce time spent on compliance reporting")
+
+    with benefit_cols[1]:
+        with st.container(border=True):
+            st.markdown(f'<div style="text-align: center;"><span class="material-symbols-outlined" style="font-size: 48px; color: {CORESTACK_BLUE};">visibility</span></div>', unsafe_allow_html=True)
+            st.markdown("**100% Visibility**")
+            st.caption("Complete view across all policy engines")
+
+    with benefit_cols[2]:
+        with st.container(border=True):
+            st.markdown(f'<div style="text-align: center;"><span class="material-symbols-outlined" style="font-size: 48px; color: {CORESTACK_WARNING};">security</span></div>', unsafe_allow_html=True)
+            st.markdown("**Reduced Risk**")
+            st.caption("Catch violations before they become incidents")
+
+    with benefit_cols[3]:
+        with st.container(border=True):
+            st.markdown(f'<div style="text-align: center;"><span class="material-symbols-outlined" style="font-size: 48px; color: {CORESTACK_DANGER};">savings</span></div>', unsafe_allow_html=True)
+            st.markdown("**Cost Savings**")
+            st.caption("Eliminate manual consolidation work")
+
+    # ── Use Cases ─────────────────────────────────────────────────────────────
+    st.markdown(f'<h4 style="color: {CORESTACK_BLUE}; margin-top: 2rem;"><span class="material-symbols-outlined" style="vertical-align: middle;">cases</span> Use Cases</h4>', unsafe_allow_html=True)
+
+    with st.container(border=True):
+        usecase_cols = st.columns(3)
+
+        with usecase_cols[0]:
+            st.markdown(f'<span class="material-symbols-outlined" style="color: {CORESTACK_BLUE};">gavel</span> **Compliance Audits**', unsafe_allow_html=True)
+            st.markdown("""
+            - Generate audit-ready reports
+            - Provide evidence for SOC2, HIPAA, PCI-DSS
+            - Track compliance trends over time
+            """)
+
+        with usecase_cols[1]:
+            st.markdown(f'<span class="material-symbols-outlined" style="color: {CORESTACK_BLUE};">shield</span> **Security Operations**', unsafe_allow_html=True)
+            st.markdown("""
+            - Monitor security posture in real-time
+            - Prioritize remediation by severity
+            - Integrate with SIEM/SOAR platforms
+            """)
+
+        with usecase_cols[2]:
+            st.markdown(f'<span class="material-symbols-outlined" style="color: {CORESTACK_BLUE};">account_tree</span> **DevSecOps**', unsafe_allow_html=True)
+            st.markdown("""
+            - Shift-left security in CI/CD
+            - Automate policy checks in pipelines
+            - Provide developer-friendly feedback
+            """)
+
+    # ── Supported Integrations ────────────────────────────────────────────────
+    st.markdown(f'<h4 style="color: {CORESTACK_BLUE}; margin-top: 2rem;"><span class="material-symbols-outlined" style="vertical-align: middle;">hub</span> Supported Integrations</h4>', unsafe_allow_html=True)
+
+    with st.container(border=True):
+        int_cols = st.columns(4)
+
+        with int_cols[0]:
+            st.markdown("**Policy Engines**")
+            st.markdown("""
+            - Cloud Custodian
+            - AWS Config Rules
+            - Azure Policy
+            - GCP Organization Policy
+            - Open Policy Agent
+            """)
+
+        with int_cols[1]:
+            st.markdown("**Cloud Providers**")
+            st.markdown("""
+            - Amazon Web Services
+            - Microsoft Azure
+            - Google Cloud Platform
+            - Multi-cloud environments
+            """)
+
+        with int_cols[2]:
+            st.markdown("**Compliance Frameworks**")
+            st.markdown("""
+            - CIS Benchmarks
+            - SOC 2 Type II
+            - HIPAA
+            - PCI-DSS
+            - NIST 800-53
+            """)
+
+        with int_cols[3]:
+            st.markdown("**Integrations**")
+            st.markdown("""
+            - Jira / ServiceNow
+            - Slack / Teams
+            - Splunk / Datadog
+            - Terraform / Pulumi
+            """)
+
     # ── Project Overview ─────────────────────────────────────────────────────
     st.markdown(f'<h4 style="color: {CORESTACK_BLUE}; margin-top: 2rem;">Project Overview</h4>', unsafe_allow_html=True)
 
