@@ -104,8 +104,19 @@ st.markdown(f"""
     /* Mobile Responsive - Tablet */
     @media (max-width: 992px) {{
         .kpi-container {{
-            grid-template-columns: repeat(2, 1fr) !important;
+            grid-template-columns: repeat(3, 1fr) !important;
             gap: 0.75rem !important;
+        }}
+
+        /* Stack 4 columns into 2 */
+        [data-testid="stHorizontalBlock"] {{
+            flex-wrap: wrap !important;
+        }}
+
+        [data-testid="stHorizontalBlock"] > [data-testid="column"] {{
+            flex: 0 0 48% !important;
+            min-width: 48% !important;
+            margin-bottom: 0.5rem !important;
         }}
     }}
 
@@ -115,7 +126,7 @@ st.markdown(f"""
             padding: 0.5rem !important;
         }}
 
-        /* KPI cards - 2 columns on tablet */
+        /* KPI cards - 2 columns on phone */
         .kpi-container {{
             grid-template-columns: repeat(2, 1fr) !important;
             gap: 0.5rem !important;
@@ -159,11 +170,16 @@ st.markdown(f"""
             font-size: 0.75rem !important;
         }}
 
-        /* Stack Streamlit columns */
-        [data-testid="column"] {{
+        /* Stack ALL Streamlit columns vertically */
+        [data-testid="stHorizontalBlock"] {{
+            flex-direction: column !important;
+        }}
+
+        [data-testid="stHorizontalBlock"] > [data-testid="column"] {{
             width: 100% !important;
             flex: 1 1 100% !important;
             min-width: 100% !important;
+            margin-bottom: 0.75rem !important;
         }}
 
         /* Scrollable dataframes */
@@ -171,8 +187,40 @@ st.markdown(f"""
             overflow-x: auto !important;
         }}
 
+        /* Graphviz chart - make scrollable */
+        [data-testid="stGraphvizChart"] {{
+            overflow-x: auto !important;
+            max-width: 100% !important;
+        }}
+
+        [data-testid="stGraphvizChart"] svg {{
+            min-width: 500px !important;
+            height: auto !important;
+        }}
+
         /* Smaller text in containers */
         .stMarkdown p, .stMarkdown li {{
+            font-size: 0.85rem !important;
+        }}
+
+        /* Plotly charts - responsive */
+        [data-testid="stPlotlyChart"] {{
+            overflow-x: auto !important;
+        }}
+
+        /* Radio buttons - wrap on mobile */
+        [data-testid="stRadio"] > div {{
+            flex-wrap: wrap !important;
+            gap: 0.25rem !important;
+        }}
+
+        /* Tabs - smaller on mobile */
+        .stTabs [data-baseweb="tab-list"] {{
+            gap: 0 !important;
+        }}
+
+        .stTabs [data-baseweb="tab"] {{
+            padding: 0.5rem 0.75rem !important;
             font-size: 0.85rem !important;
         }}
     }}
@@ -203,13 +251,42 @@ st.markdown(f"""
             font-size: 1rem !important;
         }}
 
+        .header-banner p {{
+            font-size: 0.7rem !important;
+            line-height: 1.3 !important;
+        }}
+
         h4, .stMarkdown h4 {{
             font-size: 0.9rem !important;
         }}
 
-        /* Hide some columns on very small screens */
+        h3, .stMarkdown h3 {{
+            font-size: 1rem !important;
+        }}
+
+        /* Smaller text overall */
+        .stMarkdown p, .stMarkdown li {{
+            font-size: 0.8rem !important;
+        }}
+
+        /* Dataframe smaller on very small screens */
         [data-testid="stDataFrame"] {{
             font-size: 0.7rem !important;
+        }}
+
+        /* Container borders - less padding */
+        [data-testid="stVerticalBlockBorderWrapper"] {{
+            padding: 0.5rem !important;
+        }}
+
+        /* Material icons smaller */
+        .material-symbols-outlined {{
+            font-size: 20px !important;
+        }}
+
+        /* Graphviz even more compact */
+        [data-testid="stGraphvizChart"] svg {{
+            min-width: 400px !important;
         }}
     }}
 
