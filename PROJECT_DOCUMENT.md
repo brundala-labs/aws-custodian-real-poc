@@ -608,3 +608,142 @@ Open http://localhost:8502
 - Filter by Severity = "high" → "Focus on critical issues first"
 - "CoreStack normalizes findings from multiple tools into one severity model"
 - Click Re-Ingest → "As new scans run, the dashboard updates in real time"
+
+---
+
+## 12. CoreStack Branding & UI Redesign (Phase 3)
+
+### Step 18: CoreStack Website Analysis
+
+Reviewed https://www.corestack.io to extract official brand guidelines:
+
+**Color Palette**:
+| Color | Hex | Usage |
+|---|---|---|
+| Primary Blue | `#0076e1` | Buttons, links, accents |
+| Dark Blue | `#004789` | Headers, gradients |
+| Light Blue | `#e8f4fd` | Backgrounds, cards |
+| Success Green | `#00c853` | Pass status, positive metrics |
+| Error Red | `#ff5252` | Fail status, critical alerts |
+| Warning Orange | `#ff9800` | Medium severity |
+| Text Dark | `#1a1a2e` | Primary text |
+| Text Muted | `#6c757d` | Secondary text |
+
+**Typography**: Nunito Sans (Google Fonts)
+
+---
+
+### Step 19: Dashboard UI Redesign
+
+Completely rewrote `corestack-integration-mock/ui/streamlit_app.py` with professional CoreStack branding:
+
+**New Features**:
+
+1. **Custom CSS Styling**
+   - CoreStack color palette throughout
+   - Nunito Sans font family via Google Fonts
+   - Consistent spacing and shadows
+
+2. **Gradient Header Banner**
+   - CoreStack logo placeholder
+   - Dark blue to primary blue gradient
+   - "Unified Policy Compliance Dashboard" tagline
+
+3. **Redesigned KPI Cards**
+   - Icons for each metric (📊 📋 ✅ ❌)
+   - Trend indicators with directional arrows
+   - Color-coded by metric type
+
+4. **Enhanced Data Tables**
+   - Alternating row colors
+   - Hover effects
+   - Proper padding and borders
+
+5. **Status & Severity Badges**
+   - Gradient backgrounds
+   - PASS (green), FAIL (red) with icons
+   - Severity: Critical (red), High (orange), Medium (yellow), Low (blue)
+
+6. **Source Badges**
+   - Cloud Custodian: Blue gradient with ☁️ icon
+   - CoreStack: Dark blue gradient with 🏢 icon
+
+7. **Compliance Breakdown Section**
+   - By Source: Cloud Custodian vs CoreStack metrics
+   - By Severity: Distribution across Critical/High/Medium/Low
+   - Visual cards with color coding
+
+8. **Professional Sidebar**
+   - CoreStack logo placeholder
+   - Styled filter dropdowns
+   - "Powered by CoreStack" footer
+
+9. **Footer**
+   - CoreStack tagline: "NextGen Cloud Governance"
+   - Subtle branding
+
+**Code Statistics**:
+- **Before**: 131 lines
+- **After**: 685 lines
+- **Change**: +554 lines (4x larger with styling)
+
+---
+
+### Step 20: Git Commit
+
+```
+Commit: e4043c9
+Message: Redesign dashboard with CoreStack branding and professional UI
+
+- Add CoreStack color palette (Primary Blue #0076e1, Dark Blue #004789)
+- Apply Nunito Sans font family throughout
+- Add gradient header banner with CoreStack logo placeholder
+- Redesign KPI cards with icons and trend indicators
+- Style data tables with proper CoreStack theming
+- Add source/status/severity badges with gradient backgrounds
+- Create compliance breakdown section by source and severity
+- Add professional sidebar with CoreStack branding
+- Include footer with CoreStack tagline
+```
+
+---
+
+## 13. Final Dashboard Screenshots Reference
+
+**KPI Cards Row**:
+```
+┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐
+│ 📊 Total    │ │ ✅ Passing  │ │ ❌ Failing  │ │ 📋 Last     │
+│     8       │ │     2       │ │     6       │ │  Evaluated  │
+│  policies   │ │  (25.0%)    │ │  (75.0%)    │ │ 2026-02-03  │
+└─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘
+```
+
+**Source Badges**:
+```
+☁️ Cloud Custodian    🏢 CoreStack
+```
+
+**Status Badges**:
+```
+✓ PASS (green)    ✗ FAIL (red)
+```
+
+**Severity Badges**:
+```
+⬤ CRITICAL (red)  ⬤ HIGH (orange)  ⬤ MEDIUM (yellow)  ⬤ LOW (blue)
+```
+
+---
+
+## 14. Updated Git Repository
+
+**Repo URL**: https://github.com/brundala-labs/aws-custodian-real-poc
+
+**Commits**:
+1. `d51321f` — AWS Cloud Custodian POC (36 files)
+2. `c6edd15` — Add CoreStack integration mock (15 files)
+3. `477b07e` — Add project documentation
+4. `e4043c9` — Redesign dashboard with CoreStack branding and professional UI
+
+**Total Files**: 51 files across both projects
