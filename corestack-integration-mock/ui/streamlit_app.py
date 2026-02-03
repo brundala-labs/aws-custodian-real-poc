@@ -1075,59 +1075,105 @@ with tab_dashboard:
 
     st.markdown(f'<h4 style="color: {CORESTACK_DARK_BLUE}; margin-bottom: 0.5rem;">Compliance Breakdown</h4>', unsafe_allow_html=True)
 
-    # By Policy Source (Top)
+    import plotly.graph_objects as go
+
+    # By Policy Source (Top) - Bar Chart
     with st.container(border=True):
-        st.markdown(f'<p style="color: {CORESTACK_BLUE}; font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem;">By Policy Source</p>', unsafe_allow_html=True)
+        st.markdown(f'<p style="color: {CORESTACK_BLUE}; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem;">By Policy Source</p>', unsafe_allow_html=True)
+
+        source_labels = []
+        source_pass = []
+        source_fail = []
+
         for src, counts in summary.get("by_source", {}).items():
             label = "Cloud Custodian" if src == "cloudcustodian" else "CoreStack"
-            pass_count = counts.get("PASS", 0)
-            fail_count = counts.get("FAIL", 0)
-            total = pass_count + fail_count
-            pass_pct = int((pass_count / total * 100)) if total > 0 else 0
+            source_labels.append(label)
+            source_pass.append(counts.get("PASS", 0))
+            source_fail.append(counts.get("FAIL", 0))
 
-            # Source label with distinct color
-            if src == "cloudcustodian":
-                st.markdown(f'<p style="color: #1565C0; font-weight: 600; margin-bottom: 0.25rem;"><span class="material-symbols-outlined" style="font-size: 18px; vertical-align: middle;">cloud</span> {label}</p>', unsafe_allow_html=True)
-            else:
-                st.markdown(f'<p style="color: {CORESTACK_BLUE}; font-weight: 600; margin-bottom: 0.25rem;">◈ {label}</p>', unsafe_allow_html=True)
-            c1, c2, c3 = st.columns([1, 1, 2])
-            with c1:
-                st.success(f"Pass: {pass_count}")
-            with c2:
-                st.error(f"Fail: {fail_count}")
-            with c3:
-                st.progress(pass_pct / 100 if pass_pct > 0 else 0.01, text=f"{pass_pct}% compliant")
-            st.divider()
+        if source_labels:
+            fig_source = go.Figure()
+            fig_source.add_trace(go.Bar(
+                name='Pass',
+                x=source_labels,
+                y=source_pass,
+                marker_color=CORESTACK_SUCCESS,
+                text=source_pass,
+                textposition='auto'
+            ))
+            fig_source.add_trace(go.Bar(
+                name='Fail',
+                x=source_labels,
+                y=source_fail,
+                marker_color=CORESTACK_DANGER,
+                text=source_fail,
+                textposition='auto'
+            ))
+            fig_source.update_layout(
+                barmode='group',
+                height=250,
+                margin=dict(l=20, r=20, t=20, b=40),
+                legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+                plot_bgcolor='rgba(0,0,0,0)',
+                paper_bgcolor='rgba(0,0,0,0)',
+                font=dict(family="Nunito Sans", size=12),
+                xaxis=dict(title=""),
+                yaxis=dict(title="Policies", gridcolor='#E2E8F0')
+            )
+            st.plotly_chart(fig_source, use_container_width=True)
+        else:
+            st.caption("No data available")
 
-    # By Severity Level (Bottom)
+    # By Severity Level (Bottom) - Bar Chart
     with st.container(border=True):
-        st.markdown(f'<p style="color: {CORESTACK_BLUE}; font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem;">By Severity Level</p>', unsafe_allow_html=True)
+        st.markdown(f'<p style="color: {CORESTACK_BLUE}; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem;">By Severity Level</p>', unsafe_allow_html=True)
+
+        severity_labels = []
+        severity_pass = []
+        severity_fail = []
+        severity_colors = {"high": CORESTACK_DANGER, "medium": CORESTACK_WARNING, "low": CORESTACK_BLUE}
+
         for sev in ["high", "medium", "low"]:
             counts = summary.get("by_severity", {}).get(sev, {})
             pass_count = counts.get("PASS", 0)
             fail_count = counts.get("FAIL", 0)
-            total = pass_count + fail_count
-            pass_pct = int((pass_count / total * 100)) if total > 0 else 0
+            if pass_count > 0 or fail_count > 0:
+                severity_labels.append(sev.upper())
+                severity_pass.append(pass_count)
+                severity_fail.append(fail_count)
 
-            # Severity label with color
-            if sev == "high":
-                st.error(f"**{sev.upper()}**")
-            elif sev == "medium":
-                st.warning(f"**{sev.upper()}**")
-            else:
-                st.info(f"**{sev.upper()}**")
-
-            if total > 0:
-                c1, c2, c3 = st.columns([1, 1, 2])
-                with c1:
-                    st.success(f"Pass: {pass_count}")
-                with c2:
-                    st.error(f"Fail: {fail_count}")
-                with c3:
-                    st.progress(pass_pct / 100 if pass_pct > 0 else 0.01, text=f"{pass_pct}% compliant")
-            else:
-                st.caption("No policies")
-            st.divider()
+        if severity_labels:
+            fig_severity = go.Figure()
+            fig_severity.add_trace(go.Bar(
+                name='Pass',
+                x=severity_labels,
+                y=severity_pass,
+                marker_color=CORESTACK_SUCCESS,
+                text=severity_pass,
+                textposition='auto'
+            ))
+            fig_severity.add_trace(go.Bar(
+                name='Fail',
+                x=severity_labels,
+                y=severity_fail,
+                marker_color=CORESTACK_DANGER,
+                text=severity_fail,
+                textposition='auto'
+            ))
+            fig_severity.update_layout(
+                barmode='group',
+                height=250,
+                margin=dict(l=20, r=20, t=20, b=40),
+                legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+                plot_bgcolor='rgba(0,0,0,0)',
+                paper_bgcolor='rgba(0,0,0,0)',
+                font=dict(family="Nunito Sans", size=12),
+                xaxis=dict(title=""),
+                yaxis=dict(title="Policies", gridcolor='#E2E8F0')
+            )
+            st.plotly_chart(fig_severity, use_container_width=True)
+        else:
+            st.caption("No data available")
 
     # ── Findings Table ─────────────────────────────────────────────────────────
 
