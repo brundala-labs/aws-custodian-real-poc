@@ -49,16 +49,14 @@ st.markdown(f"""
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0');
 
-    /* Base - Mobile First */
+    /* Base - Mobile First - Apply Inter to text elements only */
     * {{
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
         box-sizing: border-box;
     }}
 
-    /* Exclude SVG and icon elements from font override */
-    svg, svg *, [data-testid="stExpanderToggleIcon"],
-    [data-testid="stExpanderToggleIcon"] * {{
-        font-family: inherit !important;
+    body, p, span, div, label, li, h1, h2, h3, h4, h5, h6,
+    button, input, select, textarea, td, th {{
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
     }}
 
     .material-symbols-outlined {{
@@ -68,13 +66,7 @@ st.markdown(f"""
         color: {DARK_BLUE};
     }}
 
-    /* Fix expander styling */
-    .streamlit-expanderHeader {{
-        border: 1px solid {BORDER} !important;
-        border-radius: 8px !important;
-        background: {BG} !important;
-    }}
-
+    /* Fix expander - hide broken icon, use CSS arrow */
     [data-testid="stExpander"] {{
         border: 1px solid {BORDER} !important;
         border-radius: 8px !important;
@@ -83,11 +75,16 @@ st.markdown(f"""
 
     [data-testid="stExpander"] summary {{
         padding: 0.75rem 1rem !important;
+        list-style: none !important;
     }}
 
-    [data-testid="stExpander"] svg {{
-        width: 16px !important;
-        height: 16px !important;
+    [data-testid="stExpander"] summary::-webkit-details-marker {{
+        display: none !important;
+    }}
+
+    /* Hide the problematic icon span */
+    [data-testid="stExpander"] summary > div > div:first-child {{
+        display: none !important;
     }}
 
     /* Hide Streamlit elements */
