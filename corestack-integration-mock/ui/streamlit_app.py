@@ -1044,13 +1044,32 @@ with tab_dashboard:
 
     compliance_rate = round((summary['passing'] / max(summary['total_policies'], 1)) * 100)
 
+    # Calculate source counts
+    custodian_data = summary.get('by_source', {}).get('cloudcustodian', {})
+    custodian_count = custodian_data.get('PASS', 0) + custodian_data.get('FAIL', 0)
+
+    corestack_data = summary.get('by_source', {}).get('corestack', {})
+    corestack_count = corestack_data.get('PASS', 0) + corestack_data.get('FAIL', 0)
+
     st.markdown(f"""
-    <div class="kpi-container">
+    <div class="kpi-container" style="grid-template-columns: repeat(6, 1fr);">
         <div class="kpi-card">
             <div class="kpi-icon blue"><span class="material-symbols-outlined">policy</span></div>
             <div class="kpi-value">{summary['total_policies']}</div>
             <div class="kpi-label">Total Policies</div>
             <div class="kpi-trend up"><span class="material-symbols-outlined" style="font-size:14px;">visibility</span> Unified View</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon blue"><span class="material-symbols-outlined">cloud</span></div>
+            <div class="kpi-value" style="color:#1565C0;">{custodian_count}</div>
+            <div class="kpi-label">Cloud Custodian</div>
+            <div class="kpi-trend up"><span class="material-symbols-outlined" style="font-size:14px;">security</span> Open Source</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon blue"><span class="material-symbols-outlined">domain</span></div>
+            <div class="kpi-value" style="color:{CORESTACK_BLUE};">{corestack_count}</div>
+            <div class="kpi-label">CoreStack Native</div>
+            <div class="kpi-trend up"><span class="material-symbols-outlined" style="font-size:14px;">verified</span> Enterprise</div>
         </div>
         <div class="kpi-card">
             <div class="kpi-icon green"><span class="material-symbols-outlined">check_circle</span></div>
