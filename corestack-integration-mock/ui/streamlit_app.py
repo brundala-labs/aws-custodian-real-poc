@@ -899,122 +899,103 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# ── Filters in Main Area ─────────────────────────────────────────────────────
+# ── Tabs ─────────────────────────────────────────────────────────────────────
 
-with st.container(border=True):
-    filter_cols = st.columns([1, 1, 1, 1])
+tab_dashboard, tab_executive = st.tabs(["Dashboard", "Executive Summary"])
 
-    with filter_cols[0]:
-        st.markdown("**Filters**")
+# ══════════════════════════════════════════════════════════════════════════════
+# TAB 1: DASHBOARD
+# ══════════════════════════════════════════════════════════════════════════════
 
-    with filter_cols[1]:
-        source_filter = st.selectbox(
-            "Source",
-            ["All Sources", "cloudcustodian", "corestack"],
-            format_func=lambda x: "All" if x == "All Sources" else ("Cloud Custodian" if x == "cloudcustodian" else "CoreStack"),
-            label_visibility="collapsed"
-        )
+with tab_dashboard:
+    # ── Filters in Main Area ─────────────────────────────────────────────────
 
-    with filter_cols[2]:
-        status_filter = st.selectbox(
-            "Status",
-            ["All Statuses", "FAIL", "PASS"],
-            format_func=lambda x: "All Status" if x == "All Statuses" else x,
-            label_visibility="collapsed"
-        )
-
-    with filter_cols[3]:
-        severity_filter = st.selectbox(
-            "Severity",
-            ["All Severities", "high", "medium", "low"],
-            format_func=lambda x: "All Severity" if x == "All Severities" else x.title(),
-            label_visibility="collapsed"
-        )
-
-# ── KPI Cards ────────────────────────────────────────────────────────────────
-
-summary = db_get_summary()
-
-compliance_rate = round((summary['passing'] / max(summary['total_policies'], 1)) * 100)
-
-st.markdown(f"""
-<div class="kpi-container">
-    <div class="kpi-card">
-        <div class="kpi-icon blue"><span class="material-symbols-outlined">policy</span></div>
-        <div class="kpi-value">{summary['total_policies']}</div>
-        <div class="kpi-label">Total Policies</div>
-        <div class="kpi-trend up"><span class="material-symbols-outlined" style="font-size:14px;">visibility</span> Unified View</div>
-    </div>
-    <div class="kpi-card">
-        <div class="kpi-icon green"><span class="material-symbols-outlined">check_circle</span></div>
-        <div class="kpi-value" style="color:{CORESTACK_SUCCESS};">{summary['passing']}</div>
-        <div class="kpi-label">Compliant</div>
-        <div class="kpi-trend up"><span class="material-symbols-outlined" style="font-size:14px;">trending_up</span> {compliance_rate}% Rate</div>
-    </div>
-    <div class="kpi-card">
-        <div class="kpi-icon red"><span class="material-symbols-outlined">cancel</span></div>
-        <div class="kpi-value" style="color:{CORESTACK_DANGER};">{summary['failing']}</div>
-        <div class="kpi-label">Non-Compliant</div>
-        <div class="kpi-trend down"><span class="material-symbols-outlined" style="font-size:14px;">priority_high</span> Requires Action</div>
-    </div>
-    <div class="kpi-card">
-        <div class="kpi-icon orange"><span class="material-symbols-outlined">schedule</span></div>
-        <div class="kpi-value" style="font-size:1rem;">{summary.get('last_evaluated', 'N/A')[:10] if summary.get('last_evaluated') else 'N/A'}</div>
-        <div class="kpi-label">Last Evaluated</div>
-        <div class="kpi-trend up"><span class="material-symbols-outlined" style="font-size:14px;">sync</span> Auto-Sync</div>
-    </div>
-</div>
-""", unsafe_allow_html=True)
-
-# ── Breakdown Section ────────────────────────────────────────────────────────
-
-st.markdown(f'<h4 style="color: {CORESTACK_DARK_BLUE}; margin-bottom: 0.5rem;">Compliance Breakdown</h4>', unsafe_allow_html=True)
-
-col_a, col_b = st.columns(2)
-
-with col_a:
     with st.container(border=True):
-        st.markdown(f'<p style="color: {CORESTACK_BLUE}; font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem;">By Policy Source</p>', unsafe_allow_html=True)
-        for src, counts in summary.get("by_source", {}).items():
-            label = "Cloud Custodian" if src == "cloudcustodian" else "CoreStack"
-            pass_count = counts.get("PASS", 0)
-            fail_count = counts.get("FAIL", 0)
-            total = pass_count + fail_count
-            pass_pct = int((pass_count / total * 100)) if total > 0 else 0
+        filter_cols = st.columns([1, 1, 1, 1])
 
-            # Source label with distinct color
-            if src == "cloudcustodian":
-                st.markdown(f'<p style="color: #1565C0; font-weight: 600; margin-bottom: 0.25rem;"><span class="material-symbols-outlined" style="font-size: 18px; vertical-align: middle;">cloud</span> {label}</p>', unsafe_allow_html=True)
-            else:
-                st.markdown(f'<p style="color: {CORESTACK_BLUE}; font-weight: 600; margin-bottom: 0.25rem;">◈ {label}</p>', unsafe_allow_html=True)
-            c1, c2, c3 = st.columns([1, 1, 2])
-            with c1:
-                st.success(f"Pass: {pass_count}")
-            with c2:
-                st.error(f"Fail: {fail_count}")
-            with c3:
-                st.progress(pass_pct / 100 if pass_pct > 0 else 0.01, text=f"{pass_pct}% compliant")
-            st.divider()
+        with filter_cols[0]:
+            st.markdown("**Filters**")
 
-with col_b:
-    with st.container(border=True):
-        st.markdown(f'<p style="color: {CORESTACK_BLUE}; font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem;">By Severity Level</p>', unsafe_allow_html=True)
-        for sev in ["high", "medium", "low"]:
-            counts = summary.get("by_severity", {}).get(sev, {})
-            pass_count = counts.get("PASS", 0)
-            fail_count = counts.get("FAIL", 0)
-            total = pass_count + fail_count
-            pass_pct = int((pass_count / total * 100)) if total > 0 else 0
+        with filter_cols[1]:
+            source_filter = st.selectbox(
+                "Source",
+                ["All Sources", "cloudcustodian", "corestack"],
+                format_func=lambda x: "All" if x == "All Sources" else ("Cloud Custodian" if x == "cloudcustodian" else "CoreStack"),
+                label_visibility="collapsed"
+            )
 
-            # Severity label with color
-            if sev == "high":
-                st.error(f"**{sev.upper()}**")
-            elif sev == "medium":
-                st.warning(f"**{sev.upper()}**")
-            else:
-                st.info(f"**{sev.upper()}**")
+        with filter_cols[2]:
+            status_filter = st.selectbox(
+                "Status",
+                ["All Statuses", "FAIL", "PASS"],
+                format_func=lambda x: "All Status" if x == "All Statuses" else x,
+                label_visibility="collapsed"
+            )
 
-            if total > 0:
+        with filter_cols[3]:
+            severity_filter = st.selectbox(
+                "Severity",
+                ["All Severities", "high", "medium", "low"],
+                format_func=lambda x: "All Severity" if x == "All Severities" else x.title(),
+                label_visibility="collapsed"
+            )
+
+    # ── KPI Cards ────────────────────────────────────────────────────────────
+
+    summary = db_get_summary()
+
+    compliance_rate = round((summary['passing'] / max(summary['total_policies'], 1)) * 100)
+
+    st.markdown(f"""
+    <div class="kpi-container">
+        <div class="kpi-card">
+            <div class="kpi-icon blue"><span class="material-symbols-outlined">policy</span></div>
+            <div class="kpi-value">{summary['total_policies']}</div>
+            <div class="kpi-label">Total Policies</div>
+            <div class="kpi-trend up"><span class="material-symbols-outlined" style="font-size:14px;">visibility</span> Unified View</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon green"><span class="material-symbols-outlined">check_circle</span></div>
+            <div class="kpi-value" style="color:{CORESTACK_SUCCESS};">{summary['passing']}</div>
+            <div class="kpi-label">Compliant</div>
+            <div class="kpi-trend up"><span class="material-symbols-outlined" style="font-size:14px;">trending_up</span> {compliance_rate}% Rate</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon red"><span class="material-symbols-outlined">cancel</span></div>
+            <div class="kpi-value" style="color:{CORESTACK_DANGER};">{summary['failing']}</div>
+            <div class="kpi-label">Non-Compliant</div>
+            <div class="kpi-trend down"><span class="material-symbols-outlined" style="font-size:14px;">priority_high</span> Requires Action</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon orange"><span class="material-symbols-outlined">schedule</span></div>
+            <div class="kpi-value" style="font-size:1rem;">{summary.get('last_evaluated', 'N/A')[:10] if summary.get('last_evaluated') else 'N/A'}</div>
+            <div class="kpi-label">Last Evaluated</div>
+            <div class="kpi-trend up"><span class="material-symbols-outlined" style="font-size:14px;">sync</span> Auto-Sync</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # ── Breakdown Section ────────────────────────────────────────────────────
+
+    st.markdown(f'<h4 style="color: {CORESTACK_DARK_BLUE}; margin-bottom: 0.5rem;">Compliance Breakdown</h4>', unsafe_allow_html=True)
+
+    col_a, col_b = st.columns(2)
+
+    with col_a:
+        with st.container(border=True):
+            st.markdown(f'<p style="color: {CORESTACK_BLUE}; font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem;">By Policy Source</p>', unsafe_allow_html=True)
+            for src, counts in summary.get("by_source", {}).items():
+                label = "Cloud Custodian" if src == "cloudcustodian" else "CoreStack"
+                pass_count = counts.get("PASS", 0)
+                fail_count = counts.get("FAIL", 0)
+                total = pass_count + fail_count
+                pass_pct = int((pass_count / total * 100)) if total > 0 else 0
+
+                # Source label with distinct color
+                if src == "cloudcustodian":
+                    st.markdown(f'<p style="color: #1565C0; font-weight: 600; margin-bottom: 0.25rem;"><span class="material-symbols-outlined" style="font-size: 18px; vertical-align: middle;">cloud</span> {label}</p>', unsafe_allow_html=True)
+                else:
+                    st.markdown(f'<p style="color: {CORESTACK_BLUE}; font-weight: 600; margin-bottom: 0.25rem;">◈ {label}</p>', unsafe_allow_html=True)
                 c1, c2, c3 = st.columns([1, 1, 2])
                 with c1:
                     st.success(f"Pass: {pass_count}")
@@ -1022,163 +1003,368 @@ with col_b:
                     st.error(f"Fail: {fail_count}")
                 with c3:
                     st.progress(pass_pct / 100 if pass_pct > 0 else 0.01, text=f"{pass_pct}% compliant")
-            else:
-                st.caption("No policies")
-            st.divider()
+                st.divider()
 
-# ── Findings Table ───────────────────────────────────────────────────────────
+    with col_b:
+        with st.container(border=True):
+            st.markdown(f'<p style="color: {CORESTACK_BLUE}; font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem;">By Severity Level</p>', unsafe_allow_html=True)
+            for sev in ["high", "medium", "low"]:
+                counts = summary.get("by_severity", {}).get(sev, {})
+                pass_count = counts.get("PASS", 0)
+                fail_count = counts.get("FAIL", 0)
+                total = pass_count + fail_count
+                pass_pct = int((pass_count / total * 100)) if total > 0 else 0
 
-st.markdown(f'<h4 style="color: {CORESTACK_DARK_BLUE}; margin-top: 1.5rem; margin-bottom: 0.5rem;">Policy Compliance Findings</h4>', unsafe_allow_html=True)
+                # Severity label with color
+                if sev == "high":
+                    st.error(f"**{sev.upper()}**")
+                elif sev == "medium":
+                    st.warning(f"**{sev.upper()}**")
+                else:
+                    st.info(f"**{sev.upper()}**")
 
-# Apply filters
-source_param = None if source_filter == "All Sources" else source_filter
-status_param = None if status_filter == "All Statuses" else status_filter
-severity_param = None if severity_filter == "All Severities" else severity_filter
+                if total > 0:
+                    c1, c2, c3 = st.columns([1, 1, 2])
+                    with c1:
+                        st.success(f"Pass: {pass_count}")
+                    with c2:
+                        st.error(f"Fail: {fail_count}")
+                    with c3:
+                        st.progress(pass_pct / 100 if pass_pct > 0 else 0.01, text=f"{pass_pct}% compliant")
+                else:
+                    st.caption("No policies")
+                st.divider()
 
-findings = db_get_findings(source=source_param, status=status_param, severity=severity_param)
+    # ── Findings Table ─────────────────────────────────────────────────────────
 
-if not findings:
-    st.info("No findings match the current filters. Try adjusting your filter criteria.")
-else:
-    import pandas as pd
+    st.markdown(f'<h4 style="color: {CORESTACK_DARK_BLUE}; margin-top: 1.5rem; margin-bottom: 0.5rem;">Policy Compliance Findings</h4>', unsafe_allow_html=True)
 
-    # Build dataframe with display values
-    table_data = []
-    for f in findings:
-        source_label = "Cloud Custodian" if f['source'] == "cloudcustodian" else "CoreStack"
-        table_data.append({
-            "Policy": f['policy_name'],
-            "Source": source_label,
-            "Status": f['status'],
-            "Violations": int(f['violations_count']),
-            "Severity": f['severity'].upper(),
-            "Category": f['category'],
-            "Resource": f['resource_types']
-        })
+    # Apply filters
+    source_param = None if source_filter == "All Sources" else source_filter
+    status_param = None if status_filter == "All Statuses" else status_filter
+    severity_param = None if severity_filter == "All Severities" else severity_filter
 
-    df = pd.DataFrame(table_data)
+    findings = db_get_findings(source=source_param, status=status_param, severity=severity_param)
 
-    # Style function for the dataframe
-    def color_status(val):
-        if val == "PASS":
+    if not findings:
+        st.info("No findings match the current filters. Try adjusting your filter criteria.")
+    else:
+        import pandas as pd
+
+        # Build dataframe with display values
+        table_data = []
+        for f in findings:
+            source_label = "Cloud Custodian" if f['source'] == "cloudcustodian" else "CoreStack"
+            table_data.append({
+                "Policy": f['policy_name'],
+                "Source": source_label,
+                "Status": f['status'],
+                "Violations": int(f['violations_count']),
+                "Severity": f['severity'].upper(),
+                "Category": f['category'],
+                "Resource": f['resource_types']
+            })
+
+        df = pd.DataFrame(table_data)
+
+        # Style function for the dataframe
+        def color_status(val):
+            if val == "PASS":
+                return 'color: #38A169; font-weight: bold'
+            elif val == "FAIL":
+                return 'color: #E53E3E; font-weight: bold'
+            return ''
+
+        def color_violations(val):
+            if val > 0:
+                return 'color: #E53E3E; font-weight: bold'
             return 'color: #38A169; font-weight: bold'
-        elif val == "FAIL":
-            return 'color: #E53E3E; font-weight: bold'
-        return ''
 
-    def color_violations(val):
-        if val > 0:
-            return 'color: #E53E3E; font-weight: bold'
-        return 'color: #38A169; font-weight: bold'
+        def color_severity(val):
+            if val == "HIGH":
+                return 'color: #E53E3E; font-weight: bold'
+            elif val == "MEDIUM":
+                return 'color: #DD6B20; font-weight: bold'
+            elif val == "LOW":
+                return 'color: #3182CE; font-weight: bold'
+            return ''
 
-    def color_severity(val):
-        if val == "HIGH":
-            return 'color: #E53E3E; font-weight: bold'
-        elif val == "MEDIUM":
-            return 'color: #DD6B20; font-weight: bold'
-        elif val == "LOW":
-            return 'color: #3182CE; font-weight: bold'
-        return ''
+        # Apply styling
+        styled_df = df.style\
+            .applymap(color_status, subset=['Status'])\
+            .applymap(color_violations, subset=['Violations'])\
+            .applymap(color_severity, subset=['Severity'])\
+            .set_properties(**{'border': '1px solid #E2E8F0', 'padding': '10px'})\
+            .set_table_styles([
+                {'selector': 'th', 'props': [('background-color', '#0076e1'), ('color', 'white'), ('font-weight', 'bold'), ('padding', '12px'), ('border', '1px solid #004789')]},
+                {'selector': 'td', 'props': [('border', '1px solid #E2E8F0')]},
+            ])
 
-    # Apply styling
-    styled_df = df.style\
-        .applymap(color_status, subset=['Status'])\
-        .applymap(color_violations, subset=['Violations'])\
-        .applymap(color_severity, subset=['Severity'])\
-        .set_properties(**{'border': '1px solid #E2E8F0', 'padding': '10px'})\
-        .set_table_styles([
-            {'selector': 'th', 'props': [('background-color', '#0076e1'), ('color', 'white'), ('font-weight', 'bold'), ('padding', '12px'), ('border', '1px solid #004789')]},
-            {'selector': 'td', 'props': [('border', '1px solid #E2E8F0')]},
-        ])
+        with st.container(border=True):
+            st.dataframe(
+                styled_df,
+                use_container_width=True,
+                hide_index=True,
+                height=400
+            )
+
+    # ── Drill-down Section ─────────────────────────────────────────────────────
+
+    st.markdown(f'<h4 style="color: {CORESTACK_DARK_BLUE}; margin-top: 1.5rem; margin-bottom: 0.5rem;">Policy Deep Dive & Evidence</h4>', unsafe_allow_html=True)
+
+    policy_options = {f["policy_name"]: f["policy_id"] for f in findings} if findings else {}
+
+    if policy_options:
+        selected_name = st.selectbox(
+            "Select a policy to inspect",
+            list(policy_options.keys()),
+            help="Choose a policy to view detailed violation information and raw evidence"
+        )
+        selected_id = policy_options[selected_name]
+
+        col1, col2 = st.columns([2, 1])
+
+        with col1:
+            # Resources
+            resources = db_get_resources(selected_id)
+            if resources:
+                st.markdown("**Violating Resources**")
+                res_data = []
+                for r in resources:
+                    res_data.append({
+                        "Resource Key": r["resource_key"],
+                        "Type": r["type"],
+                        "ID": r["raw_id"],
+                        "Region": r["region"],
+                    })
+                st.dataframe(res_data, use_container_width=True, hide_index=True)
+            else:
+                st.success("No violations found — this policy is compliant!")
+
+        with col2:
+            # Quick stats for selected policy
+            selected_finding = next((f for f in findings if f["policy_id"] == selected_id), None)
+            if selected_finding:
+                with st.container(border=True):
+                    st.markdown("**Quick Stats**")
+
+                    # Violations with color
+                    viol_count = selected_finding["violations_count"]
+                    if viol_count > 0:
+                        st.error(f"Violations: {viol_count}")
+                    else:
+                        st.success(f"Violations: {viol_count}")
+
+                    # Severity with color
+                    sev = selected_finding["severity"].upper()
+                    if sev == "HIGH":
+                        st.error(f"Severity: {sev}")
+                    elif sev == "MEDIUM":
+                        st.warning(f"Severity: {sev}")
+                    else:
+                        st.info(f"Severity: {sev}")
+
+                    # Status with color
+                    status = selected_finding["status"]
+                    if status == "PASS":
+                        st.success(f"Status: {status}")
+                    else:
+                        st.error(f"Status: {status}")
+
+                    st.caption(f"Category: {selected_finding['category'].title()}")
+
+        # Evidence
+        evidence_list = db_get_evidence(selected_id)
+        if evidence_list:
+            with st.expander("Raw Evidence JSON (Click to expand)", expanded=False):
+                for ev in evidence_list:
+                    st.markdown(f"**Run ID**: `{ev['run_id']}`")
+                    try:
+                        parsed = json.loads(ev["evidence_json"])
+                        st.json(parsed)
+                    except json.JSONDecodeError:
+                        st.code(ev["evidence_json"], language="json")
+        else:
+            st.info("No evidence data available for this policy.")
+    else:
+        st.info("Select filters above to view findings, then choose a policy to drill down.")
+
+# ══════════════════════════════════════════════════════════════════════════════
+# TAB 2: EXECUTIVE SUMMARY
+# ══════════════════════════════════════════════════════════════════════════════
+
+with tab_executive:
+    # Get summary data for executive view
+    exec_summary = db_get_summary()
+    exec_compliance_rate = round((exec_summary['passing'] / max(exec_summary['total_policies'], 1)) * 100)
+
+    # ── Executive Summary Header ─────────────────────────────────────────────
+    st.markdown(f'<h3 style="color: {CORESTACK_DARK_BLUE};">Executive Summary</h3>', unsafe_allow_html=True)
+
+    st.markdown("""
+    This POC demonstrates **CoreStack's unified cloud governance platform** that aggregates compliance findings
+    from multiple policy engines into a single dashboard. The solution ingests real Cloud Custodian scan results
+    from live AWS resources and presents them alongside CoreStack-native policies.
+    """)
+
+    # ── Key Metrics Row ──────────────────────────────────────────────────────
+    st.markdown(f'<h4 style="color: {CORESTACK_BLUE}; margin-top: 1.5rem;">Key Metrics</h4>', unsafe_allow_html=True)
+
+    metric_cols = st.columns(4)
+    with metric_cols[0]:
+        st.metric("Total Policies", exec_summary['total_policies'], help="Combined policies from all sources")
+    with metric_cols[1]:
+        st.metric("Compliance Rate", f"{exec_compliance_rate}%", help="Percentage of passing policies")
+    with metric_cols[2]:
+        st.metric("Compliant", exec_summary['passing'], delta="Passing", delta_color="normal")
+    with metric_cols[3]:
+        st.metric("Non-Compliant", exec_summary['failing'], delta="Requires Action", delta_color="inverse")
+
+    # ── Project Overview ─────────────────────────────────────────────────────
+    st.markdown(f'<h4 style="color: {CORESTACK_BLUE}; margin-top: 2rem;">Project Overview</h4>', unsafe_allow_html=True)
 
     with st.container(border=True):
-        st.dataframe(
-            styled_df,
-            use_container_width=True,
-            hide_index=True,
-            height=400
-        )
+        overview_cols = st.columns(2)
 
-# ── Drill-down Section ───────────────────────────────────────────────────────
+        with overview_cols[0]:
+            st.markdown("**Objective**")
+            st.markdown("""
+            - Demonstrate unified compliance visibility
+            - Integrate Cloud Custodian with CoreStack
+            - Real-time policy evaluation against AWS resources
+            - Single pane of glass for multi-engine governance
+            """)
 
-st.markdown(f'<h4 style="color: {CORESTACK_DARK_BLUE}; margin-top: 1.5rem; margin-bottom: 0.5rem;">Policy Deep Dive & Evidence</h4>', unsafe_allow_html=True)
+            st.markdown("**Policy Sources**")
+            st.markdown("""
+            - **Cloud Custodian**: Open-source cloud security rules
+            - **CoreStack Native**: Enterprise governance policies
+            """)
 
-policy_options = {f["policy_name"]: f["policy_id"] for f in findings} if findings else {}
+        with overview_cols[1]:
+            st.markdown("**AWS Resources Scanned**")
+            st.markdown("""
+            - S3 Buckets (encryption, public access)
+            - EC2 Instances (required tags)
+            - EBS Volumes (encryption, attachment status)
+            - IAM Users (MFA compliance)
+            - CloudTrail (logging status)
+            """)
 
-if policy_options:
-    selected_name = st.selectbox(
-        "Select a policy to inspect",
-        list(policy_options.keys()),
-        help="Choose a policy to view detailed violation information and raw evidence"
-    )
-    selected_id = policy_options[selected_name]
+            st.markdown("**Technology Stack**")
+            st.markdown("""
+            - **Cloud Custodian**: Policy-as-code engine
+            - **SQLite**: Findings persistence
+            - **Streamlit**: Dashboard UI
+            - **Python**: Integration layer
+            """)
 
-    col1, col2 = st.columns([2, 1])
+    # ── Data Flow Diagram ────────────────────────────────────────────────────
+    st.markdown(f'<h4 style="color: {CORESTACK_BLUE}; margin-top: 2rem;">Data Flow Architecture</h4>', unsafe_allow_html=True)
 
-    with col1:
-        # Resources
-        resources = db_get_resources(selected_id)
-        if resources:
-            st.markdown("**Violating Resources**")
-            res_data = []
-            for r in resources:
-                res_data.append({
-                    "Resource Key": r["resource_key"],
-                    "Type": r["type"],
-                    "ID": r["raw_id"],
-                    "Region": r["region"],
-                })
-            st.dataframe(res_data, use_container_width=True, hide_index=True)
-        else:
-            st.success("No violations found — this policy is compliant!")
+    # Visual dataflow using Streamlit components
+    st.markdown(f"""
+    <div style="background: linear-gradient(135deg, #F8FAFC 0%, #EDF2F7 100%); border-radius: 12px; padding: 2rem; border: 1px solid #E2E8F0;">
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 1rem;">
 
-    with col2:
-        # Quick stats for selected policy
-        selected_finding = next((f for f in findings if f["policy_id"] == selected_id), None)
-        if selected_finding:
-            with st.container(border=True):
-                st.markdown("**Quick Stats**")
+            <!-- AWS Cloud -->
+            <div style="background: #FF9900; color: white; padding: 1rem 1.5rem; border-radius: 8px; text-align: center; min-width: 140px;">
+                <div style="font-size: 1.5rem;">☁️</div>
+                <div style="font-weight: 700; font-size: 0.9rem;">AWS Cloud</div>
+                <div style="font-size: 0.7rem; opacity: 0.9;">S3 • EC2 • EBS</div>
+            </div>
 
-                # Violations with color
-                viol_count = selected_finding["violations_count"]
-                if viol_count > 0:
-                    st.error(f"Violations: {viol_count}")
-                else:
-                    st.success(f"Violations: {viol_count}")
+            <div style="font-size: 1.5rem; color: {CORESTACK_BLUE};">→</div>
 
-                # Severity with color
-                sev = selected_finding["severity"].upper()
-                if sev == "HIGH":
-                    st.error(f"Severity: {sev}")
-                elif sev == "MEDIUM":
-                    st.warning(f"Severity: {sev}")
-                else:
-                    st.info(f"Severity: {sev}")
+            <!-- Cloud Custodian -->
+            <div style="background: #6C63FF; color: white; padding: 1rem 1.5rem; border-radius: 8px; text-align: center; min-width: 140px;">
+                <div style="font-size: 1.5rem;">⚙️</div>
+                <div style="font-weight: 700; font-size: 0.9rem;">Cloud Custodian</div>
+                <div style="font-size: 0.7rem; opacity: 0.9;">Policy Engine</div>
+            </div>
 
-                # Status with color
-                status = selected_finding["status"]
-                if status == "PASS":
-                    st.success(f"Status: {status}")
-                else:
-                    st.error(f"Status: {status}")
+            <div style="font-size: 1.5rem; color: {CORESTACK_BLUE};">→</div>
 
-                st.caption(f"Category: {selected_finding['category'].title()}")
+            <!-- JSON Outputs -->
+            <div style="background: #4A5568; color: white; padding: 1rem 1.5rem; border-radius: 8px; text-align: center; min-width: 140px;">
+                <div style="font-size: 1.5rem;">📁</div>
+                <div style="font-weight: 700; font-size: 0.9rem;">JSON Outputs</div>
+                <div style="font-size: 0.7rem; opacity: 0.9;">resources.json</div>
+            </div>
 
-    # Evidence
-    evidence_list = db_get_evidence(selected_id)
-    if evidence_list:
-        with st.expander("Raw Evidence JSON (Click to expand)", expanded=False):
-            for ev in evidence_list:
-                st.markdown(f"**Run ID**: `{ev['run_id']}`")
-                try:
-                    parsed = json.loads(ev["evidence_json"])
-                    st.json(parsed)
-                except json.JSONDecodeError:
-                    st.code(ev["evidence_json"], language="json")
-    else:
-        st.info("No evidence data available for this policy.")
-else:
-    st.info("Select filters above to view findings, then choose a policy to drill down.")
+            <div style="font-size: 1.5rem; color: {CORESTACK_BLUE};">→</div>
+
+            <!-- Ingestion Layer -->
+            <div style="background: {CORESTACK_BLUE}; color: white; padding: 1rem 1.5rem; border-radius: 8px; text-align: center; min-width: 140px;">
+                <div style="font-size: 1.5rem;">📥</div>
+                <div style="font-weight: 700; font-size: 0.9rem;">Ingestion</div>
+                <div style="font-size: 0.7rem; opacity: 0.9;">Normalize + Store</div>
+            </div>
+
+            <div style="font-size: 1.5rem; color: {CORESTACK_BLUE};">→</div>
+
+            <!-- SQLite -->
+            <div style="background: {CORESTACK_DARK_BLUE}; color: white; padding: 1rem 1.5rem; border-radius: 8px; text-align: center; min-width: 140px;">
+                <div style="font-size: 1.5rem;">🗄️</div>
+                <div style="font-weight: 700; font-size: 0.9rem;">SQLite DB</div>
+                <div style="font-size: 0.7rem; opacity: 0.9;">Unified Schema</div>
+            </div>
+
+            <div style="font-size: 1.5rem; color: {CORESTACK_BLUE};">→</div>
+
+            <!-- Dashboard -->
+            <div style="background: #E53E3E; color: white; padding: 1rem 1.5rem; border-radius: 8px; text-align: center; min-width: 140px;">
+                <div style="font-size: 1.5rem;">📊</div>
+                <div style="font-weight: 700; font-size: 0.9rem;">Dashboard</div>
+                <div style="font-size: 0.7rem; opacity: 0.9;">Streamlit UI</div>
+            </div>
+
+        </div>
+
+        <!-- CoreStack Native Policies -->
+        <div style="display: flex; justify-content: center; margin-top: 1.5rem;">
+            <div style="background: {CORESTACK_SUCCESS}; color: white; padding: 0.75rem 1.5rem; border-radius: 8px; text-align: center;">
+                <span style="font-size: 1rem;">🌱</span>
+                <span style="font-weight: 600; font-size: 0.85rem; margin-left: 0.5rem;">CoreStack Native Policies (IAM MFA, CloudTrail, Budget)</span>
+                <span style="font-size: 1rem; margin-left: 0.5rem;">↗️ Injected at Ingestion</span>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # ── Data Flow Steps Table ────────────────────────────────────────────────
+    st.markdown(f'<h4 style="color: {CORESTACK_BLUE}; margin-top: 2rem;">Data Flow Steps</h4>', unsafe_allow_html=True)
+
+    flow_data = [
+        {"Step": "1", "Component": "AWS Resources", "Description": "S3 buckets, EC2 instances, EBS volumes scanned via AWS APIs"},
+        {"Step": "2", "Component": "Cloud Custodian", "Description": "Executes policy YAML files against AWS resources"},
+        {"Step": "3", "Component": "JSON Outputs", "Description": "Generates resources.json and metadata.json per policy"},
+        {"Step": "4", "Component": "Ingestion Layer", "Description": "Reads Custodian output directories"},
+        {"Step": "5", "Component": "Normalizer", "Description": "Converts findings to unified schema (policy_id, status, violations)"},
+        {"Step": "6", "Component": "Native Policies", "Description": "Seeds CoreStack-specific policies (IAM MFA, CloudTrail, Budget)"},
+        {"Step": "7", "Component": "SQLite Database", "Description": "Stores policies, findings, resources, and evidence"},
+        {"Step": "8", "Component": "Streamlit Dashboard", "Description": "Presents unified compliance view to end users"},
+    ]
+
+    import pandas as pd
+    flow_df = pd.DataFrame(flow_data)
+    st.dataframe(flow_df, use_container_width=True, hide_index=True)
+
+    # ── Links ────────────────────────────────────────────────────────────────
+    st.markdown(f'<h4 style="color: {CORESTACK_BLUE}; margin-top: 2rem;">Quick Links</h4>', unsafe_allow_html=True)
+
+    link_cols = st.columns(3)
+    with link_cols[0]:
+        st.markdown("**GitHub Repository**")
+        st.markdown("[brundala-labs/aws-custodian-real-poc](https://github.com/brundala-labs/aws-custodian-real-poc)")
+
+    with link_cols[1]:
+        st.markdown("**Live Dashboard**")
+        st.markdown("[corestackintegration.streamlit.app](https://corestackintegration.streamlit.app)")
+
+    with link_cols[2]:
+        st.markdown("**CoreStack Website**")
+        st.markdown("[www.corestack.io](https://www.corestack.io)")
 
 # ── Footer ───────────────────────────────────────────────────────────────────
 
