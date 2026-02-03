@@ -9,35 +9,342 @@ API_BASE = os.environ.get("CORESTACK_API_URL", "http://localhost:8080")
 
 st.set_page_config(
     page_title="CoreStack – Unified Policy Compliance",
-    page_icon="🛡️",  # noqa
+    page_icon="https://www.corestack.io/wp-content/uploads/2021/09/cropped-favicon-32x32.png",
     layout="wide",
+    initial_sidebar_state="expanded",
 )
 
-# ── Styles ───────────────────────────────────────────────────────────────────
+# ── CoreStack Brand Colors ───────────────────────────────────────────────────
+CORESTACK_BLUE = "#0076e1"
+CORESTACK_DARK_BLUE = "#004789"
+CORESTACK_LIGHT_BG = "#F7FAFC"
+CORESTACK_CARD_BG = "#FFFFFF"
+CORESTACK_TEXT_DARK = "#1A202C"
+CORESTACK_TEXT_MID = "#495974"
+CORESTACK_SUCCESS = "#38A169"
+CORESTACK_DANGER = "#E53E3E"
+CORESTACK_WARNING = "#DD6B20"
 
-st.markdown("""
+# ── Custom CSS with CoreStack Branding ───────────────────────────────────────
+
+st.markdown(f"""
 <style>
-    .main .block-container { padding-top: 1rem; }
-    .kpi-card {
-        background: #f8f9fa;
-        border: 1px solid #dee2e6;
+    @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&display=swap');
+
+    * {{
+        font-family: 'Nunito Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }}
+
+    .main .block-container {{
+        padding-top: 1rem;
+        padding-bottom: 2rem;
+        max-width: 1400px;
+    }}
+
+    /* Header Banner */
+    .header-banner {{
+        background: linear-gradient(135deg, {CORESTACK_BLUE} 0%, {CORESTACK_DARK_BLUE} 100%);
+        color: white;
+        padding: 1.5rem 2rem;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 20px rgba(0, 118, 225, 0.3);
+    }}
+    .header-banner h1 {{
+        margin: 0;
+        font-size: 1.8rem;
+        font-weight: 700;
+    }}
+    .header-banner p {{
+        margin: 0.5rem 0 0 0;
+        opacity: 0.9;
+        font-size: 0.95rem;
+    }}
+
+    /* KPI Cards */
+    .kpi-container {{
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }}
+    .kpi-card {{
+        background: {CORESTACK_CARD_BG};
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        border: 1px solid #E2E8F0;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }}
+    .kpi-card:hover {{
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    }}
+    .kpi-icon {{
+        width: 48px;
+        height: 48px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }}
+    .kpi-icon.blue {{ background: rgba(0, 118, 225, 0.1); color: {CORESTACK_BLUE}; }}
+    .kpi-icon.green {{ background: rgba(56, 161, 105, 0.1); color: {CORESTACK_SUCCESS}; }}
+    .kpi-icon.red {{ background: rgba(229, 62, 62, 0.1); color: {CORESTACK_DANGER}; }}
+    .kpi-icon.orange {{ background: rgba(221, 107, 32, 0.1); color: {CORESTACK_WARNING}; }}
+    .kpi-value {{
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: {CORESTACK_TEXT_DARK};
+        line-height: 1;
+        margin-bottom: 0.25rem;
+    }}
+    .kpi-label {{
+        font-size: 0.9rem;
+        color: {CORESTACK_TEXT_MID};
+        font-weight: 600;
+    }}
+    .kpi-trend {{
+        font-size: 0.8rem;
+        margin-top: 0.5rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 20px;
+        display: inline-block;
+    }}
+    .kpi-trend.up {{ background: rgba(56, 161, 105, 0.1); color: {CORESTACK_SUCCESS}; }}
+    .kpi-trend.down {{ background: rgba(229, 62, 62, 0.1); color: {CORESTACK_DANGER}; }}
+
+    /* Status Badges */
+    .status-pass {{
+        background: linear-gradient(135deg, {CORESTACK_SUCCESS} 0%, #2F855A 100%);
+        color: white;
+        padding: 0.35rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }}
+    .status-fail {{
+        background: linear-gradient(135deg, {CORESTACK_DANGER} 0%, #C53030 100%);
+        color: white;
+        padding: 0.35rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }}
+
+    /* Source Badges */
+    .source-badge {{
+        padding: 0.3rem 0.7rem;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }}
+    .source-cloudcustodian {{
+        background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+        color: #1565C0;
+        border: 1px solid #90CAF9;
+    }}
+    .source-corestack {{
+        background: linear-gradient(135deg, {CORESTACK_BLUE}15 0%, {CORESTACK_BLUE}25 100%);
+        color: {CORESTACK_BLUE};
+        border: 1px solid {CORESTACK_BLUE}50;
+    }}
+
+    /* Severity Badges */
+    .severity-high {{
+        color: {CORESTACK_DANGER};
+        font-weight: 700;
+    }}
+    .severity-medium {{
+        color: {CORESTACK_WARNING};
+        font-weight: 700;
+    }}
+    .severity-low {{
+        color: {CORESTACK_TEXT_MID};
+        font-weight: 600;
+    }}
+
+    /* Data Table */
+    .data-table {{
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        background: {CORESTACK_CARD_BG};
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        border: 1px solid #E2E8F0;
+    }}
+    .data-table thead {{
+        background: linear-gradient(180deg, #F8FAFC 0%, #EDF2F7 100%);
+    }}
+    .data-table th {{
+        padding: 1rem;
+        text-align: left;
+        font-weight: 700;
+        color: {CORESTACK_TEXT_DARK};
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #E2E8F0;
+    }}
+    .data-table td {{
+        padding: 1rem;
+        border-bottom: 1px solid #EDF2F7;
+        color: {CORESTACK_TEXT_DARK};
+        font-size: 0.9rem;
+    }}
+    .data-table tbody tr {{
+        transition: background 0.15s;
+    }}
+    .data-table tbody tr:hover {{
+        background: #F7FAFC;
+    }}
+    .data-table tbody tr:last-child td {{
+        border-bottom: none;
+    }}
+
+    /* Section Headers */
+    .section-header {{
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin: 2rem 0 1rem 0;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid #E2E8F0;
+    }}
+    .section-header h3 {{
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: {CORESTACK_TEXT_DARK};
+    }}
+    .section-icon {{
+        width: 36px;
+        height: 36px;
+        background: linear-gradient(135deg, {CORESTACK_BLUE} 0%, {CORESTACK_DARK_BLUE} 100%);
         border-radius: 8px;
-        padding: 1.2rem;
-        text-align: center;
-    }
-    .kpi-value { font-size: 2.2rem; font-weight: 700; margin: 0; }
-    .kpi-label { font-size: 0.85rem; color: #6c757d; margin: 0; }
-    .status-pass { color: #198754; font-weight: 600; }
-    .status-fail { color: #dc3545; font-weight: 600; }
-    .source-badge {
-        display: inline-block; padding: 2px 8px; border-radius: 4px;
-        font-size: 0.75rem; font-weight: 600;
-    }
-    .source-cloudcustodian { background: #e3f2fd; color: #1565c0; }
-    .source-corestack { background: #fce4ec; color: #c62828; }
-    .severity-high { color: #dc3545; }
-    .severity-medium { color: #fd7e14; }
-    .severity-low { color: #6c757d; }
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1rem;
+    }}
+
+    /* Breakdown Cards */
+    .breakdown-grid {{
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin-top: 1rem;
+    }}
+    .breakdown-card {{
+        background: {CORESTACK_CARD_BG};
+        border-radius: 10px;
+        padding: 1.25rem;
+        border: 1px solid #E2E8F0;
+    }}
+    .breakdown-card h4 {{
+        margin: 0 0 1rem 0;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: {CORESTACK_TEXT_DARK};
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }}
+    .breakdown-item {{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #EDF2F7;
+    }}
+    .breakdown-item:last-child {{
+        border-bottom: none;
+    }}
+    .breakdown-label {{
+        font-weight: 600;
+        color: {CORESTACK_TEXT_MID};
+    }}
+    .breakdown-values {{
+        display: flex;
+        gap: 0.5rem;
+    }}
+    .breakdown-pass {{
+        background: rgba(56, 161, 105, 0.1);
+        color: {CORESTACK_SUCCESS};
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 700;
+    }}
+    .breakdown-fail {{
+        background: rgba(229, 62, 62, 0.1);
+        color: {CORESTACK_DANGER};
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 700;
+    }}
+
+    /* Sidebar Styling */
+    section[data-testid="stSidebar"] {{
+        background: linear-gradient(180deg, #FAFBFC 0%, #F1F5F9 100%);
+    }}
+    section[data-testid="stSidebar"] .block-container {{
+        padding-top: 2rem;
+    }}
+
+    /* Custom Buttons */
+    .stButton > button {{
+        background: linear-gradient(135deg, {CORESTACK_BLUE} 0%, {CORESTACK_DARK_BLUE} 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 0.6rem 1.5rem;
+        font-weight: 700;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+        box-shadow: 0 2px 8px rgba(0, 118, 225, 0.3);
+    }}
+    .stButton > button:hover {{
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(0, 118, 225, 0.4);
+    }}
+
+    /* Metrics styling override */
+    [data-testid="stMetricValue"] {{
+        font-size: 2rem;
+        font-weight: 800;
+    }}
+
+    /* Expander styling */
+    .streamlit-expanderHeader {{
+        background: #F7FAFC;
+        border-radius: 8px;
+        font-weight: 600;
+    }}
+
+    /* Code blocks */
+    code {{
+        background: #EDF2F7;
+        padding: 0.2rem 0.4rem;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        color: {CORESTACK_DARK_BLUE};
+    }}
 </style>
 """, unsafe_allow_html=True)
 
@@ -72,40 +379,63 @@ def api_post(path: str, params: dict = None):
 
 def status_html(status: str) -> str:
     cls = "status-pass" if status == "PASS" else "status-fail"
-    return f'<span class="{cls}">{status}</span>'
+    icon = "✓" if status == "PASS" else "✗"
+    return f'<span class="{cls}">{icon} {status}</span>'
 
 
 def source_html(source: str) -> str:
     cls = f"source-{source}"
-    label = "Cloud Custodian" if source == "cloudcustodian" else "CoreStack"
-    return f'<span class="source-badge {cls}">{label}</span>'
+    if source == "cloudcustodian":
+        label = "Cloud Custodian"
+        icon = "☁"
+    else:
+        label = "CoreStack"
+        icon = "◈"
+    return f'<span class="source-badge {cls}">{icon} {label}</span>'
 
 
 def severity_html(sev: str) -> str:
-    return f'<span class="severity-{sev}">{sev.upper()}</span>'
+    icons = {"high": "●", "medium": "◐", "low": "○"}
+    return f'<span class="severity-{sev}">{icons.get(sev, "○")} {sev.upper()}</span>'
 
 
-# ── Header ───────────────────────────────────────────────────────────────────
+# ── Header Banner ────────────────────────────────────────────────────────────
 
-st.markdown("## CoreStack – Unified Policy Compliance (POC)")
-st.caption("Real Cloud Custodian findings + CoreStack native policies in one view")
+st.markdown("""
+<div class="header-banner">
+    <h1>◈ CoreStack – Unified Policy Compliance</h1>
+    <p>Real-time cloud governance across multiple policy engines • Cloud Custodian + CoreStack Native</p>
+</div>
+""", unsafe_allow_html=True)
 
-# ── Re-Ingest ────────────────────────────────────────────────────────────────
+# ── Sidebar ──────────────────────────────────────────────────────────────────
 
 with st.sidebar:
-    st.markdown("### Data Ingestion")
+    st.markdown("""
+    <div style="text-align:center; margin-bottom:1.5rem;">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">◈</div>
+        <div style="font-weight:700; color:#0076e1; font-size:1.1rem;">CoreStack</div>
+        <div style="font-size:0.75rem; color:#495974;">Cloud Governance Platform</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("---")
+
+    st.markdown("### 📥 Data Ingestion")
     default_path = os.environ.get("CUSTODIAN_RUN_DIR", "")
-    ingest_path = st.text_input("Custodian Run Directory", value=default_path)
-    if st.button("Re-Ingest", type="primary", use_container_width=True):
+    ingest_path = st.text_input("Custodian Run Directory", value=default_path,
+                                 help="Path to Cloud Custodian outputs folder")
+
+    if st.button("🔄 Re-Ingest Data", type="primary", use_container_width=True):
         if ingest_path:
-            with st.spinner("Ingesting..."):
+            with st.spinner("Ingesting compliance data..."):
                 result = api_post("/ingest", params={"path": ingest_path})
             if result and result.get("status") == "ok":
                 st.success(
-                    f"Ingested run **{result['run_id']}**: "
-                    f"{result['policies_ingested']} policies, "
-                    f"{result['findings_ingested']} findings, "
-                    f"{result['resources_ingested']} resources"
+                    f"✓ Ingested **{result['run_id']}**\n\n"
+                    f"• {result['policies_ingested']} policies\n"
+                    f"• {result['findings_ingested']} findings\n"
+                    f"• {result['resources_ingested']} resources"
                 )
                 st.rerun()
             elif result:
@@ -114,145 +444,238 @@ with st.sidebar:
             st.warning("Enter a path to the custodian run directory.")
 
     st.markdown("---")
-    st.markdown("### Filters")
-    source_filter = st.selectbox("Source", ["All", "cloudcustodian", "corestack"])
-    status_filter = st.selectbox("Status", ["All", "FAIL", "PASS"])
-    severity_filter = st.selectbox("Severity", ["All", "high", "medium", "low"])
+    st.markdown("### 🔍 Filters")
 
-# ── KPIs ─────────────────────────────────────────────────────────────────────
+    source_filter = st.selectbox(
+        "Policy Source",
+        ["All Sources", "cloudcustodian", "corestack"],
+        format_func=lambda x: "All Sources" if x == "All Sources" else ("☁ Cloud Custodian" if x == "cloudcustodian" else "◈ CoreStack")
+    )
+
+    status_filter = st.selectbox(
+        "Compliance Status",
+        ["All Statuses", "FAIL", "PASS"],
+        format_func=lambda x: "All Statuses" if x == "All Statuses" else ("✗ Failing" if x == "FAIL" else "✓ Passing")
+    )
+
+    severity_filter = st.selectbox(
+        "Severity Level",
+        ["All Severities", "high", "medium", "low"],
+        format_func=lambda x: "All Severities" if x == "All Severities" else f"{'●' if x=='high' else '◐' if x=='medium' else '○'} {x.title()}"
+    )
+
+    st.markdown("---")
+    st.markdown("""
+    <div style="font-size:0.75rem; color:#718096; text-align:center;">
+        <div>Powered by CoreStack</div>
+        <div style="margin-top:0.25rem;">AI-Powered Cloud Governance</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+# ── KPI Cards ────────────────────────────────────────────────────────────────
 
 summary = api_get("/summary")
 
-c1, c2, c3, c4 = st.columns(4)
-with c1:
-    st.markdown(f"""<div class="kpi-card">
-        <p class="kpi-value">{summary['total_policies']}</p>
-        <p class="kpi-label">Total Policies</p>
-    </div>""", unsafe_allow_html=True)
-with c2:
-    st.markdown(f"""<div class="kpi-card">
-        <p class="kpi-value status-pass">{summary['passing']}</p>
-        <p class="kpi-label">Passing</p>
-    </div>""", unsafe_allow_html=True)
-with c3:
-    st.markdown(f"""<div class="kpi-card">
-        <p class="kpi-value status-fail">{summary['failing']}</p>
-        <p class="kpi-label">Failing</p>
-    </div>""", unsafe_allow_html=True)
-with c4:
-    last_eval = summary.get("last_evaluated") or "N/A"
-    st.markdown(f"""<div class="kpi-card">
-        <p class="kpi-value" style="font-size:1.1rem;">{last_eval}</p>
-        <p class="kpi-label">Last Evaluated</p>
-    </div>""", unsafe_allow_html=True)
+compliance_rate = round((summary['passing'] / max(summary['total_policies'], 1)) * 100)
 
-st.markdown("")
+st.markdown(f"""
+<div class="kpi-container">
+    <div class="kpi-card">
+        <div class="kpi-icon blue">📋</div>
+        <div class="kpi-value">{summary['total_policies']}</div>
+        <div class="kpi-label">Total Policies</div>
+        <div class="kpi-trend up">Unified View</div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-icon green">✓</div>
+        <div class="kpi-value" style="color:{CORESTACK_SUCCESS};">{summary['passing']}</div>
+        <div class="kpi-label">Compliant</div>
+        <div class="kpi-trend up">↑ {compliance_rate}% Rate</div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-icon red">✗</div>
+        <div class="kpi-value" style="color:{CORESTACK_DANGER};">{summary['failing']}</div>
+        <div class="kpi-label">Non-Compliant</div>
+        <div class="kpi-trend down">Requires Action</div>
+    </div>
+    <div class="kpi-card">
+        <div class="kpi-icon orange">⏱</div>
+        <div class="kpi-value" style="font-size:1rem;">{summary.get('last_evaluated', 'N/A')[:10] if summary.get('last_evaluated') else 'N/A'}</div>
+        <div class="kpi-label">Last Evaluated</div>
+        <div class="kpi-trend up">Auto-Sync Enabled</div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
-# ── Source breakdown ─────────────────────────────────────────────────────────
+# ── Breakdown Section ────────────────────────────────────────────────────────
 
-with st.expander("Breakdown by Source & Severity", expanded=False):
+with st.expander("📊 Compliance Breakdown by Source & Severity", expanded=True):
+    st.markdown('<div class="breakdown-grid">', unsafe_allow_html=True)
+
     col_a, col_b = st.columns(2)
+
     with col_a:
-        st.markdown("**By Source**")
+        st.markdown('<div class="breakdown-card">', unsafe_allow_html=True)
+        st.markdown('<h4>☁ By Policy Source</h4>', unsafe_allow_html=True)
         for src, counts in summary.get("by_source", {}).items():
             label = "Cloud Custodian" if src == "cloudcustodian" else "CoreStack" if src == "corestack" else src
-            parts = ", ".join(f"{s}: {c}" for s, c in counts.items())
-            st.markdown(f"- **{label}**: {parts}")
+            pass_count = counts.get("PASS", 0)
+            fail_count = counts.get("FAIL", 0)
+            st.markdown(f"""
+            <div class="breakdown-item">
+                <span class="breakdown-label">{label}</span>
+                <div class="breakdown-values">
+                    <span class="breakdown-pass">✓ {pass_count}</span>
+                    <span class="breakdown-fail">✗ {fail_count}</span>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+
     with col_b:
-        st.markdown("**By Severity**")
-        for sev, counts in summary.get("by_severity", {}).items():
-            parts = ", ".join(f"{s}: {c}" for s, c in counts.items())
-            st.markdown(f"- **{sev.upper()}**: {parts}")
+        st.markdown('<div class="breakdown-card">', unsafe_allow_html=True)
+        st.markdown('<h4>⚡ By Severity Level</h4>', unsafe_allow_html=True)
+        for sev in ["high", "medium", "low"]:
+            counts = summary.get("by_severity", {}).get(sev, {})
+            pass_count = counts.get("PASS", 0)
+            fail_count = counts.get("FAIL", 0)
+            icon = "●" if sev == "high" else "◐" if sev == "medium" else "○"
+            st.markdown(f"""
+            <div class="breakdown-item">
+                <span class="breakdown-label">{icon} {sev.title()}</span>
+                <div class="breakdown-values">
+                    <span class="breakdown-pass">✓ {pass_count}</span>
+                    <span class="breakdown-fail">✗ {fail_count}</span>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
-# ── Findings table ───────────────────────────────────────────────────────────
+    st.markdown('</div>', unsafe_allow_html=True)
 
-st.markdown("### Policy Findings")
+# ── Findings Table ───────────────────────────────────────────────────────────
+
+st.markdown("""
+<div class="section-header">
+    <div class="section-icon">📋</div>
+    <h3>Policy Compliance Findings</h3>
+</div>
+""", unsafe_allow_html=True)
 
 params = {}
-if source_filter != "All":
+if source_filter != "All Sources":
     params["source"] = source_filter
-if status_filter != "All":
+if status_filter != "All Statuses":
     params["status"] = status_filter
-if severity_filter != "All":
+if severity_filter != "All Severities":
     params["severity"] = severity_filter
 
 findings = api_get("/findings", params=params)
 
 if not findings:
-    st.info("No findings match the current filters.")
+    st.info("🔍 No findings match the current filters. Try adjusting your filter criteria.")
 else:
-    # Build HTML table
     table_html = """
-    <table style="width:100%; border-collapse:collapse; font-size:0.9rem;">
+    <table class="data-table">
     <thead>
-        <tr style="border-bottom:2px solid #dee2e6; text-align:left;">
-            <th style="padding:8px;">Policy Name</th>
-            <th style="padding:8px;">Source</th>
-            <th style="padding:8px;">Status</th>
-            <th style="padding:8px;">Violations</th>
-            <th style="padding:8px;">Severity</th>
-            <th style="padding:8px;">Category</th>
-            <th style="padding:8px;">Resource Type</th>
-            <th style="padding:8px;">Last Evaluated</th>
+        <tr>
+            <th>Policy Name</th>
+            <th>Source</th>
+            <th>Status</th>
+            <th>Violations</th>
+            <th>Severity</th>
+            <th>Category</th>
+            <th>Resource Type</th>
         </tr>
     </thead>
     <tbody>
     """
     for f in findings:
+        violations_display = f'<strong style="color:{CORESTACK_DANGER};">{f["violations_count"]}</strong>' if f["violations_count"] > 0 else '<span style="color:{CORESTACK_SUCCESS};">0</span>'
         table_html += f"""
-        <tr style="border-bottom:1px solid #eee;">
-            <td style="padding:8px;">{f['policy_name']}</td>
-            <td style="padding:8px;">{source_html(f['source'])}</td>
-            <td style="padding:8px;">{status_html(f['status'])}</td>
-            <td style="padding:8px;">{f['violations_count']}</td>
-            <td style="padding:8px;">{severity_html(f['severity'])}</td>
-            <td style="padding:8px;">{f['category']}</td>
-            <td style="padding:8px;"><code>{f['resource_types']}</code></td>
-            <td style="padding:8px; font-size:0.8rem;">{f['last_evaluated']}</td>
+        <tr>
+            <td><strong>{f['policy_name']}</strong></td>
+            <td>{source_html(f['source'])}</td>
+            <td>{status_html(f['status'])}</td>
+            <td>{violations_display}</td>
+            <td>{severity_html(f['severity'])}</td>
+            <td><code>{f['category']}</code></td>
+            <td><code>{f['resource_types']}</code></td>
         </tr>
         """
     table_html += "</tbody></table>"
     st.markdown(table_html, unsafe_allow_html=True)
 
-# ── Drill-down ───────────────────────────────────────────────────────────────
+# ── Drill-down Section ───────────────────────────────────────────────────────
 
-st.markdown("---")
-st.markdown("### Policy Drill-Down")
+st.markdown("""
+<div class="section-header">
+    <div class="section-icon">🔎</div>
+    <h3>Policy Deep Dive & Evidence</h3>
+</div>
+""", unsafe_allow_html=True)
 
 policy_options = {f["policy_name"]: f["policy_id"] for f in findings} if findings else {}
+
 if policy_options:
-    selected_name = st.selectbox("Select a policy to inspect", list(policy_options.keys()))
+    selected_name = st.selectbox(
+        "Select a policy to inspect",
+        list(policy_options.keys()),
+        help="Choose a policy to view detailed violation information and raw evidence"
+    )
     selected_id = policy_options[selected_name]
 
-    # Resources
-    resources = api_get("/policies/resources", params={"policy_id": selected_id})
-    if resources:
-        st.markdown(f"**Violating Resources** ({len(resources)})")
-        res_rows = []
-        for r in resources:
-            res_rows.append({
-                "Resource Key": r["resource_key"],
-                "Type": r["type"],
-                "Raw ID": r["raw_id"],
-                "Region": r["region"],
-                "Account": r["account_id"],
-            })
-        st.dataframe(res_rows, use_container_width=True)
-    else:
-        st.success("No violating resources (policy passed).")
+    col1, col2 = st.columns([2, 1])
+
+    with col1:
+        # Resources
+        resources = api_get("/policies/resources", params={"policy_id": selected_id})
+        if resources:
+            st.markdown(f"#### 🎯 Violating Resources ({len(resources)})")
+            res_data = []
+            for r in resources:
+                res_data.append({
+                    "Resource Key": r["resource_key"],
+                    "Type": r["type"],
+                    "ID": r["raw_id"],
+                    "Region": r["region"],
+                })
+            st.dataframe(res_data, use_container_width=True, hide_index=True)
+        else:
+            st.success("✓ No violations found — this policy is compliant!")
+
+    with col2:
+        # Quick stats for selected policy
+        selected_finding = next((f for f in findings if f["policy_id"] == selected_id), None)
+        if selected_finding:
+            st.markdown("#### 📊 Quick Stats")
+            st.metric("Violations", selected_finding["violations_count"])
+            st.metric("Severity", selected_finding["severity"].upper())
+            st.metric("Category", selected_finding["category"].title())
 
     # Evidence
     evidence_list = api_get("/policies/evidence", params={"policy_id": selected_id})
     if evidence_list:
-        with st.expander("Raw Evidence JSON", expanded=False):
+        with st.expander("📄 Raw Evidence JSON (Click to expand)", expanded=False):
             for ev in evidence_list:
-                st.markdown(f"**Run**: `{ev['run_id']}`")
+                st.markdown(f"**Run ID**: `{ev['run_id']}`")
                 try:
                     parsed = json.loads(ev["evidence_json"])
                     st.json(parsed)
                 except json.JSONDecodeError:
-                    st.code(ev["evidence_json"])
+                    st.code(ev["evidence_json"], language="json")
     else:
-        st.info("No evidence available for this policy.")
+        st.info("No evidence data available for this policy.")
 else:
-    st.info("Select filters above to view findings, then drill down here.")
+    st.info("👆 Select filters above to view findings, then choose a policy to drill down.")
+
+# ── Footer ───────────────────────────────────────────────────────────────────
+
+st.markdown("---")
+st.markdown(f"""
+<div style="text-align:center; color:{CORESTACK_TEXT_MID}; font-size:0.8rem; padding:1rem 0;">
+    <div><strong>◈ CoreStack</strong> – AI-Powered Cloud Governance Platform</div>
+    <div style="margin-top:0.25rem;">Unified compliance visibility across Cloud Custodian, AWS Config, Azure Policy, and more</div>
+    <div style="margin-top:0.5rem; color:#A0AEC0;">POC Demo • Not for Production Use</div>
+</div>
+""", unsafe_allow_html=True)
