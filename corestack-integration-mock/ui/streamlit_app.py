@@ -732,7 +732,7 @@ st.markdown(f"""
 
 # ── Breakdown Section ────────────────────────────────────────────────────────
 
-st.subheader("Compliance Breakdown")
+st.markdown("#### Compliance Breakdown")
 
 col_a, col_b = st.columns(2)
 
@@ -743,22 +743,17 @@ with col_a:
         pass_count = counts.get("PASS", 0)
         fail_count = counts.get("FAIL", 0)
         total = pass_count + fail_count
+        pass_pct = int((pass_count / total * 100)) if total > 0 else 0
 
-        # Create columns for label, bar, and stats
-        c1, c2, c3 = st.columns([2, 4, 2])
-        with c1:
+        with st.container():
             st.markdown(f"**{label}**")
-        with c2:
-            if total > 0:
-                # Stacked progress bar using columns
-                pass_pct = pass_count / total
-                bar_cols = st.columns([max(pass_pct, 0.1), max(1-pass_pct, 0.1)])
-                with bar_cols[0]:
-                    st.success(f"{pass_count} Pass")
-                with bar_cols[1]:
-                    st.error(f"{fail_count} Fail")
-        with c3:
-            st.caption(f"Total: {total}")
+            cols = st.columns([1, 1, 2])
+            with cols[0]:
+                st.metric(label="Pass", value=pass_count, delta=f"{pass_pct}%", delta_color="normal")
+            with cols[1]:
+                st.metric(label="Fail", value=fail_count, delta=f"{100-pass_pct}%", delta_color="inverse")
+            with cols[2]:
+                st.progress(pass_pct / 100 if total > 0 else 0, text=f"{pass_pct}% Compliant")
 
 with col_b:
     st.markdown("**By Severity Level**")
@@ -767,27 +762,26 @@ with col_b:
         pass_count = counts.get("PASS", 0)
         fail_count = counts.get("FAIL", 0)
         total = pass_count + fail_count
+        pass_pct = int((pass_count / total * 100)) if total > 0 else 0
 
-        c1, c2, c3 = st.columns([2, 4, 2])
-        with c1:
+        with st.container():
             if sev == "high":
-                st.markdown(f":red[**{sev.title()}**]")
+                st.markdown(f":red[**{sev.upper()}**]")
             elif sev == "medium":
-                st.markdown(f":orange[**{sev.title()}**]")
+                st.markdown(f":orange[**{sev.upper()}**]")
             else:
-                st.markdown(f":blue[**{sev.title()}**]")
-        with c2:
+                st.markdown(f":blue[**{sev.upper()}**]")
+
             if total > 0:
-                pass_pct = pass_count / total
-                bar_cols = st.columns([max(pass_pct, 0.1), max(1-pass_pct, 0.1)])
-                with bar_cols[0]:
-                    st.success(f"{pass_count} Pass")
-                with bar_cols[1]:
-                    st.error(f"{fail_count} Fail")
+                cols = st.columns([1, 1, 2])
+                with cols[0]:
+                    st.metric(label="Pass", value=pass_count)
+                with cols[1]:
+                    st.metric(label="Fail", value=fail_count)
+                with cols[2]:
+                    st.progress(pass_pct / 100, text=f"{pass_pct}% Compliant")
             else:
-                st.caption("No policies")
-        with c3:
-            st.caption(f"Total: {total}")
+                st.caption("No policies in this category")
 
 # ── Findings Table ───────────────────────────────────────────────────────────
 
@@ -806,70 +800,52 @@ severity_param = None if severity_filter == "All Severities" else severity_filte
 findings = db_get_findings(source=source_param, status=status_param, severity=severity_param)
 
 if not findings:
-    st.markdown(f'''
-    <div style="padding: 1rem; background: #EDF2F7; border-radius: 8px; display: flex; align-items: center; gap: 0.5rem;">
-        <span class="material-symbols-outlined" style="color: {CORESTACK_BLUE};">search</span>
-        <span>No findings match the current filters. Try adjusting your filter criteria.</span>
-    </div>
-    ''', unsafe_allow_html=True)
+    st.info("No findings match the current filters. Try adjusting your filter criteria.")
 else:
-    import pandas as pd
-
-    # Build dataframe for display
-    table_data = []
+    # Display each finding as an expandable card
     for f in findings:
         source_label = "Cloud Custodian" if f['source'] == "cloudcustodian" else "CoreStack"
-        status_display = "PASS" if f['status'] == "PASS" else "FAIL"
-        severity_display = f['severity'].upper()
+        is_pass = f['status'] == "PASS"
 
-        table_data.append({
-            "Policy": f['policy_name'],
-            "Source": source_label,
-            "Status": status_display,
-            "Violations": f['violations_count'],
-            "Severity": severity_display,
-            "Category": f['category'],
-            "Resource Type": f['resource_types']
-        })
-
-    df = pd.DataFrame(table_data)
-
-    # Custom styling function
-    def style_status(val):
-        if val == "PASS":
-            return f'background-color: rgba(56, 161, 105, 0.15); color: {CORESTACK_SUCCESS}; font-weight: 700;'
+        # Status indicator with color
+        if is_pass:
+            status_icon = ":green[PASS]"
+            container_type = "success"
         else:
-            return f'background-color: rgba(229, 62, 62, 0.15); color: {CORESTACK_DANGER}; font-weight: 700;'
+            status_icon = ":red[FAIL]"
+            container_type = "error"
 
-    def style_severity(val):
-        if val == "HIGH":
-            return f'color: {CORESTACK_DANGER}; font-weight: 700;'
-        elif val == "MEDIUM":
-            return f'color: {CORESTACK_WARNING}; font-weight: 700;'
+        # Severity with color
+        if f['severity'] == "high":
+            sev_display = ":red[HIGH]"
+        elif f['severity'] == "medium":
+            sev_display = ":orange[MEDIUM]"
         else:
-            return f'color: {CORESTACK_BLUE}; font-weight: 600;'
+            sev_display = ":blue[LOW]"
 
-    def style_source(val):
-        if val == "Cloud Custodian":
-            return f'background-color: rgba(0, 118, 225, 0.1); color: {CORESTACK_BLUE}; font-weight: 600;'
-        else:
-            return f'background-color: rgba(0, 71, 137, 0.1); color: {CORESTACK_DARK_BLUE}; font-weight: 600;'
+        # Create a row for each finding
+        cols = st.columns([3, 2, 1, 1, 1, 2])
 
-    # Display as styled dataframe
-    st.dataframe(
-        df,
-        use_container_width=True,
-        hide_index=True,
-        column_config={
-            "Policy": st.column_config.TextColumn("Policy", width="large"),
-            "Source": st.column_config.TextColumn("Source", width="medium"),
-            "Status": st.column_config.TextColumn("Status", width="small"),
-            "Violations": st.column_config.NumberColumn("Violations", width="small", format="%d"),
-            "Severity": st.column_config.TextColumn("Severity", width="small"),
-            "Category": st.column_config.TextColumn("Category", width="small"),
-            "Resource Type": st.column_config.TextColumn("Resource Type", width="medium"),
-        }
-    )
+        with cols[0]:
+            st.markdown(f"**{f['policy_name']}**")
+        with cols[1]:
+            st.caption(source_label)
+        with cols[2]:
+            if is_pass:
+                st.success("PASS")
+            else:
+                st.error("FAIL")
+        with cols[3]:
+            if f['violations_count'] > 0:
+                st.error(f"{f['violations_count']}")
+            else:
+                st.success("0")
+        with cols[4]:
+            st.markdown(sev_display)
+        with cols[5]:
+            st.caption(f"{f['category']} | {f['resource_types']}")
+
+        st.divider()
 
 # ── Drill-down Section ───────────────────────────────────────────────────────
 
