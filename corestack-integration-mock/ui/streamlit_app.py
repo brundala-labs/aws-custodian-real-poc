@@ -732,85 +732,62 @@ st.markdown(f"""
 
 # ── Breakdown Section ────────────────────────────────────────────────────────
 
+st.subheader("Compliance Breakdown")
+
 col_a, col_b = st.columns(2)
 
 with col_a:
-    # By Source - Diff style
-    source_html = f'''
-    <div class="diff-container">
-        <div class="diff-header">
-            <span class="material-symbols-outlined" style="color:{CORESTACK_BLUE};">cloud</span>
-            <h4>By Policy Source</h4>
-        </div>
-    '''
+    st.markdown("**By Policy Source**")
     for src, counts in summary.get("by_source", {}).items():
         label = "Cloud Custodian" if src == "cloudcustodian" else "CoreStack"
-        icon = "cloud" if src == "cloudcustodian" else "domain"
         pass_count = counts.get("PASS", 0)
         fail_count = counts.get("FAIL", 0)
         total = pass_count + fail_count
-        pass_pct = (pass_count / total * 100) if total > 0 else 0
-        fail_pct = (fail_count / total * 100) if total > 0 else 0
 
-        source_html += f'''
-        <div class="diff-row">
-            <div class="diff-label">
-                <span class="material-symbols-outlined">{icon}</span>
-                {label}
-            </div>
-            <div class="diff-bar-container">
-                <div class="diff-bar pass" style="width: {max(pass_pct, 8)}%;">{pass_count}</div>
-                <div class="diff-bar fail" style="width: {max(fail_pct, 8)}%;">{fail_count}</div>
-            </div>
-            <div class="diff-stats">
-                <span class="diff-stat pass"><span class="material-symbols-outlined">check_circle</span>{pass_count}</span>
-                <span class="diff-stat fail"><span class="material-symbols-outlined">cancel</span>{fail_count}</span>
-            </div>
-        </div>
-        '''
-    source_html += '</div>'
-    st.markdown(source_html, unsafe_allow_html=True)
+        # Create columns for label, bar, and stats
+        c1, c2, c3 = st.columns([2, 4, 2])
+        with c1:
+            st.markdown(f"**{label}**")
+        with c2:
+            if total > 0:
+                # Stacked progress bar using columns
+                pass_pct = pass_count / total
+                bar_cols = st.columns([max(pass_pct, 0.1), max(1-pass_pct, 0.1)])
+                with bar_cols[0]:
+                    st.success(f"{pass_count} Pass")
+                with bar_cols[1]:
+                    st.error(f"{fail_count} Fail")
+        with c3:
+            st.caption(f"Total: {total}")
 
 with col_b:
-    # By Severity - Diff style
-    severity_icons = {"high": "error", "medium": "warning", "low": "info"}
-    severity_colors = {"high": CORESTACK_DANGER, "medium": CORESTACK_WARNING, "low": CORESTACK_BLUE}
-
-    severity_html = f'''
-    <div class="diff-container">
-        <div class="diff-header">
-            <span class="material-symbols-outlined" style="color:{CORESTACK_WARNING};">shield</span>
-            <h4>By Severity Level</h4>
-        </div>
-    '''
+    st.markdown("**By Severity Level**")
     for sev in ["high", "medium", "low"]:
         counts = summary.get("by_severity", {}).get(sev, {})
         pass_count = counts.get("PASS", 0)
         fail_count = counts.get("FAIL", 0)
         total = pass_count + fail_count
-        pass_pct = (pass_count / total * 100) if total > 0 else 0
-        fail_pct = (fail_count / total * 100) if total > 0 else 0
-        icon = severity_icons.get(sev, "info")
-        color = severity_colors.get(sev, CORESTACK_TEXT_MID)
 
-        severity_html += f'''
-        <div class="diff-row">
-            <div class="diff-label">
-                <span class="material-symbols-outlined" style="color:{color};">{icon}</span>
-                {sev.title()}
-            </div>
-            <div class="diff-bar-container">
-                <div class="diff-bar pass" style="width: {max(pass_pct, 8) if total > 0 else 0}%;">{pass_count if total > 0 else ''}</div>
-                <div class="diff-bar fail" style="width: {max(fail_pct, 8) if total > 0 else 0}%;">{fail_count if total > 0 else ''}</div>
-            </div>
-            <div class="diff-stats">
-                <span class="diff-stat pass"><span class="material-symbols-outlined">check_circle</span>{pass_count}</span>
-                <span class="diff-stat fail"><span class="material-symbols-outlined">cancel</span>{fail_count}</span>
-            </div>
-        </div>
-        '''
-    severity_html += '</div>'
-    st.markdown(severity_html, unsafe_allow_html=True)
+        c1, c2, c3 = st.columns([2, 4, 2])
+        with c1:
+            if sev == "high":
+                st.markdown(f":red[**{sev.title()}**]")
+            elif sev == "medium":
+                st.markdown(f":orange[**{sev.title()}**]")
+            else:
+                st.markdown(f":blue[**{sev.title()}**]")
+        with c2:
+            if total > 0:
+                pass_pct = pass_count / total
+                bar_cols = st.columns([max(pass_pct, 0.1), max(1-pass_pct, 0.1)])
+                with bar_cols[0]:
+                    st.success(f"{pass_count} Pass")
+                with bar_cols[1]:
+                    st.error(f"{fail_count} Fail")
+            else:
+                st.caption("No policies")
+        with c3:
+            st.caption(f"Total: {total}")
 
 # ── Findings Table ───────────────────────────────────────────────────────────
 
