@@ -1274,9 +1274,13 @@ st.markdown("""
 # ── Header Banner ────────────────────────────────────────────────────────────
 
 st.markdown("""
-<div class="header-banner" style="color: white !important;">
-    <h1 style="color: white !important;">◈ CoreStack – Unified Policy Compliance</h1>
-    <p style="color: white !important;">Real-time cloud governance across multiple policy engines • Cloud Custodian + CoreStack Native</p>
+<style>
+    .header-banner-title { color: #FFFFFF !important; }
+    .header-banner-subtitle { color: #FFFFFF !important; }
+</style>
+<div class="header-banner" style="background: linear-gradient(135deg, #0066cc 0%, #003d7a 100%); color: #FFFFFF !important;">
+    <h1 class="header-banner-title" style="color: #FFFFFF !important; margin: 0; font-size: 1.8rem; font-weight: 700;">◈ CoreStack – Unified Policy Compliance</h1>
+    <p class="header-banner-subtitle" style="color: #FFFFFF !important; margin: 0.5rem 0 0 0; opacity: 0.95; font-size: 0.95rem;">Real-time cloud governance across multiple policy engines • Cloud Custodian + CoreStack Native</p>
 </div>
 """, unsafe_allow_html=True)
 
