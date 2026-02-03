@@ -1279,21 +1279,6 @@ def severity_html(sev: str) -> str:
     return f'<span class="severity-{sev}">{icons.get(sev, "○")} {sev.upper()}</span>'
 
 
-# ── Check Database Exists ─────────────────────────────────────────────────────
-
-if not Path(DB_PATH).exists():
-    st.error(f"""
-    **Database not found at:** `{DB_PATH}`
-
-    Please run the ingestion script first:
-    ```bash
-    cd corestack-integration-mock
-    python scripts/ingest_once.py
-    ```
-    """)
-    st.stop()
-
-
 # ── Hide Sidebar ─────────────────────────────────────────────────────────────
 
 st.markdown("""
@@ -1307,7 +1292,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ── Header Banner ────────────────────────────────────────────────────────────
+# ── Header Banner (TOP OF PAGE) ──────────────────────────────────────────────
 
 st.markdown("""
 <style>
@@ -1319,6 +1304,20 @@ st.markdown("""
     <p class="header-banner-subtitle" style="color: #FFFFFF !important; margin: 0.5rem 0 0 0; opacity: 0.95; font-size: 0.95rem;">Real-time cloud governance across multiple policy engines • Cloud Custodian + CoreStack Native</p>
 </div>
 """, unsafe_allow_html=True)
+
+# ── Check Database Exists ─────────────────────────────────────────────────────
+
+if not Path(DB_PATH).exists():
+    st.error(f"""
+    **Database not found at:** `{DB_PATH}`
+
+    Please run the ingestion script first:
+    ```bash
+    cd corestack-integration-mock
+    python scripts/ingest_once.py
+    ```
+    """)
+    st.stop()
 
 # ── Tabs ─────────────────────────────────────────────────────────────────────
 
