@@ -232,6 +232,17 @@ st.markdown(f"""
             min-width: 48% !important;
             margin-bottom: 0.5rem !important;
         }}
+
+        /* Container borders visible on tablet */
+        [data-testid="stVerticalBlockBorderWrapper"] > div {{
+            border: 2px solid {CORESTACK_BLUE} !important;
+            border-radius: 8px !important;
+        }}
+
+        /* KPI card borders */
+        .kpi-card {{
+            border: 2px solid {CORESTACK_BLUE} !important;
+        }}
     }}
 
     /* Mobile Responsive - Phone */
@@ -315,6 +326,18 @@ st.markdown(f"""
             flex: 1 1 100% !important;
             min-width: 100% !important;
             margin-bottom: 0.75rem !important;
+        }}
+
+        /* Container borders visible on mobile */
+        [data-testid="stVerticalBlockBorderWrapper"] > div {{
+            border: 2px solid {CORESTACK_BLUE} !important;
+            border-radius: 8px !important;
+            background-color: #FFFFFF !important;
+        }}
+
+        /* KPI card borders */
+        .kpi-card {{
+            border: 2px solid {CORESTACK_BLUE} !important;
         }}
 
         /* Scrollable dataframes */
@@ -429,7 +452,7 @@ st.markdown(f"""
             color: #1A202C !important;
         }}
 
-        /* Container borders - less padding */
+        /* Container borders - visible on mobile */
         [data-testid="stVerticalBlockBorderWrapper"] {{
             padding: 0.5rem !important;
         }}
@@ -437,6 +460,8 @@ st.markdown(f"""
         [data-testid="stVerticalBlockBorderWrapper"] > div {{
             background-color: #FFFFFF !important;
             color: #1A202C !important;
+            border: 2px solid {CORESTACK_BLUE} !important;
+            border-radius: 8px !important;
         }}
 
         /* Material icons smaller */
