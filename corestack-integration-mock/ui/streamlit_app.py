@@ -1630,13 +1630,13 @@ with tab_executive:
 
     with benefit_cols[2]:
         with st.container(border=True):
-            st.markdown(f'<div style="text-align: center;"><span class="material-symbols-outlined" style="font-size: 48px; color: {CORESTACK_WARNING};">security</span></div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="text-align: center;"><span class="material-symbols-outlined" style="font-size: 48px; color: {CORESTACK_DARK_BLUE};">security</span></div>', unsafe_allow_html=True)
             st.markdown("**Reduced Risk**")
             st.caption("Catch violations before they become incidents")
 
     with benefit_cols[3]:
         with st.container(border=True):
-            st.markdown(f'<div style="text-align: center;"><span class="material-symbols-outlined" style="font-size: 48px; color: {CORESTACK_DANGER};">savings</span></div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="text-align: center;"><span class="material-symbols-outlined" style="font-size: 48px; color: {CORESTACK_SUCCESS};">savings</span></div>', unsafe_allow_html=True)
             st.markdown("**Cost Savings**")
             st.caption("Eliminate manual consolidation work")
 
