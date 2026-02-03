@@ -103,7 +103,7 @@ st.markdown(f"""
 
     /* Mobile Responsive - Tablet */
     @media (max-width: 992px) {{
-        .kpi-container {{
+        .kpi-container, .kpi-6-cols {{
             grid-template-columns: repeat(3, 1fr) !important;
             gap: 0.75rem !important;
         }}
@@ -127,7 +127,7 @@ st.markdown(f"""
         }}
 
         /* KPI cards - 2 columns on phone */
-        .kpi-container {{
+        .kpi-container, .kpi-6-cols {{
             grid-template-columns: repeat(2, 1fr) !important;
             gap: 0.5rem !important;
         }}
@@ -227,8 +227,8 @@ st.markdown(f"""
 
     /* Mobile Responsive - Small Phone */
     @media (max-width: 480px) {{
-        .kpi-container {{
-            grid-template-columns: 1fr !important;
+        .kpi-container, .kpi-6-cols {{
+            grid-template-columns: repeat(2, 1fr) !important;
             gap: 0.5rem !important;
         }}
 
@@ -413,6 +413,11 @@ st.markdown(f"""
         grid-template-columns: repeat(4, 1fr);
         gap: 1rem;
         margin-bottom: 1.5rem;
+    }}
+
+    /* 6-column KPI layout for dashboard */
+    .kpi-6-cols {{
+        grid-template-columns: repeat(6, 1fr);
     }}
     .kpi-card {{
         background: {CORESTACK_CARD_BG};
@@ -1130,7 +1135,7 @@ with tab_dashboard:
     corestack_count = corestack_data.get('PASS', 0) + corestack_data.get('FAIL', 0)
 
     st.markdown(f"""
-    <div class="kpi-container" style="grid-template-columns: repeat(6, 1fr);">
+    <div class="kpi-container kpi-6-cols">
         <div class="kpi-card">
             <div class="kpi-icon blue"><span class="material-symbols-outlined">policy</span></div>
             <div class="kpi-value">{summary['total_policies']}</div>
