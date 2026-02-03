@@ -41,6 +41,7 @@ WARNING = "#C05621"
 TEXT = "#1A202C"
 TEXT_LIGHT = "#4A5568"
 BG = "#FFFFFF"
+BORDER = "#E2E8F0"
 
 # ── Mobile-First CSS ──────────────────────────────────────────────────────────
 st.markdown(f"""
@@ -50,12 +51,12 @@ st.markdown(f"""
 
     /* Base - Mobile First */
     * {{
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
         box-sizing: border-box;
     }}
 
     .material-symbols-outlined {{
-        font-family: 'Material Symbols Outlined';
+        font-family: 'Material Symbols Outlined' !important;
         font-size: 24px;
         vertical-align: middle;
         color: {DARK_BLUE};
@@ -72,9 +73,14 @@ st.markdown(f"""
         display: none !important;
     }}
 
-    /* Force light theme */
+    /* Force light theme and dark text */
     .stApp, .main, [data-testid="stAppViewContainer"] {{
         background: {BG} !important;
+        color: {TEXT} !important;
+    }}
+
+    /* All text dark by default */
+    p, span, div, label, li {{
         color: {TEXT} !important;
     }}
 
@@ -87,22 +93,24 @@ st.markdown(f"""
     /* Header Banner */
     .header {{
         background: linear-gradient(135deg, {BLUE} 0%, {DARK_BLUE} 100%);
-        color: white !important;
         padding: 1rem;
         margin-bottom: 1rem;
     }}
 
-    .header h1 {{
+    .header h1, .header p, .header * {{
         color: white !important;
+    }}
+
+    .header h1 {{
         font-size: 1.25rem !important;
         font-weight: 700;
         margin: 0 0 0.25rem 0;
     }}
 
     .header p {{
-        color: rgba(255,255,255,0.9) !important;
         font-size: 0.8rem;
         margin: 0;
+        opacity: 0.9;
     }}
 
     /* Section Titles */
@@ -130,7 +138,7 @@ st.markdown(f"""
         background: white;
         border-radius: 8px;
         padding: 0.75rem;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        border: 1px solid {BORDER};
     }}
 
     .kpi-icon {{
@@ -155,13 +163,13 @@ st.markdown(f"""
     .kpi-value {{
         font-size: 1.5rem;
         font-weight: 700;
-        color: {TEXT};
+        color: {TEXT} !important;
         line-height: 1;
     }}
 
     .kpi-label {{
         font-size: 0.7rem;
-        color: {TEXT_LIGHT};
+        color: {TEXT_LIGHT} !important;
         margin-top: 0.25rem;
     }}
 
@@ -175,32 +183,17 @@ st.markdown(f"""
 
     .kpi-badge.up {{
         background: rgba(39,103,73,0.1);
-        color: {SUCCESS};
+        color: {SUCCESS} !important;
     }}
 
     .kpi-badge.down {{
         background: rgba(197,48,48,0.1);
-        color: {DANGER};
+        color: {DANGER} !important;
     }}
 
     /* Content Padding */
     .content {{
         padding: 0 1rem;
-    }}
-
-    /* Filter Section */
-    .filter-section {{
-        background: #F7FAFC;
-        padding: 0.75rem;
-        margin: 0 0.5rem 1rem 0.5rem;
-        border-radius: 8px;
-    }}
-
-    .filter-label {{
-        font-size: 0.75rem;
-        font-weight: 600;
-        color: {DARK_BLUE};
-        margin-bottom: 0.25rem;
     }}
 
     /* Tabs */
@@ -226,22 +219,33 @@ st.markdown(f"""
         background-color: {BLUE} !important;
     }}
 
-    /* Radio Buttons */
+    /* Radio Buttons - Force dark text */
     .stRadio > label {{
-        font-size: 0.75rem !important;
+        font-size: 0.8rem !important;
         font-weight: 600 !important;
         color: {DARK_BLUE} !important;
     }}
 
     .stRadio [role="radiogroup"] {{
         gap: 0.5rem !important;
+        flex-wrap: wrap !important;
     }}
 
     .stRadio label[data-baseweb="radio"] {{
         padding: 0.4rem 0.6rem !important;
         background: white !important;
+        border: 1px solid {BORDER} !important;
         border-radius: 6px !important;
         font-size: 0.75rem !important;
+        color: {TEXT} !important;
+    }}
+
+    .stRadio label[data-baseweb="radio"] span {{
+        color: {TEXT} !important;
+    }}
+
+    .stRadio label[data-baseweb="radio"] div {{
+        color: {TEXT} !important;
     }}
 
     /* Charts */
@@ -250,23 +254,37 @@ st.markdown(f"""
         border-radius: 8px;
         padding: 0.75rem;
         margin: 0 0.5rem 1rem 0.5rem;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        border: 1px solid {BORDER};
     }}
 
     .chart-title {{
         font-size: 0.85rem;
         font-weight: 600;
-        color: {DARK_BLUE};
+        color: {DARK_BLUE} !important;
         margin-bottom: 0.5rem;
     }}
 
     /* Data Table */
     [data-testid="stDataFrame"] {{
         font-size: 0.75rem !important;
+        border: 1px solid {BORDER} !important;
+        border-radius: 8px !important;
     }}
 
     [data-testid="stDataFrame"] > div {{
         overflow-x: auto !important;
+    }}
+
+    /* Selectbox */
+    .stSelectbox label {{
+        color: {DARK_BLUE} !important;
+        font-weight: 600 !important;
+        font-size: 0.8rem !important;
+    }}
+
+    .stSelectbox > div > div {{
+        border: 1px solid {BORDER} !important;
+        border-radius: 6px !important;
     }}
 
     /* Expander */
@@ -274,6 +292,15 @@ st.markdown(f"""
         font-size: 0.85rem !important;
         font-weight: 600 !important;
         color: {DARK_BLUE} !important;
+        border: 1px solid {BORDER} !important;
+        border-radius: 8px !important;
+        background: white !important;
+    }}
+
+    details {{
+        border: 1px solid {BORDER} !important;
+        border-radius: 8px !important;
+        margin-bottom: 0.5rem !important;
     }}
 
     /* Benefits Grid */
@@ -289,25 +316,25 @@ st.markdown(f"""
         border-radius: 8px;
         padding: 1rem;
         text-align: center;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        border: 1px solid {BORDER};
     }}
 
     .benefit-icon {{
         font-size: 2rem;
-        color: {DARK_BLUE};
+        color: {DARK_BLUE} !important;
         margin-bottom: 0.5rem;
     }}
 
     .benefit-title {{
         font-size: 0.85rem;
         font-weight: 600;
-        color: {TEXT};
+        color: {TEXT} !important;
         margin-bottom: 0.25rem;
     }}
 
     .benefit-desc {{
         font-size: 0.7rem;
-        color: {TEXT_LIGHT};
+        color: {TEXT_LIGHT} !important;
     }}
 
     /* Info Box */
@@ -316,21 +343,96 @@ st.markdown(f"""
         border-radius: 8px;
         padding: 1rem;
         margin: 0 0.5rem 1rem 0.5rem;
+        border: 1px solid {BORDER};
     }}
 
     .info-box p {{
-        font-size: 0.8rem;
-        color: {TEXT};
+        font-size: 0.85rem;
+        color: {TEXT} !important;
         margin: 0;
+        line-height: 1.5;
+    }}
+
+    /* Output Options */
+    .output-grid {{
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 0.5rem;
+        padding: 0 0.5rem;
+    }}
+
+    .output-card {{
+        background: white;
+        border-radius: 8px;
+        padding: 1rem;
+        border: 1px solid {BORDER};
+    }}
+
+    .output-card h4 {{
+        color: {DARK_BLUE} !important;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin: 0 0 0.5rem 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }}
+
+    .output-card p {{
+        font-size: 0.8rem;
+        color: {TEXT_LIGHT} !important;
+        margin: 0;
+        line-height: 1.4;
+    }}
+
+    .output-card ul {{
+        margin: 0.5rem 0 0 0;
+        padding-left: 1.25rem;
+        font-size: 0.75rem;
+        color: {TEXT} !important;
+    }}
+
+    .output-card li {{
+        margin-bottom: 0.25rem;
+        color: {TEXT} !important;
+    }}
+
+    /* Markdown content */
+    .stMarkdown {{
+        color: {TEXT} !important;
+    }}
+
+    .stMarkdown p, .stMarkdown li, .stMarkdown span {{
+        color: {TEXT} !important;
+        font-size: 0.85rem;
+    }}
+
+    .stMarkdown strong {{
+        color: {TEXT} !important;
+    }}
+
+    /* Columns containers */
+    [data-testid="column"] {{
+        border: 1px solid {BORDER};
+        border-radius: 8px;
+        padding: 0.5rem !important;
+        background: white;
+    }}
+
+    /* Filter container */
+    [data-testid="stVerticalBlockBorderWrapper"] > div {{
+        border: 1px solid {BORDER} !important;
+        border-radius: 8px !important;
+        background: white !important;
     }}
 
     /* Footer */
     .footer {{
         text-align: center;
         padding: 1.5rem 1rem;
-        color: {TEXT_LIGHT};
+        color: {TEXT_LIGHT} !important;
         font-size: 0.75rem;
-        border-top: 1px solid #E2E8F0;
+        border-top: 1px solid {BORDER};
         margin-top: 2rem;
     }}
 
@@ -366,6 +468,11 @@ st.markdown(f"""
 
         .benefits-grid {{
             grid-template-columns: repeat(4, 1fr);
+            padding: 0 1rem;
+        }}
+
+        .output-grid {{
+            grid-template-columns: repeat(3, 1fr);
             padding: 0 1rem;
         }}
     }}
@@ -407,15 +514,15 @@ st.markdown(f"""
             font-size: 0.8rem;
         }}
 
-        .filter-section {{
-            margin: 0 0 1rem 0;
-        }}
-
         .chart-container {{
             margin: 0 0 1rem 0;
         }}
 
         .benefits-grid {{
+            padding: 0;
+        }}
+
+        .output-grid {{
             padding: 0;
         }}
 
@@ -449,7 +556,6 @@ def db_get_summary(source=None, status=None, severity=None):
 
     where_sql = " AND ".join(where_clauses)
 
-    # Total, passing, failing
     cursor.execute(f"""
         SELECT
             COUNT(DISTINCT f.policy_id),
@@ -468,7 +574,6 @@ def db_get_summary(source=None, status=None, severity=None):
     failing = row[2] or 0
     last_eval = row[3]
 
-    # By source
     cursor.execute(f"""
         SELECT p.source, f.status, COUNT(*)
         FROM findings f
@@ -484,7 +589,6 @@ def db_get_summary(source=None, status=None, severity=None):
             by_source[src] = {}
         by_source[src][stat] = count
 
-    # By severity
     cursor.execute(f"""
         SELECT p.severity, f.status, COUNT(*)
         FROM findings f
@@ -585,9 +689,164 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════════════════════
-# TABS
+# TABS - Executive Summary FIRST
 # ══════════════════════════════════════════════════════════════════════════════
-tab_dashboard, tab_summary = st.tabs(["Dashboard", "Executive Summary"])
+tab_summary, tab_dashboard = st.tabs(["Executive Summary", "Dashboard"])
+
+# ══════════════════════════════════════════════════════════════════════════════
+# EXECUTIVE SUMMARY TAB
+# ══════════════════════════════════════════════════════════════════════════════
+with tab_summary:
+
+    st.markdown('<div class="section-title"><span class="material-symbols-outlined">summarize</span>Overview</div>', unsafe_allow_html=True)
+
+    st.markdown(f"""
+    <div class="info-box">
+        <p>This POC demonstrates <strong>CoreStack's unified cloud governance platform</strong> that aggregates
+        compliance findings from multiple policy engines into a single dashboard. The solution ingests real
+        Cloud Custodian scan results from live AWS resources and presents them alongside CoreStack-native policies.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # ── Key Benefits ──────────────────────────────────────────────────────────
+    st.markdown('<div class="section-title"><span class="material-symbols-outlined">verified</span>Key Benefits</div>', unsafe_allow_html=True)
+
+    st.markdown(f"""
+    <div class="benefits-grid">
+        <div class="benefit-card">
+            <div class="benefit-icon"><span class="material-symbols-outlined" style="font-size:2rem;color:{DARK_BLUE};">speed</span></div>
+            <div class="benefit-title">80% Faster</div>
+            <div class="benefit-desc">Reduce compliance reporting time</div>
+        </div>
+        <div class="benefit-card">
+            <div class="benefit-icon"><span class="material-symbols-outlined" style="font-size:2rem;color:{DARK_BLUE};">visibility</span></div>
+            <div class="benefit-title">100% Visibility</div>
+            <div class="benefit-desc">Complete view across engines</div>
+        </div>
+        <div class="benefit-card">
+            <div class="benefit-icon"><span class="material-symbols-outlined" style="font-size:2rem;color:{DARK_BLUE};">security</span></div>
+            <div class="benefit-title">Reduced Risk</div>
+            <div class="benefit-desc">Catch violations early</div>
+        </div>
+        <div class="benefit-card">
+            <div class="benefit-icon"><span class="material-symbols-outlined" style="font-size:2rem;color:{DARK_BLUE};">savings</span></div>
+            <div class="benefit-title">Cost Savings</div>
+            <div class="benefit-desc">Eliminate manual work</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # ── Output Options ────────────────────────────────────────────────────────
+    st.markdown('<div class="section-title"><span class="material-symbols-outlined">output</span>Output Options</div>', unsafe_allow_html=True)
+
+    st.markdown(f"""
+    <div class="output-grid">
+        <div class="output-card">
+            <h4><span class="material-symbols-outlined" style="font-size:1.25rem;color:{BLUE};">api</span> API</h4>
+            <p>RESTful API access for programmatic integration</p>
+            <ul>
+                <li>CI/CD pipelines</li>
+                <li>SIEM systems</li>
+                <li>Custom applications</li>
+            </ul>
+        </div>
+        <div class="output-card">
+            <h4><span class="material-symbols-outlined" style="font-size:1.25rem;color:{BLUE};">link</span> Embeddable Link</h4>
+            <p>Shareable dashboard URL for easy access</p>
+            <ul>
+                <li>Internal portals</li>
+                <li>Confluence/Wiki</li>
+                <li>Slack/Teams</li>
+            </ul>
+        </div>
+        <div class="output-card">
+            <h4><span class="material-symbols-outlined" style="font-size:1.25rem;color:{BLUE};">dashboard</span> Dashboard</h4>
+            <p>Interactive web interface with full features</p>
+            <ul>
+                <li>KPI cards & metrics</li>
+                <li>Filterable reports</li>
+                <li>Evidence viewer</li>
+            </ul>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # ── Solution Overview ─────────────────────────────────────────────────────
+    st.markdown('<div class="section-title"><span class="material-symbols-outlined">lightbulb</span>Solution Overview</div>', unsafe_allow_html=True)
+
+    st.markdown("""
+    **CoreStack Unified Governance** provides:
+    - **Single Pane of Glass**: Aggregate findings from Cloud Custodian, AWS Config, Azure Policy
+    - **Normalized Data Model**: Consistent schema across all policy engines
+    - **Real-Time Visibility**: Continuous compliance monitoring
+    - **Evidence Collection**: Automated capture of violation details
+    """)
+
+    # ── Use Cases ─────────────────────────────────────────────────────────────
+    st.markdown('<div class="section-title"><span class="material-symbols-outlined">cases</span>Use Cases</div>', unsafe_allow_html=True)
+
+    with st.expander("Compliance Audits", expanded=False):
+        st.markdown("""
+        - Generate audit-ready reports
+        - Provide evidence for SOC2, HIPAA, PCI-DSS
+        - Track compliance trends over time
+        """)
+
+    with st.expander("Security Operations", expanded=False):
+        st.markdown("""
+        - Monitor security posture in real-time
+        - Prioritize remediation by severity
+        - Integrate with SIEM/SOAR platforms
+        """)
+
+    with st.expander("DevSecOps", expanded=False):
+        st.markdown("""
+        - Shift-left security in CI/CD
+        - Automate policy checks in pipelines
+        - Provide developer-friendly feedback
+        """)
+
+    # ── Data Flow ─────────────────────────────────────────────────────────────
+    st.markdown('<div class="section-title"><span class="material-symbols-outlined">account_tree</span>Data Flow Architecture</div>', unsafe_allow_html=True)
+
+    st.graphviz_chart('''
+        digraph G {
+            rankdir=TB;
+            bgcolor="transparent";
+            node [shape=box, style="rounded,filled", fontname="Inter", fontsize=10, margin="0.2"];
+            edge [fontname="Inter", fontsize=8, color="#718096"];
+
+            aws [label="AWS Cloud", fillcolor="#FF9900", fontcolor="white"];
+            custodian [label="Cloud Custodian", fillcolor="#6C63FF", fontcolor="white"];
+            ingest [label="Ingestion Layer", fillcolor="#0066cc", fontcolor="white"];
+            db [label="CoreStack DB", fillcolor="#003d7a", fontcolor="white"];
+            dashboard [label="Recommendation Dashboard", fillcolor="#276749", fontcolor="white"];
+
+            aws -> custodian -> ingest -> db -> dashboard;
+        }
+    ''')
+
+    # ── Integrations ──────────────────────────────────────────────────────────
+    st.markdown('<div class="section-title"><span class="material-symbols-outlined">hub</span>Supported Integrations</div>', unsafe_allow_html=True)
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown("""
+        **Policy Engines**
+        - Cloud Custodian
+        - AWS Config Rules
+        - Azure Policy
+        - Open Policy Agent
+        """)
+
+    with col2:
+        st.markdown("""
+        **Cloud Providers**
+        - Amazon Web Services
+        - Microsoft Azure
+        - Google Cloud Platform
+        """)
 
 # ══════════════════════════════════════════════════════════════════════════════
 # DASHBOARD TAB
@@ -597,27 +856,26 @@ with tab_dashboard:
     # ── Filters ───────────────────────────────────────────────────────────────
     st.markdown('<div class="section-title"><span class="material-symbols-outlined">filter_alt</span>Filters</div>', unsafe_allow_html=True)
 
-    with st.container():
-        col1, col2, col3 = st.columns(3)
+    col1, col2, col3 = st.columns(3)
 
-        with col1:
-            source_opt = st.radio("Source", ["All", "Cloud Custodian", "CoreStack"],
-                                  horizontal=True, key="src")
-            source_param = None
-            if source_opt == "Cloud Custodian":
-                source_param = "cloudcustodian"
-            elif source_opt == "CoreStack":
-                source_param = "corestack"
+    with col1:
+        source_opt = st.radio("Source", ["All", "Cloud Custodian", "CoreStack"],
+                              horizontal=True, key="src")
+        source_param = None
+        if source_opt == "Cloud Custodian":
+            source_param = "cloudcustodian"
+        elif source_opt == "CoreStack":
+            source_param = "corestack"
 
-        with col2:
-            status_opt = st.radio("Status", ["All", "PASS", "FAIL"],
-                                  horizontal=True, key="stat")
-            status_param = None if status_opt == "All" else status_opt
+    with col2:
+        status_opt = st.radio("Status", ["All", "PASS", "FAIL"],
+                              horizontal=True, key="stat")
+        status_param = None if status_opt == "All" else status_opt
 
-        with col3:
-            severity_opt = st.radio("Severity", ["All", "High", "Medium", "Low"],
-                                    horizontal=True, key="sev")
-            severity_param = None if severity_opt == "All" else severity_opt.lower()
+    with col3:
+        severity_opt = st.radio("Severity", ["All", "High", "Medium", "Low"],
+                                horizontal=True, key="sev")
+        severity_param = None if severity_opt == "All" else severity_opt.lower()
 
     # ── Get Data ──────────────────────────────────────────────────────────────
     summary = db_get_summary(source=source_param, status=status_param, severity=severity_param)
@@ -678,7 +936,7 @@ with tab_dashboard:
     chart_col1, chart_col2 = st.columns(2)
 
     with chart_col1:
-        st.markdown('<div class="chart-title">By Source</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="chart-title">By Source</div>', unsafe_allow_html=True)
 
         source_labels, source_pass, source_fail = [], [], []
         for src, counts in summary.get("by_source", {}).items():
@@ -699,7 +957,7 @@ with tab_dashboard:
             st.plotly_chart(fig, use_container_width=True)
 
     with chart_col2:
-        st.markdown('<div class="chart-title">By Severity</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="chart-title">By Severity</div>', unsafe_allow_html=True)
 
         sev_labels, sev_pass, sev_fail = [], [], []
         for sev in ["high", "medium", "low"]:
@@ -774,130 +1032,11 @@ with tab_dashboard:
                         st.code(ev['evidence_json'][:500] + "..." if len(ev['evidence_json']) > 500 else ev['evidence_json'])
 
 # ══════════════════════════════════════════════════════════════════════════════
-# EXECUTIVE SUMMARY TAB
-# ══════════════════════════════════════════════════════════════════════════════
-with tab_summary:
-
-    st.markdown('<div class="section-title"><span class="material-symbols-outlined">summarize</span>Executive Summary</div>', unsafe_allow_html=True)
-
-    st.markdown("""
-    <div class="info-box">
-        <p>This POC demonstrates <strong>CoreStack's unified cloud governance platform</strong> that aggregates
-        compliance findings from multiple policy engines into a single dashboard.</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # ── Key Benefits ──────────────────────────────────────────────────────────
-    st.markdown('<div class="section-title"><span class="material-symbols-outlined">verified</span>Key Benefits</div>', unsafe_allow_html=True)
-
-    st.markdown(f"""
-    <div class="benefits-grid">
-        <div class="benefit-card">
-            <div class="benefit-icon"><span class="material-symbols-outlined" style="font-size:2rem;">speed</span></div>
-            <div class="benefit-title">80% Faster</div>
-            <div class="benefit-desc">Reduce compliance reporting time</div>
-        </div>
-        <div class="benefit-card">
-            <div class="benefit-icon"><span class="material-symbols-outlined" style="font-size:2rem;">visibility</span></div>
-            <div class="benefit-title">100% Visibility</div>
-            <div class="benefit-desc">Complete view across engines</div>
-        </div>
-        <div class="benefit-card">
-            <div class="benefit-icon"><span class="material-symbols-outlined" style="font-size:2rem;">security</span></div>
-            <div class="benefit-title">Reduced Risk</div>
-            <div class="benefit-desc">Catch violations early</div>
-        </div>
-        <div class="benefit-card">
-            <div class="benefit-icon"><span class="material-symbols-outlined" style="font-size:2rem;">savings</span></div>
-            <div class="benefit-title">Cost Savings</div>
-            <div class="benefit-desc">Eliminate manual work</div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # ── Solution Overview ─────────────────────────────────────────────────────
-    st.markdown('<div class="section-title"><span class="material-symbols-outlined">lightbulb</span>Solution Overview</div>', unsafe_allow_html=True)
-
-    st.markdown("""
-    **CoreStack Unified Governance** provides:
-    - **Single Pane of Glass**: Aggregate findings from Cloud Custodian, AWS Config, Azure Policy
-    - **Normalized Data Model**: Consistent schema across all policy engines
-    - **Real-Time Visibility**: Continuous compliance monitoring
-    - **Evidence Collection**: Automated capture of violation details
-    """)
-
-    # ── Use Cases ─────────────────────────────────────────────────────────────
-    st.markdown('<div class="section-title"><span class="material-symbols-outlined">cases</span>Use Cases</div>', unsafe_allow_html=True)
-
-    with st.expander("Compliance Audits", expanded=False):
-        st.markdown("""
-        - Generate audit-ready reports
-        - Provide evidence for SOC2, HIPAA, PCI-DSS
-        - Track compliance trends over time
-        """)
-
-    with st.expander("Security Operations", expanded=False):
-        st.markdown("""
-        - Monitor security posture in real-time
-        - Prioritize remediation by severity
-        - Integrate with SIEM/SOAR platforms
-        """)
-
-    with st.expander("DevSecOps", expanded=False):
-        st.markdown("""
-        - Shift-left security in CI/CD
-        - Automate policy checks in pipelines
-        - Provide developer-friendly feedback
-        """)
-
-    # ── Data Flow ─────────────────────────────────────────────────────────────
-    st.markdown('<div class="section-title"><span class="material-symbols-outlined">account_tree</span>Data Flow</div>', unsafe_allow_html=True)
-
-    st.graphviz_chart('''
-        digraph G {
-            rankdir=TB;
-            bgcolor="transparent";
-            node [shape=box, style="rounded,filled", fontname="Inter", fontsize=10, margin="0.2"];
-            edge [fontname="Inter", fontsize=8, color="#718096"];
-
-            aws [label="AWS Cloud", fillcolor="#FF9900", fontcolor="white"];
-            custodian [label="Cloud Custodian", fillcolor="#6C63FF", fontcolor="white"];
-            ingest [label="Ingestion Layer", fillcolor="#0066cc", fontcolor="white"];
-            db [label="CoreStack DB", fillcolor="#003d7a", fontcolor="white"];
-            dashboard [label="Dashboard", fillcolor="#276749", fontcolor="white"];
-
-            aws -> custodian -> ingest -> db -> dashboard;
-        }
-    ''')
-
-    # ── Integrations ──────────────────────────────────────────────────────────
-    st.markdown('<div class="section-title"><span class="material-symbols-outlined">hub</span>Supported Integrations</div>', unsafe_allow_html=True)
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.markdown("""
-        **Policy Engines**
-        - Cloud Custodian
-        - AWS Config Rules
-        - Azure Policy
-        - Open Policy Agent
-        """)
-
-    with col2:
-        st.markdown("""
-        **Cloud Providers**
-        - Amazon Web Services
-        - Microsoft Azure
-        - Google Cloud Platform
-        """)
-
-# ══════════════════════════════════════════════════════════════════════════════
 # FOOTER
 # ══════════════════════════════════════════════════════════════════════════════
-st.markdown("""
+st.markdown(f"""
 <div class="footer">
     <strong>◈ CoreStack</strong> – AI-Powered Cloud Governance Platform<br>
-    <span style="color:#A0AEC0;">POC Demo</span>
+    <span style="color:{TEXT_LIGHT};">POC Demo</span>
 </div>
 """, unsafe_allow_html=True)
