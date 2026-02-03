@@ -898,56 +898,76 @@ if not findings:
     st.info("No findings match the current filters. Try adjusting your filter criteria.")
 else:
     with st.container(border=True):
-        # Table header
-        header_cols = st.columns([3, 2, 1, 1, 1, 1, 2])
-        header_cols[0].markdown("**Policy**")
-        header_cols[1].markdown("**Source**")
-        header_cols[2].markdown("**Status**")
-        header_cols[3].markdown("**Violations**")
-        header_cols[4].markdown("**Severity**")
-        header_cols[5].markdown("**Category**")
-        header_cols[6].markdown("**Resource**")
-        st.divider()
-
-        # Table rows with colored text (no background)
+        # Build table rows data
+        rows_html = ""
         for f in findings:
             source_label = "Cloud Custodian" if f['source'] == "cloudcustodian" else "CoreStack"
-            cols = st.columns([3, 2, 1, 1, 1, 1, 2])
 
-            # Policy name
-            cols[0].markdown(f"**{f['policy_name']}**")
-
-            # Source
-            cols[1].caption(source_label)
-
-            # Status with colored text only
+            # Status color
             if f['status'] == "PASS":
-                cols[2].markdown(":green[**PASS**]")
+                status_html = '<span style="color: #38A169; font-weight: 700;">PASS</span>'
             else:
-                cols[2].markdown(":red[**FAIL**]")
+                status_html = '<span style="color: #E53E3E; font-weight: 700;">FAIL</span>'
 
-            # Violations with colored text only
+            # Violations color
             if f['violations_count'] > 0:
-                cols[3].markdown(f":red[**{f['violations_count']}**]")
+                viol_html = f'<span style="color: #E53E3E; font-weight: 700;">{f["violations_count"]}</span>'
             else:
-                cols[3].markdown(":green[**0**]")
+                viol_html = '<span style="color: #38A169; font-weight: 700;">0</span>'
 
-            # Severity with colored text only
+            # Severity color
             sev = f['severity'].upper()
             if sev == "HIGH":
-                cols[4].markdown(f":red[**{sev}**]")
+                sev_html = f'<span style="color: #E53E3E; font-weight: 700;">{sev}</span>'
             elif sev == "MEDIUM":
-                cols[4].markdown(f":orange[**{sev}**]")
+                sev_html = f'<span style="color: #DD6B20; font-weight: 700;">{sev}</span>'
             else:
-                cols[4].markdown(f":blue[**{sev}**]")
+                sev_html = f'<span style="color: #3182CE; font-weight: 700;">{sev}</span>'
 
-            # Category
-            cols[5].caption(f['category'])
+            rows_html += f'''
+            <tr>
+                <td style="padding: 12px 16px; border-right: 1px solid #E2E8F0; font-weight: 600;">{f['policy_name']}</td>
+                <td style="padding: 12px 16px; border-right: 1px solid #E2E8F0; color: #718096;">{source_label}</td>
+                <td style="padding: 12px 16px; border-right: 1px solid #E2E8F0; text-align: center;">{status_html}</td>
+                <td style="padding: 12px 16px; border-right: 1px solid #E2E8F0; text-align: center;">{viol_html}</td>
+                <td style="padding: 12px 16px; border-right: 1px solid #E2E8F0; text-align: center;">{sev_html}</td>
+                <td style="padding: 12px 16px; border-right: 1px solid #E2E8F0; color: #718096;">{f['category']}</td>
+                <td style="padding: 12px 16px; color: #718096;">{f['resource_types']}</td>
+            </tr>
+            '''
 
-            # Resource type
-            cols[6].caption(f['resource_types'])
+        # Full table HTML
+        table_html = f'''
+        <table style="width: 100%; border-collapse: collapse; font-family: 'Nunito Sans', sans-serif;">
+            <thead>
+                <tr style="background: linear-gradient(135deg, #0076e1 0%, #004789 100%); color: white;">
+                    <th style="padding: 14px 16px; text-align: left; font-weight: 700; border-right: 1px solid rgba(255,255,255,0.2);">Policy</th>
+                    <th style="padding: 14px 16px; text-align: left; font-weight: 700; border-right: 1px solid rgba(255,255,255,0.2);">Source</th>
+                    <th style="padding: 14px 16px; text-align: center; font-weight: 700; border-right: 1px solid rgba(255,255,255,0.2);">Status</th>
+                    <th style="padding: 14px 16px; text-align: center; font-weight: 700; border-right: 1px solid rgba(255,255,255,0.2);">Violations</th>
+                    <th style="padding: 14px 16px; text-align: center; font-weight: 700; border-right: 1px solid rgba(255,255,255,0.2);">Severity</th>
+                    <th style="padding: 14px 16px; text-align: left; font-weight: 700; border-right: 1px solid rgba(255,255,255,0.2);">Category</th>
+                    <th style="padding: 14px 16px; text-align: left; font-weight: 700;">Resource</th>
+                </tr>
+            </thead>
+            <tbody>
+                {rows_html}
+            </tbody>
+        </table>
+        <style>
+            table tbody tr {{
+                border-bottom: 1px solid #E2E8F0;
+            }}
+            table tbody tr:hover {{
+                background-color: #F7FAFC;
+            }}
+            table tbody tr:last-child {{
+                border-bottom: none;
+            }}
+        </style>
+        '''
 
-            st.divider()
+        st.markdown(table_html, unsafe_allow_html=True)
 
 # ── Drill-down Section ───────────────────────────────────────────────────────
 
