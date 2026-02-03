@@ -1334,6 +1334,65 @@ with tab_executive:
             - **Python**: Integration layer
             """)
 
+    # ── Output Options ───────────────────────────────────────────────────────
+    st.markdown(f'<h4 style="color: {CORESTACK_BLUE}; margin-top: 2rem;">Output Options</h4>', unsafe_allow_html=True)
+
+    output_cols = st.columns(3)
+
+    with output_cols[0]:
+        with st.container(border=True):
+            st.markdown("### 🔌 API")
+            st.markdown("""
+            **RESTful API Access**
+
+            Programmatic access to compliance data for integration with:
+            - CI/CD pipelines
+            - SIEM systems
+            - Custom applications
+            - Automation workflows
+
+            **Endpoints:**
+            - `GET /summary` - KPIs
+            - `GET /findings` - Policy results
+            - `GET /policies` - Policy details
+            """)
+
+    with output_cols[1]:
+        with st.container(border=True):
+            st.markdown("### 🔗 Embeddable Link")
+            st.markdown("""
+            **Shareable Dashboard URL**
+
+            Embed compliance views directly into:
+            - Internal portals
+            - Confluence/Wiki pages
+            - Executive reports
+            - Slack/Teams channels
+
+            **Features:**
+            - No login required
+            - Real-time updates
+            - Mobile responsive
+            """)
+
+    with output_cols[2]:
+        with st.container(border=True):
+            st.markdown("### 📊 Dashboard")
+            st.markdown("""
+            **Interactive Web Interface**
+
+            Full-featured compliance dashboard with:
+            - KPI cards & metrics
+            - Filterable reports
+            - Drill-down analysis
+            - Evidence viewer
+
+            **Capabilities:**
+            - Multi-source aggregation
+            - Severity breakdown
+            - Policy deep-dive
+            """)
+
     # ── Data Flow Diagram ────────────────────────────────────────────────────
     st.markdown(f'<h4 style="color: {CORESTACK_BLUE}; margin-top: 2rem;">Data Flow Architecture</h4>', unsafe_allow_html=True)
 
