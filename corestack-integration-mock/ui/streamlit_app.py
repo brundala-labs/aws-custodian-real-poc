@@ -201,7 +201,7 @@ st.markdown(f"""
     }}
 
     /* Headings - exclude header-banner which needs white text */
-    h1:not(.header-banner h1), h2, h3, h4, h5, h6 {{
+    h2, h3, h4, h5, h6 {{
         color: {CORESTACK_BLUE} !important;
     }}
 
@@ -210,9 +210,18 @@ st.markdown(f"""
         color: {CORESTACK_BLUE} !important;
     }}
 
-    /* Ensure header banner text stays white */
-    .header-banner, .header-banner * {{
-        color: white !important;
+    /* Ensure header banner text stays white - very specific */
+    .header-banner {{
+        color: #FFFFFF !important;
+    }}
+    .header-banner h1, .header-banner-title {{
+        color: #FFFFFF !important;
+    }}
+    .header-banner p, .header-banner-subtitle {{
+        color: #FFFFFF !important;
+    }}
+    .header-banner * {{
+        color: #FFFFFF !important;
     }}
 
     /* Mobile Responsive - Tablet */
@@ -264,9 +273,15 @@ st.markdown(f"""
             background-color: #FFFFFF !important;
         }}
 
-        /* All text elements dark */
-        p, span, li, div, label {{
+        /* All text elements dark - except header banner */
+        p:not(.header-banner-subtitle), span, li, div:not(.header-banner), label {{
             color: #1A202C !important;
+        }}
+
+        /* Header banner must stay white */
+        .header-banner, .header-banner h1, .header-banner p,
+        .header-banner-title, .header-banner-subtitle {{
+            color: #FFFFFF !important;
         }}
 
         /* Bold text */
@@ -398,9 +413,15 @@ st.markdown(f"""
 
     /* Mobile Responsive - Small Phone */
     @media (max-width: 480px) {{
-        /* Force all text dark */
-        p, span, li, div, label, strong, b {{
+        /* Force all text dark - except header banner */
+        p:not(.header-banner-subtitle), span, li, div:not(.header-banner), label, strong, b {{
             color: #1A202C !important;
+        }}
+
+        /* Header banner must stay white */
+        .header-banner, .header-banner h1, .header-banner p,
+        .header-banner-title, .header-banner-subtitle {{
+            color: #FFFFFF !important;
         }}
 
         .kpi-container, .kpi-6-cols {{
