@@ -1545,44 +1545,45 @@ with tab_executive:
     # ── Data Flow Diagram ────────────────────────────────────────────────────
     st.markdown(f'<h4 style="color: {CORESTACK_BLUE}; margin-top: 2rem;">Data Flow Architecture</h4>', unsafe_allow_html=True)
 
-    # Visual dataflow using Graphviz
-    st.graphviz_chart('''
-        digraph G {
-            rankdir=LR;
-            bgcolor="transparent";
-            node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=11, margin="0.3,0.2"];
-            edge [fontname="Helvetica", fontsize=9, color="#718096"];
+    with st.container(border=True):
+        # Visual dataflow using Graphviz
+        st.graphviz_chart('''
+            digraph G {
+                rankdir=LR;
+                bgcolor="transparent";
+                node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=11, margin="0.3,0.2"];
+                edge [fontname="Helvetica", fontsize=9, color="#718096"];
 
-            // AWS Resources
-            aws [label="AWS Cloud\\nS3 • EC2 • EBS", fillcolor="#FF9900", fontcolor="white"];
+                // AWS Resources
+                aws [label="AWS Cloud\\nS3 • EC2 • EBS", fillcolor="#FF9900", fontcolor="white"];
 
-            // Cloud Custodian
-            custodian [label="Cloud Custodian\\nPolicy Engine", fillcolor="#6C63FF", fontcolor="white"];
+                // Cloud Custodian
+                custodian [label="Cloud Custodian\\nPolicy Engine", fillcolor="#6C63FF", fontcolor="white"];
 
-            // JSON Outputs
-            json [label="JSON Outputs\\nresources.json", fillcolor="#4A5568", fontcolor="white"];
+                // JSON Outputs
+                json [label="JSON Outputs\\nresources.json", fillcolor="#4A5568", fontcolor="white"];
 
-            // Ingestion
-            ingest [label="Ingestion Layer\\nNormalize + Store", fillcolor="#0066cc", fontcolor="white"];
+                // Ingestion
+                ingest [label="Ingestion Layer\\nNormalize + Store", fillcolor="#0066cc", fontcolor="white"];
 
-            // CoreStack Native
-            native [label="CoreStack Native\\nIAM • CloudTrail • Budget", fillcolor="#276749", fontcolor="white"];
+                // CoreStack Native
+                native [label="CoreStack Native\\nIAM • CloudTrail • Budget", fillcolor="#276749", fontcolor="white"];
 
-            // SQLite
-            db [label="SQLite Database\\nUnified Schema", fillcolor="#003d7a", fontcolor="white"];
+                // SQLite
+                db [label="SQLite Database\\nUnified Schema", fillcolor="#003d7a", fontcolor="white"];
 
-            // Dashboard
-            dashboard [label="Streamlit Dashboard\\nCompliance View", fillcolor="#E53E3E", fontcolor="white"];
+                // Dashboard
+                dashboard [label="Streamlit Dashboard\\nCompliance View", fillcolor="#E53E3E", fontcolor="white"];
 
-            // Flow
-            aws -> custodian [label="scan"];
-            custodian -> json [label="output"];
-            json -> ingest [label="read"];
-            native -> ingest [label="seed"];
-            ingest -> db [label="store"];
-            db -> dashboard [label="query"];
-        }
-    ''')
+                // Flow
+                aws -> custodian [label="scan"];
+                custodian -> json [label="output"];
+                json -> ingest [label="read"];
+                native -> ingest [label="seed"];
+                ingest -> db [label="store"];
+                db -> dashboard [label="query"];
+            }
+        ''')
 
     # ── Data Flow Steps Table ────────────────────────────────────────────────
     st.markdown(f'<h4 style="color: {CORESTACK_BLUE}; margin-top: 2rem;">Data Flow Steps</h4>', unsafe_allow_html=True)
