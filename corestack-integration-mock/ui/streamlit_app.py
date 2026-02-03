@@ -1262,68 +1262,44 @@ with tab_executive:
     # ── Data Flow Diagram ────────────────────────────────────────────────────
     st.markdown(f'<h4 style="color: {CORESTACK_BLUE}; margin-top: 2rem;">Data Flow Architecture</h4>', unsafe_allow_html=True)
 
-    # Visual dataflow using pure Streamlit components
-    with st.container(border=True):
-        # Main flow - Row 1
-        st.markdown("**Data Pipeline**")
-        flow_cols = st.columns(7)
+    # Visual dataflow using Graphviz
+    st.graphviz_chart('''
+        digraph G {
+            rankdir=LR;
+            bgcolor="transparent";
+            node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=11, margin="0.3,0.2"];
+            edge [fontname="Helvetica", fontsize=9, color="#718096"];
 
-        with flow_cols[0]:
-            st.info("☁️ **AWS Cloud**\n\nS3 • EC2 • EBS")
+            // AWS Resources
+            aws [label="AWS Cloud\\nS3 • EC2 • EBS", fillcolor="#FF9900", fontcolor="white"];
 
-        with flow_cols[1]:
-            st.markdown("#### →")
+            // Cloud Custodian
+            custodian [label="Cloud Custodian\\nPolicy Engine", fillcolor="#6C63FF", fontcolor="white"];
 
-        with flow_cols[2]:
-            st.warning("⚙️ **Cloud Custodian**\n\nPolicy Engine")
+            // JSON Outputs
+            json [label="JSON Outputs\\nresources.json", fillcolor="#4A5568", fontcolor="white"];
 
-        with flow_cols[3]:
-            st.markdown("#### →")
+            // Ingestion
+            ingest [label="Ingestion Layer\\nNormalize + Store", fillcolor="#0066cc", fontcolor="white"];
 
-        with flow_cols[4]:
-            st.info("📁 **JSON Outputs**\n\nresources.json")
+            // CoreStack Native
+            native [label="CoreStack Native\\nIAM • CloudTrail • Budget", fillcolor="#276749", fontcolor="white"];
 
-        with flow_cols[5]:
-            st.markdown("#### →")
+            // SQLite
+            db [label="SQLite Database\\nUnified Schema", fillcolor="#003d7a", fontcolor="white"];
 
-        with flow_cols[6]:
-            st.success("📥 **Ingestion**\n\nNormalize + Store")
+            // Dashboard
+            dashboard [label="Streamlit Dashboard\\nCompliance View", fillcolor="#E53E3E", fontcolor="white"];
 
-        # Row 2
-        flow_cols2 = st.columns([2, 1, 2, 1, 2])
-
-        with flow_cols2[0]:
-            st.markdown("")  # spacer
-
-        with flow_cols2[1]:
-            st.markdown("")
-
-        with flow_cols2[2]:
-            st.markdown("#### ↓")
-
-        with flow_cols2[3]:
-            st.markdown("")
-
-        with flow_cols2[4]:
-            st.markdown("")
-
-        # Row 3
-        flow_cols3 = st.columns([2, 1, 2, 1, 2])
-
-        with flow_cols3[0]:
-            st.error("📊 **Dashboard**\n\nStreamlit UI")
-
-        with flow_cols3[1]:
-            st.markdown("#### ←")
-
-        with flow_cols3[2]:
-            st.info("🗄️ **SQLite DB**\n\nUnified Schema")
-
-        with flow_cols3[3]:
-            st.markdown("#### ←")
-
-        with flow_cols3[4]:
-            st.success("🌱 **CoreStack Native**\n\nIAM • CloudTrail • Budget")
+            // Flow
+            aws -> custodian [label="scan"];
+            custodian -> json [label="output"];
+            json -> ingest [label="read"];
+            native -> ingest [label="seed"];
+            ingest -> db [label="store"];
+            db -> dashboard [label="query"];
+        }
+    ''')
 
     # ── Data Flow Steps Table ────────────────────────────────────────────────
     st.markdown(f'<h4 style="color: {CORESTACK_BLUE}; margin-top: 2rem;">Data Flow Steps</h4>', unsafe_allow_html=True)
