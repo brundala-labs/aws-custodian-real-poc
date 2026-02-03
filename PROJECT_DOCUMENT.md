@@ -402,3 +402,209 @@ python scripts/99_cleanup.py
 ```
 
 Set `export SAFE_MODE=true` before running to skip making the S3 bucket public.
+
+---
+
+## 8. CoreStack Integration Mock (Phase 2)
+
+### Step 11: Build CoreStack Integration Mock
+
+Created a second project `corestack-integration-mock/` that ingests real Cloud Custodian outputs and presents them in a unified compliance dashboard alongside seeded CoreStack-native policies.
+
+**Architecture**:
+```
+Cloud Custodian Outputs ──> Ingestion ──> SQLite ──> FastAPI REST API
+                                                         │
+                                              Streamlit Dashboard
+```
+
+**Project Structure**:
+```
+corestack-integration-mock/
+├── README.md
+├── requirements.txt
+├── integration/
+│   ├── app.py              (FastAPI server)
+│   ├── ingest.py           (custodian output reader)
+│   ├── models.py           (Pydantic schemas)
+│   ├── normalize.py        (normalization rules)
+│   ├── seed_corestack.py   (fake native policies)
+│   └── store.py            (SQLite CRUD)
+├── ui/
+│   └── streamlit_app.py    (dashboard)
+└── scripts/
+    ├── ingest_once.py      (CLI ingestion)
+    ├── run_api.sh          (start API)
+    └── run_ui.sh           (start UI)
+```
+
+**Dependencies** (`requirements.txt`):
+- `fastapi>=0.104.0`
+- `uvicorn>=0.24.0`
+- `pydantic>=2.0.0`
+- `requests>=2.31.0`
+- `streamlit>=1.28.0`
+
+---
+
+### Step 12: Data Model & Normalization
+
+**SQLite Tables**:
+| Table | Purpose |
+|---|---|
+| `policies` | policy_id, name, source, severity, category, resource_types, description |
+| `runs` | run_id, timestamp, account_id, region |
+| `findings` | finding_id, run_id, policy_id, status, violations_count, last_evaluated |
+| `resources` | resource_key, policy_id, run_id, raw_id, type, region, account_id, tags_json |
+| `evidence` | policy_id, run_id, evidence_json |
+
+**Normalization Rules**:
+- `policy_id` = `custodian:` + slug(policy_name)
+- `source` = `cloudcustodian` or `corestack`
+- `status` = `PASS` if violations_count=0, else `FAIL`
+- `resource_key` = `aws:{account_id}:{region}:{type}:{raw_id}`
+- `severity` extracted from policy tags (e.g., `severity:high`)
+
+---
+
+### Step 13: Seeded CoreStack-Native Policies
+
+3 fake CoreStack policies for unified demo:
+
+| Policy | Severity | Status | Violations |
+|---|---|---|---|
+| IAM MFA Enabled for Console Users | high | FAIL | 2 |
+| Monthly Budget Alert Configured | medium | PASS | 0 |
+| CloudTrail Logging Enabled | high | FAIL | 1 |
+
+---
+
+### Step 14: FastAPI Endpoints
+
+| Method | Path | Description |
+|---|---|---|
+| POST | `/ingest?path=...` | Ingest custodian run from local path |
+| GET | `/summary` | KPIs: total, passing, failing, last evaluated |
+| GET | `/findings?source=&status=&severity=` | Filtered findings list |
+| GET | `/policies` | All policies |
+| GET | `/policies/detail?policy_id=...` | Single policy detail |
+| GET | `/policies/resources?policy_id=...` | Violating resources for a policy |
+| GET | `/policies/evidence?policy_id=...` | Raw evidence JSON |
+
+**Note**: Originally used path parameters for policy endpoints (`/policies/{id}/resources`), but FastAPI's `:path` converter conflicted with the colon in policy IDs (`custodian:s3-public-bucket`). Refactored to query parameters.
+
+---
+
+### Step 15: Streamlit Dashboard
+
+**Features**:
+- KPI Cards: Total Policies, Passing, Failing, Last Evaluated
+- Filters: Source (All/Cloud Custodian/CoreStack), Status, Severity
+- Findings Table: Policy name, source badge, status, violations, category, resource type
+- Drill-Down: Select policy to view violating resources + raw evidence JSON
+- Re-Ingest Button: Reload custodian outputs without restarting
+
+**Verified Results**:
+```
+Total Policies: 8
+Passing: 2
+Failing: 6
+By Source: cloudcustodian (4 FAIL, 1 PASS), corestack (2 FAIL, 1 PASS)
+```
+
+---
+
+### Step 16: Issues Encountered (Phase 2)
+
+| # | Issue | Resolution |
+|---|---|---|
+| 10 | Port 8000 already in use by another FastAPI app | Switched to port 8080 |
+| 11 | FastAPI path parameter `{policy_id:path}` consumed `/resources` and `/evidence` suffixes | Changed to query parameters: `/policies/resources?policy_id=...` |
+| 12 | Port 8501 had a different Streamlit project running | Killed old process and restarted on port 8502 |
+| 13 | Background processes kept exiting | Used `nohup` to keep processes alive |
+
+---
+
+### Step 17: Final Service Configuration
+
+**Running Services**:
+| Service | URL | Port |
+|---|---|---|
+| FastAPI (CoreStack API) | http://localhost:8080 | 8080 |
+| Streamlit (Dashboard) | http://localhost:8502 | 8502 |
+
+**Environment Variables**:
+```bash
+CUSTODIAN_RUN_DIR=/path/to/outputs/run-1770090475
+CORESTACK_API_URL=http://localhost:8080  # for Streamlit
+```
+
+---
+
+## 9. Git Repository
+
+**Repo URL**: https://github.com/brundala-labs/aws-custodian-real-poc
+
+**Commits**:
+1. `d51321f` — AWS Cloud Custodian POC (36 files)
+2. `c6edd15` — Add CoreStack integration mock (15 files)
+
+**Total Files**: 51 files across both projects
+
+---
+
+## 10. How to Run CoreStack Dashboard
+
+```bash
+cd aws-custodian-real-poc/corestack-integration-mock
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+export CUSTODIAN_RUN_DIR=../outputs/run-1770090475
+
+# Terminal 1: Start API
+nohup python3 -m uvicorn integration.app:app --host 0.0.0.0 --port 8080 > /dev/null 2>&1 &
+
+# Terminal 2: Start Dashboard
+nohup python3 -m streamlit run ui/streamlit_app.py --server.port 8502 --server.headless true > /dev/null 2>&1 &
+
+# Open browser
+open http://localhost:8502
+```
+
+---
+
+## 11. 10-Minute Seller Demo Script
+
+### 1. Show Real Custodian Outputs (1 min)
+```bash
+ls ../outputs/run-*/
+cat ../outputs/run-*/manifest.json
+```
+"These are real Cloud Custodian scan results from a live AWS account."
+
+### 2. Start the Platform (1 min)
+```bash
+export CUSTODIAN_RUN_DIR=../outputs/run-1770090475
+bash scripts/run_api.sh  # Terminal 1
+bash scripts/run_ui.sh   # Terminal 2
+```
+
+### 3. Show Unified Dashboard (3 min)
+Open http://localhost:8502
+- Point out KPI cards: "8 total policies, 2 passing, 6 failing"
+- "Notice both Cloud Custodian and CoreStack policies in one view"
+- Filter by Source = "cloudcustodian" → "These came from real AWS scans"
+- Filter by Source = "corestack" → "These are CoreStack-native governance policies"
+
+### 4. Drill Into a Failing Policy (3 min)
+- Select "s3-public-bucket" from drill-down
+- Show violating resource: the actual S3 bucket name and ARN
+- Expand "Raw Evidence JSON" → "This is the exact AWS API response Cloud Custodian captured"
+- "You can see the bucket policy with Principal: * — a real security finding"
+
+### 5. Show Severity Filtering (2 min)
+- Filter by Severity = "high" → "Focus on critical issues first"
+- "CoreStack normalizes findings from multiple tools into one severity model"
+- Click Re-Ingest → "As new scans run, the dashboard updates in real time"
