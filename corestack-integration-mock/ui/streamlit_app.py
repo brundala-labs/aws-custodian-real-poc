@@ -1262,75 +1262,68 @@ with tab_executive:
     # ── Data Flow Diagram ────────────────────────────────────────────────────
     st.markdown(f'<h4 style="color: {CORESTACK_BLUE}; margin-top: 2rem;">Data Flow Architecture</h4>', unsafe_allow_html=True)
 
-    # Visual dataflow using Streamlit components
-    st.markdown(f"""
-    <div style="background: linear-gradient(135deg, #F8FAFC 0%, #EDF2F7 100%); border-radius: 12px; padding: 2rem; border: 1px solid #E2E8F0;">
-        <div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 1rem;">
+    # Visual dataflow using pure Streamlit components
+    with st.container(border=True):
+        # Main flow - Row 1
+        st.markdown("**Data Pipeline**")
+        flow_cols = st.columns(7)
 
-            <!-- AWS Cloud -->
-            <div style="background: #FF9900; color: white; padding: 1rem 1.5rem; border-radius: 8px; text-align: center; min-width: 140px;">
-                <div style="font-size: 1.5rem;">☁️</div>
-                <div style="font-weight: 700; font-size: 0.9rem;">AWS Cloud</div>
-                <div style="font-size: 0.7rem; opacity: 0.9;">S3 • EC2 • EBS</div>
-            </div>
+        with flow_cols[0]:
+            st.info("☁️ **AWS Cloud**\n\nS3 • EC2 • EBS")
 
-            <div style="font-size: 1.5rem; color: {CORESTACK_BLUE};">→</div>
+        with flow_cols[1]:
+            st.markdown("#### →")
 
-            <!-- Cloud Custodian -->
-            <div style="background: #6C63FF; color: white; padding: 1rem 1.5rem; border-radius: 8px; text-align: center; min-width: 140px;">
-                <div style="font-size: 1.5rem;">⚙️</div>
-                <div style="font-weight: 700; font-size: 0.9rem;">Cloud Custodian</div>
-                <div style="font-size: 0.7rem; opacity: 0.9;">Policy Engine</div>
-            </div>
+        with flow_cols[2]:
+            st.warning("⚙️ **Cloud Custodian**\n\nPolicy Engine")
 
-            <div style="font-size: 1.5rem; color: {CORESTACK_BLUE};">→</div>
+        with flow_cols[3]:
+            st.markdown("#### →")
 
-            <!-- JSON Outputs -->
-            <div style="background: #4A5568; color: white; padding: 1rem 1.5rem; border-radius: 8px; text-align: center; min-width: 140px;">
-                <div style="font-size: 1.5rem;">📁</div>
-                <div style="font-weight: 700; font-size: 0.9rem;">JSON Outputs</div>
-                <div style="font-size: 0.7rem; opacity: 0.9;">resources.json</div>
-            </div>
+        with flow_cols[4]:
+            st.info("📁 **JSON Outputs**\n\nresources.json")
 
-            <div style="font-size: 1.5rem; color: {CORESTACK_BLUE};">→</div>
+        with flow_cols[5]:
+            st.markdown("#### →")
 
-            <!-- Ingestion Layer -->
-            <div style="background: {CORESTACK_BLUE}; color: white; padding: 1rem 1.5rem; border-radius: 8px; text-align: center; min-width: 140px;">
-                <div style="font-size: 1.5rem;">📥</div>
-                <div style="font-weight: 700; font-size: 0.9rem;">Ingestion</div>
-                <div style="font-size: 0.7rem; opacity: 0.9;">Normalize + Store</div>
-            </div>
+        with flow_cols[6]:
+            st.success("📥 **Ingestion**\n\nNormalize + Store")
 
-            <div style="font-size: 1.5rem; color: {CORESTACK_BLUE};">→</div>
+        # Row 2
+        flow_cols2 = st.columns([2, 1, 2, 1, 2])
 
-            <!-- SQLite -->
-            <div style="background: {CORESTACK_DARK_BLUE}; color: white; padding: 1rem 1.5rem; border-radius: 8px; text-align: center; min-width: 140px;">
-                <div style="font-size: 1.5rem;">🗄️</div>
-                <div style="font-weight: 700; font-size: 0.9rem;">SQLite DB</div>
-                <div style="font-size: 0.7rem; opacity: 0.9;">Unified Schema</div>
-            </div>
+        with flow_cols2[0]:
+            st.markdown("")  # spacer
 
-            <div style="font-size: 1.5rem; color: {CORESTACK_BLUE};">→</div>
+        with flow_cols2[1]:
+            st.markdown("")
 
-            <!-- Dashboard -->
-            <div style="background: #E53E3E; color: white; padding: 1rem 1.5rem; border-radius: 8px; text-align: center; min-width: 140px;">
-                <div style="font-size: 1.5rem;">📊</div>
-                <div style="font-weight: 700; font-size: 0.9rem;">Dashboard</div>
-                <div style="font-size: 0.7rem; opacity: 0.9;">Streamlit UI</div>
-            </div>
+        with flow_cols2[2]:
+            st.markdown("#### ↓")
 
-        </div>
+        with flow_cols2[3]:
+            st.markdown("")
 
-        <!-- CoreStack Native Policies -->
-        <div style="display: flex; justify-content: center; margin-top: 1.5rem;">
-            <div style="background: {CORESTACK_SUCCESS}; color: white; padding: 0.75rem 1.5rem; border-radius: 8px; text-align: center;">
-                <span style="font-size: 1rem;">🌱</span>
-                <span style="font-weight: 600; font-size: 0.85rem; margin-left: 0.5rem;">CoreStack Native Policies (IAM MFA, CloudTrail, Budget)</span>
-                <span style="font-size: 1rem; margin-left: 0.5rem;">↗️ Injected at Ingestion</span>
-            </div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+        with flow_cols2[4]:
+            st.markdown("")
+
+        # Row 3
+        flow_cols3 = st.columns([2, 1, 2, 1, 2])
+
+        with flow_cols3[0]:
+            st.error("📊 **Dashboard**\n\nStreamlit UI")
+
+        with flow_cols3[1]:
+            st.markdown("#### ←")
+
+        with flow_cols3[2]:
+            st.info("🗄️ **SQLite DB**\n\nUnified Schema")
+
+        with flow_cols3[3]:
+            st.markdown("#### ←")
+
+        with flow_cols3[4]:
+            st.success("🌱 **CoreStack Native**\n\nIAM • CloudTrail • Budget")
 
     # ── Data Flow Steps Table ────────────────────────────────────────────────
     st.markdown(f'<h4 style="color: {CORESTACK_BLUE}; margin-top: 2rem;">Data Flow Steps</h4>', unsafe_allow_html=True)
