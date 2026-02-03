@@ -936,52 +936,60 @@ with tab_dashboard:
     # ── Filters ───────────────────────────────────────────────────────────────
     st.markdown('<div class="section-title"><span class="material-symbols-outlined">filter_alt</span>Filters</div>', unsafe_allow_html=True)
 
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-        st.markdown("**Source**")
+    # Source Filter
+    st.markdown("**Source**")
+    src_cols = st.columns([1, 1, 2])
+    with src_cols[0]:
         src_custodian = st.checkbox("Cloud Custodian", value=True, key="src_custodian")
+    with src_cols[1]:
         src_corestack = st.checkbox("CoreStack", value=True, key="src_corestack")
-        # Determine source filter
-        if src_custodian and src_corestack:
-            source_param = None  # All
-        elif src_custodian:
-            source_param = "cloudcustodian"
-        elif src_corestack:
-            source_param = "corestack"
-        else:
-            source_param = None  # None selected = show all
+    # Determine source filter
+    if src_custodian and src_corestack:
+        source_param = None  # All
+    elif src_custodian:
+        source_param = "cloudcustodian"
+    elif src_corestack:
+        source_param = "corestack"
+    else:
+        source_param = None  # None selected = show all
 
-    with col2:
-        st.markdown("**Status**")
+    # Status Filter
+    st.markdown("**Status**")
+    stat_cols = st.columns([1, 1, 2])
+    with stat_cols[0]:
         stat_pass = st.checkbox("PASS", value=True, key="stat_pass")
+    with stat_cols[1]:
         stat_fail = st.checkbox("FAIL", value=True, key="stat_fail")
-        # Determine status filter
-        if stat_pass and stat_fail:
-            status_param = None  # All
-        elif stat_pass:
-            status_param = "PASS"
-        elif stat_fail:
-            status_param = "FAIL"
-        else:
-            status_param = None  # None selected = show all
+    # Determine status filter
+    if stat_pass and stat_fail:
+        status_param = None  # All
+    elif stat_pass:
+        status_param = "PASS"
+    elif stat_fail:
+        status_param = "FAIL"
+    else:
+        status_param = None  # None selected = show all
 
-    with col3:
-        st.markdown("**Severity**")
+    # Severity Filter
+    st.markdown("**Severity**")
+    sev_cols = st.columns([1, 1, 1, 1])
+    with sev_cols[0]:
         sev_high = st.checkbox("High", value=True, key="sev_high")
+    with sev_cols[1]:
         sev_medium = st.checkbox("Medium", value=True, key="sev_medium")
+    with sev_cols[2]:
         sev_low = st.checkbox("Low", value=True, key="sev_low")
-        # Determine severity filter (simplified - takes first selected)
-        if sev_high and sev_medium and sev_low:
-            severity_param = None  # All
-        elif sev_high and not sev_medium and not sev_low:
-            severity_param = "high"
-        elif sev_medium and not sev_high and not sev_low:
-            severity_param = "medium"
-        elif sev_low and not sev_high and not sev_medium:
-            severity_param = "low"
-        else:
-            severity_param = None  # Multiple or none = show all
+    # Determine severity filter (simplified - takes first selected)
+    if sev_high and sev_medium and sev_low:
+        severity_param = None  # All
+    elif sev_high and not sev_medium and not sev_low:
+        severity_param = "high"
+    elif sev_medium and not sev_high and not sev_low:
+        severity_param = "medium"
+    elif sev_low and not sev_high and not sev_medium:
+        severity_param = "low"
+    else:
+        severity_param = None  # Multiple or none = show all
 
     # ── Get Data ──────────────────────────────────────────────────────────────
     summary = db_get_summary(source=source_param, status=status_param, severity=severity_param)
