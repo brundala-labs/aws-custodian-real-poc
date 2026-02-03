@@ -77,51 +77,115 @@ st.markdown(f"""
         max-width: 1400px;
     }}
 
-    /* Mobile Responsive */
+    /* Mobile Responsive - Tablet */
+    @media (max-width: 992px) {{
+        .kpi-container {{
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 0.75rem !important;
+        }}
+    }}
+
+    /* Mobile Responsive - Phone */
     @media (max-width: 768px) {{
         .main .block-container {{
-            padding: 0.5rem;
+            padding: 0.5rem !important;
         }}
 
-        /* Stack columns vertically on mobile */
+        /* KPI cards - 2 columns on tablet */
+        .kpi-container {{
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 0.5rem !important;
+        }}
+
+        .kpi-card {{
+            padding: 0.75rem !important;
+        }}
+
+        .kpi-value {{
+            font-size: 1.5rem !important;
+        }}
+
+        .kpi-label {{
+            font-size: 0.75rem !important;
+        }}
+
+        .kpi-icon {{
+            width: 36px !important;
+            height: 36px !important;
+            font-size: 1rem !important;
+            margin-bottom: 0.5rem !important;
+        }}
+
+        .kpi-trend {{
+            font-size: 0.65rem !important;
+            padding: 0.15rem 0.4rem !important;
+        }}
+
+        /* Header */
+        .header-banner {{
+            padding: 1rem !important;
+            margin-bottom: 1rem !important;
+        }}
+
+        .header-banner h1 {{
+            font-size: 1.1rem !important;
+        }}
+
+        .header-banner p {{
+            font-size: 0.75rem !important;
+        }}
+
+        /* Stack Streamlit columns */
         [data-testid="column"] {{
             width: 100% !important;
             flex: 1 1 100% !important;
             min-width: 100% !important;
         }}
 
-        /* Smaller fonts on mobile */
-        .kpi-value {{
-            font-size: 1.5rem !important;
-        }}
-
-        .kpi-card {{
-            padding: 1rem !important;
-            margin-bottom: 0.5rem;
-        }}
-
-        /* Make tables scrollable */
-        [data-testid="stDataFrame"] {{
+        /* Scrollable dataframes */
+        [data-testid="stDataFrame"] > div {{
             overflow-x: auto !important;
         }}
 
-        /* Adjust header */
-        .header-banner h1 {{
-            font-size: 1.2rem !important;
-        }}
-
-        .header-banner p {{
-            font-size: 0.8rem !important;
+        /* Smaller text in containers */
+        .stMarkdown p, .stMarkdown li {{
+            font-size: 0.85rem !important;
         }}
     }}
 
+    /* Mobile Responsive - Small Phone */
     @media (max-width: 480px) {{
+        .kpi-container {{
+            grid-template-columns: 1fr !important;
+            gap: 0.5rem !important;
+        }}
+
+        .kpi-card {{
+            display: flex !important;
+            align-items: center !important;
+            gap: 1rem !important;
+            padding: 0.75rem 1rem !important;
+        }}
+
+        .kpi-icon {{
+            margin-bottom: 0 !important;
+        }}
+
         .kpi-value {{
-            font-size: 1.2rem !important;
+            font-size: 1.3rem !important;
+        }}
+
+        .header-banner h1 {{
+            font-size: 1rem !important;
         }}
 
         h4, .stMarkdown h4 {{
-            font-size: 1rem !important;
+            font-size: 0.9rem !important;
+        }}
+
+        /* Hide some columns on very small screens */
+        [data-testid="stDataFrame"] {{
+            font-size: 0.7rem !important;
         }}
     }}
 
