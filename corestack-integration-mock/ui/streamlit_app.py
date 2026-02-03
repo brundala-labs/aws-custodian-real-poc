@@ -182,9 +182,14 @@ st.markdown(f"""
         color: {CORESTACK_BLUE} !important;
     }}
 
-    /* Headings */
-    h1, h2, h3, h4, h5, h6 {{
+    /* Headings - exclude header-banner which needs white text */
+    h1:not(.header-banner h1), h2, h3, h4, h5, h6 {{
         color: #1A202C !important;
+    }}
+
+    /* Ensure header banner text stays white */
+    .header-banner, .header-banner * {{
+        color: white !important;
     }}
 
     /* Mobile Responsive - Tablet */
@@ -246,14 +251,17 @@ st.markdown(f"""
         .header-banner {{
             padding: 1rem !important;
             margin-bottom: 1rem !important;
+            color: white !important;
         }}
 
         .header-banner h1 {{
             font-size: 1.1rem !important;
+            color: white !important;
         }}
 
         .header-banner p {{
             font-size: 0.75rem !important;
+            color: white !important;
         }}
 
         /* Stack ALL Streamlit columns vertically */
@@ -335,11 +343,13 @@ st.markdown(f"""
 
         .header-banner h1 {{
             font-size: 1rem !important;
+            color: white !important;
         }}
 
         .header-banner p {{
             font-size: 0.7rem !important;
             line-height: 1.3 !important;
+            color: white !important;
         }}
 
         h4, .stMarkdown h4 {{
@@ -475,8 +485,8 @@ st.markdown(f"""
 
     /* Header Banner */
     .header-banner {{
-        background: linear-gradient(135deg, {CORESTACK_BLUE} 0%, {CORESTACK_DARK_BLUE} 100%);
-        color: white;
+        background: linear-gradient(135deg, {CORESTACK_BLUE} 0%, {CORESTACK_DARK_BLUE} 100%) !important;
+        color: white !important;
         padding: 1.5rem 2rem;
         border-radius: 12px;
         margin-bottom: 1.5rem;
@@ -486,11 +496,13 @@ st.markdown(f"""
         margin: 0;
         font-size: 1.8rem;
         font-weight: 700;
+        color: white !important;
     }}
     .header-banner p {{
         margin: 0.5rem 0 0 0;
         opacity: 0.9;
         font-size: 0.95rem;
+        color: white !important;
     }}
 
     /* KPI Cards */
