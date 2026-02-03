@@ -738,36 +738,43 @@ findings = db_get_findings(source=source_param, status=status_param, severity=se
 if not findings:
     st.info("🔍 No findings match the current filters. Try adjusting your filter criteria.")
 else:
-    table_html = """
-    <table class="data-table">
-    <thead>
-        <tr>
-            <th>Policy Name</th>
-            <th>Source</th>
-            <th>Status</th>
-            <th>Violations</th>
-            <th>Severity</th>
-            <th>Category</th>
-            <th>Resource Type</th>
-        </tr>
-    </thead>
-    <tbody>
-    """
+    import pandas as pd
+
+    # Build dataframe for display
+    table_data = []
     for f in findings:
-        violations_display = f'<strong style="color:{CORESTACK_DANGER};">{f["violations_count"]}</strong>' if f["violations_count"] > 0 else f'<span style="color:{CORESTACK_SUCCESS};">0</span>'
-        table_html += f"""
-        <tr>
-            <td><strong>{f['policy_name']}</strong></td>
-            <td>{source_html(f['source'])}</td>
-            <td>{status_html(f['status'])}</td>
-            <td>{violations_display}</td>
-            <td>{severity_html(f['severity'])}</td>
-            <td><code>{f['category']}</code></td>
-            <td><code>{f['resource_types']}</code></td>
-        </tr>
-        """
-    table_html += "</tbody></table>"
-    st.markdown(table_html, unsafe_allow_html=True)
+        source_icon = "☁️" if f['source'] == "cloudcustodian" else "◈"
+        source_label = "Cloud Custodian" if f['source'] == "cloudcustodian" else "CoreStack"
+        status_icon = "✅" if f['status'] == "PASS" else "❌"
+        severity_icon = "🔴" if f['severity'] == "high" else "🟠" if f['severity'] == "medium" else "🔵"
+
+        table_data.append({
+            "Policy": f['policy_name'],
+            "Source": f"{source_icon} {source_label}",
+            "Status": f"{status_icon} {f['status']}",
+            "Violations": f['violations_count'],
+            "Severity": f"{severity_icon} {f['severity'].upper()}",
+            "Category": f['category'],
+            "Resource Type": f['resource_types']
+        })
+
+    df = pd.DataFrame(table_data)
+
+    # Display as styled dataframe
+    st.dataframe(
+        df,
+        use_container_width=True,
+        hide_index=True,
+        column_config={
+            "Policy": st.column_config.TextColumn("Policy", width="large"),
+            "Source": st.column_config.TextColumn("Source", width="medium"),
+            "Status": st.column_config.TextColumn("Status", width="small"),
+            "Violations": st.column_config.NumberColumn("Violations", width="small"),
+            "Severity": st.column_config.TextColumn("Severity", width="small"),
+            "Category": st.column_config.TextColumn("Category", width="small"),
+            "Resource Type": st.column_config.TextColumn("Resource Type", width="medium"),
+        }
+    )
 
 # ── Drill-down Section ───────────────────────────────────────────────────────
 
