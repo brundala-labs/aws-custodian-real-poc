@@ -968,13 +968,13 @@ st.markdown(f"""
 
 # ── Breakdown Section ────────────────────────────────────────────────────────
 
-st.markdown("#### Compliance Breakdown")
+st.markdown(f'<h4 style="color: {CORESTACK_DARK_BLUE}; margin-bottom: 0.5rem;">Compliance Breakdown</h4>', unsafe_allow_html=True)
 
 col_a, col_b = st.columns(2)
 
 with col_a:
     with st.container(border=True):
-        st.markdown("**By Policy Source**")
+        st.markdown(f'<p style="color: {CORESTACK_BLUE}; font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem;">By Policy Source</p>', unsafe_allow_html=True)
         for src, counts in summary.get("by_source", {}).items():
             label = "Cloud Custodian" if src == "cloudcustodian" else "CoreStack"
             pass_count = counts.get("PASS", 0)
@@ -982,7 +982,11 @@ with col_a:
             total = pass_count + fail_count
             pass_pct = int((pass_count / total * 100)) if total > 0 else 0
 
-            st.markdown(f"**{label}**")
+            # Source label with distinct color
+            if src == "cloudcustodian":
+                st.markdown(f'<p style="color: #1565C0; font-weight: 600; margin-bottom: 0.25rem;"><span class="material-symbols-outlined" style="font-size: 18px; vertical-align: middle;">cloud</span> {label}</p>', unsafe_allow_html=True)
+            else:
+                st.markdown(f'<p style="color: {CORESTACK_BLUE}; font-weight: 600; margin-bottom: 0.25rem;">◈ {label}</p>', unsafe_allow_html=True)
             c1, c2, c3 = st.columns([1, 1, 2])
             with c1:
                 st.success(f"Pass: {pass_count}")
@@ -994,7 +998,7 @@ with col_a:
 
 with col_b:
     with st.container(border=True):
-        st.markdown("**By Severity Level**")
+        st.markdown(f'<p style="color: {CORESTACK_BLUE}; font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem;">By Severity Level</p>', unsafe_allow_html=True)
         for sev in ["high", "medium", "low"]:
             counts = summary.get("by_severity", {}).get(sev, {})
             pass_count = counts.get("PASS", 0)
@@ -1024,7 +1028,7 @@ with col_b:
 
 # ── Findings Table ───────────────────────────────────────────────────────────
 
-st.markdown("#### Policy Compliance Findings")
+st.markdown(f'<h4 style="color: {CORESTACK_DARK_BLUE}; margin-top: 1.5rem; margin-bottom: 0.5rem;">Policy Compliance Findings</h4>', unsafe_allow_html=True)
 
 # Apply filters
 source_param = None if source_filter == "All Sources" else source_filter
@@ -1097,7 +1101,7 @@ else:
 
 # ── Drill-down Section ───────────────────────────────────────────────────────
 
-st.markdown("#### Policy Deep Dive & Evidence")
+st.markdown(f'<h4 style="color: {CORESTACK_DARK_BLUE}; margin-top: 1.5rem; margin-bottom: 0.5rem;">Policy Deep Dive & Evidence</h4>', unsafe_allow_html=True)
 
 policy_options = {f["policy_name"]: f["policy_id"] for f in findings} if findings else {}
 
