@@ -923,12 +923,10 @@ else:
             "Policy": st.column_config.TextColumn("Policy", width="large"),
             "Source": st.column_config.TextColumn("Source", width="medium"),
             "Status": st.column_config.TextColumn("Status", width="small"),
-            "Violations": st.column_config.ProgressColumn(
+            "Violations": st.column_config.NumberColumn(
                 "Violations",
                 width="small",
                 format="%d",
-                min_value=0,
-                max_value=max(df['Violations'].max(), 1),
             ),
             "Severity": st.column_config.TextColumn("Severity", width="small"),
             "Category": st.column_config.TextColumn("Category", width="small"),
