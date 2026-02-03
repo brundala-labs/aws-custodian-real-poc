@@ -67,6 +67,7 @@ st.markdown(f"""
         font-feature-settings: 'liga';
         -webkit-font-smoothing: antialiased;
         vertical-align: middle;
+        color: {CORESTACK_BLUE};
     }}
 
     * {{
@@ -698,10 +699,10 @@ st.markdown(f"""
         font-size: 1.5rem;
         margin-bottom: 1rem;
     }}
-    .kpi-icon.blue {{ background: rgba(0, 102, 204, 0.2) !important; color: {CORESTACK_BLUE} !important; }}
-    .kpi-icon.green {{ background: rgba(39, 103, 73, 0.2) !important; color: {CORESTACK_SUCCESS} !important; }}
-    .kpi-icon.red {{ background: rgba(197, 48, 48, 0.2) !important; color: {CORESTACK_DANGER} !important; }}
-    .kpi-icon.orange {{ background: rgba(192, 86, 33, 0.2) !important; color: {CORESTACK_WARNING} !important; }}
+    .kpi-icon.blue {{ background: rgba(0, 102, 204, 0.15) !important; color: {CORESTACK_BLUE} !important; border: 2px solid {CORESTACK_BLUE} !important; }}
+    .kpi-icon.green {{ background: rgba(39, 103, 73, 0.15) !important; color: {CORESTACK_SUCCESS} !important; border: 2px solid {CORESTACK_SUCCESS} !important; }}
+    .kpi-icon.red {{ background: rgba(197, 48, 48, 0.15) !important; color: {CORESTACK_DANGER} !important; border: 2px solid {CORESTACK_DANGER} !important; }}
+    .kpi-icon.orange {{ background: rgba(192, 86, 33, 0.15) !important; color: {CORESTACK_WARNING} !important; border: 2px solid {CORESTACK_WARNING} !important; }}
     .kpi-value {{
         font-size: 2.5rem;
         font-weight: 800;
@@ -721,8 +722,8 @@ st.markdown(f"""
         border-radius: 20px;
         display: inline-block;
     }}
-    .kpi-trend.up {{ background: rgba(39, 103, 73, 0.2) !important; color: {CORESTACK_SUCCESS} !important; }}
-    .kpi-trend.down {{ background: rgba(197, 48, 48, 0.2) !important; color: {CORESTACK_DANGER} !important; }}
+    .kpi-trend.up {{ background: rgba(39, 103, 73, 0.15) !important; color: {CORESTACK_SUCCESS} !important; border: 1px solid {CORESTACK_SUCCESS} !important; }}
+    .kpi-trend.down {{ background: rgba(197, 48, 48, 0.15) !important; color: {CORESTACK_DANGER} !important; border: 1px solid {CORESTACK_DANGER} !important; }}
 
     /* Status Badges */
     .status-pass {{
