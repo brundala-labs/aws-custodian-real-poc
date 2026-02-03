@@ -730,6 +730,94 @@ def db_get_summary():
     }
 
 
+def db_get_filtered_summary(source=None, status=None, severity=None):
+    """Get summary statistics with optional filters."""
+    conn = get_db()
+    cursor = conn.cursor()
+
+    # Build WHERE clause
+    where_clauses = ["(f.policy_id, f.run_id) IN (SELECT policy_id, MAX(run_id) FROM findings GROUP BY policy_id)"]
+    params = []
+
+    if source:
+        where_clauses.append("p.source = ?")
+        params.append(source)
+    if status:
+        where_clauses.append("f.status = ?")
+        params.append(status)
+    if severity:
+        where_clauses.append("p.severity = ?")
+        params.append(severity)
+
+    where_sql = " AND ".join(where_clauses)
+
+    # Total policies (filtered)
+    cursor.execute(f"""
+        SELECT COUNT(DISTINCT f.policy_id) FROM findings f
+        JOIN policies p ON f.policy_id = p.policy_id
+        WHERE {where_sql}
+    """, params)
+    total = cursor.fetchone()[0]
+
+    # Passing/Failing counts (filtered)
+    cursor.execute(f"""
+        SELECT f.status, COUNT(*) FROM findings f
+        JOIN policies p ON f.policy_id = p.policy_id
+        WHERE {where_sql}
+        GROUP BY f.status
+    """, params)
+    status_counts = dict(cursor.fetchall())
+    passing = status_counts.get("PASS", 0)
+    failing = status_counts.get("FAIL", 0)
+
+    # Last evaluated (filtered)
+    cursor.execute(f"""
+        SELECT MAX(f.last_evaluated) FROM findings f
+        JOIN policies p ON f.policy_id = p.policy_id
+        WHERE {where_sql}
+    """, params)
+    last_eval = cursor.fetchone()[0]
+
+    # By source breakdown (filtered)
+    cursor.execute(f"""
+        SELECT p.source, f.status, COUNT(*)
+        FROM findings f
+        JOIN policies p ON f.policy_id = p.policy_id
+        WHERE {where_sql}
+        GROUP BY p.source, f.status
+    """, params)
+    by_source = {}
+    for src, stat, count in cursor.fetchall():
+        if src not in by_source:
+            by_source[src] = {}
+        by_source[src][stat] = count
+
+    # By severity breakdown (filtered)
+    cursor.execute(f"""
+        SELECT p.severity, f.status, COUNT(*)
+        FROM findings f
+        JOIN policies p ON f.policy_id = p.policy_id
+        WHERE {where_sql}
+        GROUP BY p.severity, f.status
+    """, params)
+    by_severity = {}
+    for sev, stat, count in cursor.fetchall():
+        if sev not in by_severity:
+            by_severity[sev] = {}
+        by_severity[sev][stat] = count
+
+    conn.close()
+
+    return {
+        "total_policies": total,
+        "passing": passing,
+        "failing": failing,
+        "last_evaluated": last_eval,
+        "by_source": by_source,
+        "by_severity": by_severity
+    }
+
+
 def db_get_findings(source=None, status=None, severity=None):
     """Get findings with optional filters."""
     conn = get_db()
@@ -908,41 +996,49 @@ tab_executive, tab_dashboard = st.tabs(["Executive Summary", "Dashboard"])
 # ══════════════════════════════════════════════════════════════════════════════
 
 with tab_dashboard:
-    # ── Filters in Main Area ─────────────────────────────────────────────────
+    # ── Clickable Filters ─────────────────────────────────────────────────────
 
-    with st.container(border=True):
-        filter_cols = st.columns([1, 1, 1, 1])
+    st.markdown("**Select Filters:**")
 
-        with filter_cols[0]:
-            st.markdown("**Filters**")
+    filter_cols = st.columns(3)
 
-        with filter_cols[1]:
-            source_filter = st.selectbox(
-                "Source",
-                ["All Sources", "cloudcustodian", "corestack"],
-                format_func=lambda x: "All" if x == "All Sources" else ("Cloud Custodian" if x == "cloudcustodian" else "CoreStack"),
-                label_visibility="collapsed"
-            )
+    with filter_cols[0]:
+        source_filter = st.radio(
+            "Source",
+            ["All", "Cloud Custodian", "CoreStack"],
+            horizontal=True,
+            key="source_radio"
+        )
+        # Convert display value to db value
+        source_param = None
+        if source_filter == "Cloud Custodian":
+            source_param = "cloudcustodian"
+        elif source_filter == "CoreStack":
+            source_param = "corestack"
 
-        with filter_cols[2]:
-            status_filter = st.selectbox(
-                "Status",
-                ["All Statuses", "FAIL", "PASS"],
-                format_func=lambda x: "All Status" if x == "All Statuses" else x,
-                label_visibility="collapsed"
-            )
+    with filter_cols[1]:
+        status_filter = st.radio(
+            "Status",
+            ["All", "PASS", "FAIL"],
+            horizontal=True,
+            key="status_radio"
+        )
+        status_param = None if status_filter == "All" else status_filter
 
-        with filter_cols[3]:
-            severity_filter = st.selectbox(
-                "Severity",
-                ["All Severities", "high", "medium", "low"],
-                format_func=lambda x: "All Severity" if x == "All Severities" else x.title(),
-                label_visibility="collapsed"
-            )
+    with filter_cols[2]:
+        severity_filter = st.radio(
+            "Severity",
+            ["All", "High", "Medium", "Low"],
+            horizontal=True,
+            key="severity_radio"
+        )
+        severity_param = None if severity_filter == "All" else severity_filter.lower()
 
-    # ── KPI Cards ────────────────────────────────────────────────────────────
+    st.divider()
 
-    summary = db_get_summary()
+    # ── Get Filtered Data ─────────────────────────────────────────────────────
+
+    summary = db_get_filtered_summary(source=source_param, status=status_param, severity=severity_param)
 
     compliance_rate = round((summary['passing'] / max(summary['total_policies'], 1)) * 100)
 
@@ -1039,11 +1135,7 @@ with tab_dashboard:
 
     st.markdown(f'<h4 style="color: {CORESTACK_DARK_BLUE}; margin-top: 1.5rem; margin-bottom: 0.5rem;">Policy Compliance Findings</h4>', unsafe_allow_html=True)
 
-    # Apply filters
-    source_param = None if source_filter == "All Sources" else source_filter
-    status_param = None if status_filter == "All Statuses" else status_filter
-    severity_param = None if severity_filter == "All Severities" else severity_filter
-
+    # Use the same filter params defined above
     findings = db_get_findings(source=source_param, status=status_param, severity=severity_param)
 
     if not findings:
