@@ -897,77 +897,64 @@ findings = db_get_findings(source=source_param, status=status_param, severity=se
 if not findings:
     st.info("No findings match the current filters. Try adjusting your filter criteria.")
 else:
+    import pandas as pd
+
+    # Build dataframe with display values
+    table_data = []
+    for f in findings:
+        source_label = "Cloud Custodian" if f['source'] == "cloudcustodian" else "CoreStack"
+        table_data.append({
+            "Policy": f['policy_name'],
+            "Source": source_label,
+            "Status": f['status'],
+            "Violations": int(f['violations_count']),
+            "Severity": f['severity'].upper(),
+            "Category": f['category'],
+            "Resource": f['resource_types']
+        })
+
+    df = pd.DataFrame(table_data)
+
+    # Style function for the dataframe
+    def color_status(val):
+        if val == "PASS":
+            return 'color: #38A169; font-weight: bold'
+        elif val == "FAIL":
+            return 'color: #E53E3E; font-weight: bold'
+        return ''
+
+    def color_violations(val):
+        if val > 0:
+            return 'color: #E53E3E; font-weight: bold'
+        return 'color: #38A169; font-weight: bold'
+
+    def color_severity(val):
+        if val == "HIGH":
+            return 'color: #E53E3E; font-weight: bold'
+        elif val == "MEDIUM":
+            return 'color: #DD6B20; font-weight: bold'
+        elif val == "LOW":
+            return 'color: #3182CE; font-weight: bold'
+        return ''
+
+    # Apply styling
+    styled_df = df.style\
+        .applymap(color_status, subset=['Status'])\
+        .applymap(color_violations, subset=['Violations'])\
+        .applymap(color_severity, subset=['Severity'])\
+        .set_properties(**{'border': '1px solid #E2E8F0', 'padding': '10px'})\
+        .set_table_styles([
+            {'selector': 'th', 'props': [('background-color', '#0076e1'), ('color', 'white'), ('font-weight', 'bold'), ('padding', '12px'), ('border', '1px solid #004789')]},
+            {'selector': 'td', 'props': [('border', '1px solid #E2E8F0')]},
+        ])
+
     with st.container(border=True):
-        # Build table rows data
-        rows_html = ""
-        for f in findings:
-            source_label = "Cloud Custodian" if f['source'] == "cloudcustodian" else "CoreStack"
-
-            # Status color
-            if f['status'] == "PASS":
-                status_html = '<span style="color: #38A169; font-weight: 700;">PASS</span>'
-            else:
-                status_html = '<span style="color: #E53E3E; font-weight: 700;">FAIL</span>'
-
-            # Violations color
-            if f['violations_count'] > 0:
-                viol_html = f'<span style="color: #E53E3E; font-weight: 700;">{f["violations_count"]}</span>'
-            else:
-                viol_html = '<span style="color: #38A169; font-weight: 700;">0</span>'
-
-            # Severity color
-            sev = f['severity'].upper()
-            if sev == "HIGH":
-                sev_html = f'<span style="color: #E53E3E; font-weight: 700;">{sev}</span>'
-            elif sev == "MEDIUM":
-                sev_html = f'<span style="color: #DD6B20; font-weight: 700;">{sev}</span>'
-            else:
-                sev_html = f'<span style="color: #3182CE; font-weight: 700;">{sev}</span>'
-
-            rows_html += f'''
-            <tr>
-                <td style="padding: 12px 16px; border-right: 1px solid #E2E8F0; font-weight: 600;">{f['policy_name']}</td>
-                <td style="padding: 12px 16px; border-right: 1px solid #E2E8F0; color: #718096;">{source_label}</td>
-                <td style="padding: 12px 16px; border-right: 1px solid #E2E8F0; text-align: center;">{status_html}</td>
-                <td style="padding: 12px 16px; border-right: 1px solid #E2E8F0; text-align: center;">{viol_html}</td>
-                <td style="padding: 12px 16px; border-right: 1px solid #E2E8F0; text-align: center;">{sev_html}</td>
-                <td style="padding: 12px 16px; border-right: 1px solid #E2E8F0; color: #718096;">{f['category']}</td>
-                <td style="padding: 12px 16px; color: #718096;">{f['resource_types']}</td>
-            </tr>
-            '''
-
-        # Full table HTML
-        table_html = f'''
-        <table style="width: 100%; border-collapse: collapse; font-family: 'Nunito Sans', sans-serif;">
-            <thead>
-                <tr style="background: linear-gradient(135deg, #0076e1 0%, #004789 100%); color: white;">
-                    <th style="padding: 14px 16px; text-align: left; font-weight: 700; border-right: 1px solid rgba(255,255,255,0.2);">Policy</th>
-                    <th style="padding: 14px 16px; text-align: left; font-weight: 700; border-right: 1px solid rgba(255,255,255,0.2);">Source</th>
-                    <th style="padding: 14px 16px; text-align: center; font-weight: 700; border-right: 1px solid rgba(255,255,255,0.2);">Status</th>
-                    <th style="padding: 14px 16px; text-align: center; font-weight: 700; border-right: 1px solid rgba(255,255,255,0.2);">Violations</th>
-                    <th style="padding: 14px 16px; text-align: center; font-weight: 700; border-right: 1px solid rgba(255,255,255,0.2);">Severity</th>
-                    <th style="padding: 14px 16px; text-align: left; font-weight: 700; border-right: 1px solid rgba(255,255,255,0.2);">Category</th>
-                    <th style="padding: 14px 16px; text-align: left; font-weight: 700;">Resource</th>
-                </tr>
-            </thead>
-            <tbody>
-                {rows_html}
-            </tbody>
-        </table>
-        <style>
-            table tbody tr {{
-                border-bottom: 1px solid #E2E8F0;
-            }}
-            table tbody tr:hover {{
-                background-color: #F7FAFC;
-            }}
-            table tbody tr:last-child {{
-                border-bottom: none;
-            }}
-        </style>
-        '''
-
-        st.markdown(table_html, unsafe_allow_html=True)
+        st.dataframe(
+            styled_df,
+            use_container_width=True,
+            hide_index=True,
+            height=400
+        )
 
 # ── Drill-down Section ───────────────────────────────────────────────────────
 
