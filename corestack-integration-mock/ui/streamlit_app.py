@@ -164,21 +164,24 @@ st.markdown(f"""
         margin-bottom: 1rem;
     }}
 
-    .header h1, .header p, .header * {{
+    .header h1, .header p, .header span, .header div, .header * {{
         color: #FFFFFF !important;
+        -webkit-text-fill-color: #FFFFFF !important;
     }}
 
     .header h1 {{
-        font-size: 1.75rem !important;
+        font-size: 2.25rem !important;
         font-weight: 700;
         margin: 0 0 0.5rem 0;
         color: #FFFFFF !important;
+        -webkit-text-fill-color: #FFFFFF !important;
     }}
 
     .header p {{
-        font-size: 0.9rem;
+        font-size: 1.1rem;
         margin: 0;
         color: #FFFFFF !important;
+        -webkit-text-fill-color: #FFFFFF !important;
     }}
 
     /* Section Titles */
