@@ -1203,11 +1203,7 @@ with tab_dashboard:
             else:
                 st.caption("No data available")
 
-    # ── Findings Table ─────────────────────────────────────────────────────────
-
     st.markdown(f'<h4 style="color: {CORESTACK_DARK_BLUE}; margin-top: 1.5rem; margin-bottom: 0.5rem;">Policy Compliance Findings</h4>', unsafe_allow_html=True)
-
-    # Use the same filter params defined above
     findings = db_get_findings(source=source_param, status=status_param, severity=severity_param)
 
     if not findings:
