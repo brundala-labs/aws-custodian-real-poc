@@ -901,7 +901,7 @@ st.markdown("""
 
 # ── Tabs ─────────────────────────────────────────────────────────────────────
 
-tab_dashboard, tab_executive = st.tabs(["Dashboard", "Executive Summary"])
+tab_executive, tab_dashboard = st.tabs(["Executive Summary", "Dashboard"])
 
 # ══════════════════════════════════════════════════════════════════════════════
 # TAB 1: DASHBOARD
@@ -1194,10 +1194,6 @@ with tab_dashboard:
 # ══════════════════════════════════════════════════════════════════════════════
 
 with tab_executive:
-    # Get summary data for executive view
-    exec_summary = db_get_summary()
-    exec_compliance_rate = round((exec_summary['passing'] / max(exec_summary['total_policies'], 1)) * 100)
-
     # ── Executive Summary Header ─────────────────────────────────────────────
     st.markdown(f'<h3 style="color: {CORESTACK_DARK_BLUE};">Executive Summary</h3>', unsafe_allow_html=True)
 
@@ -1206,19 +1202,6 @@ with tab_executive:
     from multiple policy engines into a single dashboard. The solution ingests real Cloud Custodian scan results
     from live AWS resources and presents them alongside CoreStack-native policies.
     """)
-
-    # ── Key Metrics Row ──────────────────────────────────────────────────────
-    st.markdown(f'<h4 style="color: {CORESTACK_BLUE}; margin-top: 1.5rem;">Key Metrics</h4>', unsafe_allow_html=True)
-
-    metric_cols = st.columns(4)
-    with metric_cols[0]:
-        st.metric("Total Policies", exec_summary['total_policies'], help="Combined policies from all sources")
-    with metric_cols[1]:
-        st.metric("Compliance Rate", f"{exec_compliance_rate}%", help="Percentage of passing policies")
-    with metric_cols[2]:
-        st.metric("Compliant", exec_summary['passing'], delta="Passing", delta_color="normal")
-    with metric_cols[3]:
-        st.metric("Non-Compliant", exec_summary['failing'], delta="Requires Action", delta_color="inverse")
 
     # ── Project Overview ─────────────────────────────────────────────────────
     st.markdown(f'<h4 style="color: {CORESTACK_BLUE}; margin-top: 2rem;">Project Overview</h4>', unsafe_allow_html=True)
