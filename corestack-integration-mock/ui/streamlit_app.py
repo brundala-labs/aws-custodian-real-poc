@@ -1397,16 +1397,12 @@ with tab_executive:
     # ── Links ────────────────────────────────────────────────────────────────
     st.markdown(f'<h4 style="color: {CORESTACK_BLUE}; margin-top: 2rem;">Quick Links</h4>', unsafe_allow_html=True)
 
-    link_cols = st.columns(3)
+    link_cols = st.columns(2)
     with link_cols[0]:
-        st.markdown("**GitHub Repository**")
-        st.markdown("[brundala-labs/aws-custodian-real-poc](https://github.com/brundala-labs/aws-custodian-real-poc)")
-
-    with link_cols[1]:
         st.markdown("**Live Dashboard**")
         st.markdown("[corestackintegration.streamlit.app](https://corestackintegration.streamlit.app)")
 
-    with link_cols[2]:
+    with link_cols[1]:
         st.markdown("**CoreStack Website**")
         st.markdown("[www.corestack.io](https://www.corestack.io)")
 
