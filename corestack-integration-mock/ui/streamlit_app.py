@@ -71,10 +71,32 @@ st.markdown(f"""
         font-family: 'Nunito Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     }}
 
+    /* Force light theme */
+    .stApp {{
+        background-color: #FFFFFF !important;
+    }}
+
+    .main {{
+        background-color: #FFFFFF !important;
+    }}
+
+    [data-testid="stAppViewContainer"] {{
+        background-color: #FFFFFF !important;
+    }}
+
+    [data-testid="stHeader"] {{
+        background-color: #FFFFFF !important;
+    }}
+
+    section[data-testid="stSidebar"] {{
+        background-color: #F7FAFC !important;
+    }}
+
     .main .block-container {{
         padding-top: 1rem;
         padding-bottom: 2rem;
         max-width: 1400px;
+        background-color: #FFFFFF !important;
     }}
 
     /* Mobile Responsive - Tablet */
