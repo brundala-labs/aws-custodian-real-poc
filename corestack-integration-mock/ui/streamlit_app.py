@@ -1341,7 +1341,7 @@ with tab_executive:
 
     with output_cols[0]:
         with st.container(border=True):
-            st.markdown("### 🔌 API")
+            st.markdown(f'<h3><span class="material-symbols-outlined" style="color: {CORESTACK_BLUE}; vertical-align: middle;">api</span> API</h3>', unsafe_allow_html=True)
             st.markdown("""
             **RESTful API Access**
 
@@ -1359,7 +1359,7 @@ with tab_executive:
 
     with output_cols[1]:
         with st.container(border=True):
-            st.markdown("### 🔗 Embeddable Link")
+            st.markdown(f'<h3><span class="material-symbols-outlined" style="color: {CORESTACK_BLUE}; vertical-align: middle;">link</span> Embeddable Link</h3>', unsafe_allow_html=True)
             st.markdown("""
             **Shareable Dashboard URL**
 
@@ -1377,7 +1377,7 @@ with tab_executive:
 
     with output_cols[2]:
         with st.container(border=True):
-            st.markdown("### 📊 Dashboard")
+            st.markdown(f'<h3><span class="material-symbols-outlined" style="color: {CORESTACK_BLUE}; vertical-align: middle;">dashboard</span> Dashboard</h3>', unsafe_allow_html=True)
             st.markdown("""
             **Interactive Web Interface**
 
