@@ -46,17 +46,17 @@ BORDER = "#E2E8F0"
 # ── Mobile-First CSS ──────────────────────────────────────────────────────────
 st.markdown(f"""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&display=swap');
     @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0');
 
-    /* Base - Mobile First - Apply Inter to text elements only */
+    /* Base - Mobile First - Apply Nunito Sans to text elements only */
     * {{
         box-sizing: border-box;
     }}
 
     body, p, span, div, label, li, h1, h2, h3, h4, h5, h6,
     button, input, select, textarea, td, th {{
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+        font-family: 'Nunito Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
     }}
 
     .material-symbols-outlined {{
@@ -857,8 +857,8 @@ with tab_summary:
         digraph G {
             rankdir=TB;
             bgcolor="transparent";
-            node [shape=box, style="rounded,filled", fontname="Inter", fontsize=10, margin="0.2"];
-            edge [fontname="Inter", fontsize=8, color="#718096"];
+            node [shape=box, style="rounded,filled", fontname="Nunito Sans", fontsize=10, margin="0.2"];
+            edge [fontname="Nunito Sans", fontsize=8, color="#718096"];
 
             aws [label="AWS Cloud", fillcolor="#FF9900", fontcolor="white"];
             custodian [label="Cloud Custodian", fillcolor="#6C63FF", fontcolor="white"];
