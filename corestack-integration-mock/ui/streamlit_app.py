@@ -77,6 +77,54 @@ st.markdown(f"""
         max-width: 1400px;
     }}
 
+    /* Mobile Responsive */
+    @media (max-width: 768px) {{
+        .main .block-container {{
+            padding: 0.5rem;
+        }}
+
+        /* Stack columns vertically on mobile */
+        [data-testid="column"] {{
+            width: 100% !important;
+            flex: 1 1 100% !important;
+            min-width: 100% !important;
+        }}
+
+        /* Smaller fonts on mobile */
+        .kpi-value {{
+            font-size: 1.5rem !important;
+        }}
+
+        .kpi-card {{
+            padding: 1rem !important;
+            margin-bottom: 0.5rem;
+        }}
+
+        /* Make tables scrollable */
+        [data-testid="stDataFrame"] {{
+            overflow-x: auto !important;
+        }}
+
+        /* Adjust header */
+        .header-banner h1 {{
+            font-size: 1.2rem !important;
+        }}
+
+        .header-banner p {{
+            font-size: 0.8rem !important;
+        }}
+    }}
+
+    @media (max-width: 480px) {{
+        .kpi-value {{
+            font-size: 1.2rem !important;
+        }}
+
+        h4, .stMarkdown h4 {{
+            font-size: 1rem !important;
+        }}
+    }}
+
     /* Bordered containers */
     .bordered-box {{
         border: 2px solid #E2E8F0;
