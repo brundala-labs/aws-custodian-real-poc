@@ -1120,17 +1120,19 @@ with tab_dashboard:
                     name='Pass',
                     x=source_labels,
                     y=source_pass,
-                    marker_color=CORESTACK_SUCCESS,
+                    marker_color='#4DA6FF',  # Light CoreStack blue
                     text=source_pass,
-                    textposition='auto'
+                    textposition='auto',
+                    textfont=dict(color='white', size=14, family='Nunito Sans')
                 ))
                 fig_source.add_trace(go.Bar(
                     name='Fail',
                     x=source_labels,
                     y=source_fail,
-                    marker_color=CORESTACK_DANGER,
+                    marker_color='#FF8C66',  # Light coral/orange
                     text=source_fail,
-                    textposition='auto'
+                    textposition='auto',
+                    textfont=dict(color='white', size=14, family='Nunito Sans')
                 ))
                 fig_source.update_layout(
                     barmode='group',
@@ -1171,17 +1173,19 @@ with tab_dashboard:
                     name='Pass',
                     x=severity_labels,
                     y=severity_pass,
-                    marker_color=CORESTACK_SUCCESS,
+                    marker_color='#4DA6FF',  # Light CoreStack blue
                     text=severity_pass,
-                    textposition='auto'
+                    textposition='auto',
+                    textfont=dict(color='white', size=14, family='Nunito Sans')
                 ))
                 fig_severity.add_trace(go.Bar(
                     name='Fail',
                     x=severity_labels,
                     y=severity_fail,
-                    marker_color=CORESTACK_DANGER,
+                    marker_color='#FF8C66',  # Light coral/orange
                     text=severity_fail,
-                    textposition='auto'
+                    textposition='auto',
+                    textfont=dict(color='white', size=14, family='Nunito Sans')
                 ))
                 fig_severity.update_layout(
                     barmode='group',
