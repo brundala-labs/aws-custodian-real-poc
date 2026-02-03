@@ -1394,17 +1394,6 @@ with tab_executive:
     flow_df = pd.DataFrame(flow_data)
     st.dataframe(flow_df, use_container_width=True, hide_index=True)
 
-    # ── Links ────────────────────────────────────────────────────────────────
-    st.markdown(f'<h4 style="color: {CORESTACK_BLUE}; margin-top: 2rem;">Quick Links</h4>', unsafe_allow_html=True)
-
-    link_cols = st.columns(2)
-    with link_cols[0]:
-        st.markdown("**Live Dashboard**")
-        st.markdown("[corestackintegration.streamlit.app](https://corestackintegration.streamlit.app)")
-
-    with link_cols[1]:
-        st.markdown("**CoreStack Website**")
-        st.markdown("[www.corestack.io](https://www.corestack.io)")
 
 # ── Footer ───────────────────────────────────────────────────────────────────
 
