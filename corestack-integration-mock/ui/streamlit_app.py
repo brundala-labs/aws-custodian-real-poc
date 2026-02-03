@@ -850,42 +850,6 @@ with tab_summary:
     - **Evidence Collection**: Automated capture of violation details
     """)
 
-    # ── Use Cases ─────────────────────────────────────────────────────────────
-    st.markdown('<div class="section-title"><span class="material-symbols-outlined">cases</span>Use Cases</div>', unsafe_allow_html=True)
-
-    st.markdown(f"""
-    <details class="custom-expander">
-        <summary>Compliance Audits</summary>
-        <div class="expander-content">
-            <ul>
-                <li>Generate audit-ready reports</li>
-                <li>Provide evidence for SOC2, HIPAA, PCI-DSS</li>
-                <li>Track compliance trends over time</li>
-            </ul>
-        </div>
-    </details>
-    <details class="custom-expander">
-        <summary>Security Operations</summary>
-        <div class="expander-content">
-            <ul>
-                <li>Monitor security posture in real-time</li>
-                <li>Prioritize remediation by severity</li>
-                <li>Integrate with SIEM/SOAR platforms</li>
-            </ul>
-        </div>
-    </details>
-    <details class="custom-expander">
-        <summary>DevSecOps</summary>
-        <div class="expander-content">
-            <ul>
-                <li>Shift-left security in CI/CD</li>
-                <li>Automate policy checks in pipelines</li>
-                <li>Provide developer-friendly feedback</li>
-            </ul>
-        </div>
-    </details>
-    """, unsafe_allow_html=True)
-
     # ── Data Flow ─────────────────────────────────────────────────────────────
     st.markdown('<div class="section-title"><span class="material-symbols-outlined">account_tree</span>Data Flow Architecture</div>', unsafe_allow_html=True)
 
@@ -927,6 +891,42 @@ with tab_summary:
         - Microsoft Azure
         - Google Cloud Platform
         """)
+
+    # ── Use Cases ─────────────────────────────────────────────────────────────
+    st.markdown('<div class="section-title"><span class="material-symbols-outlined">cases</span>Use Cases</div>', unsafe_allow_html=True)
+
+    st.markdown(f"""
+    <details class="custom-expander">
+        <summary>Compliance Audits</summary>
+        <div class="expander-content">
+            <ul>
+                <li>Generate audit-ready reports</li>
+                <li>Provide evidence for SOC2, HIPAA, PCI-DSS</li>
+                <li>Track compliance trends over time</li>
+            </ul>
+        </div>
+    </details>
+    <details class="custom-expander">
+        <summary>Security Operations</summary>
+        <div class="expander-content">
+            <ul>
+                <li>Monitor security posture in real-time</li>
+                <li>Prioritize remediation by severity</li>
+                <li>Integrate with SIEM/SOAR platforms</li>
+            </ul>
+        </div>
+    </details>
+    <details class="custom-expander">
+        <summary>DevSecOps</summary>
+        <div class="expander-content">
+            <ul>
+                <li>Shift-left security in CI/CD</li>
+                <li>Automate policy checks in pipelines</li>
+                <li>Provide developer-friendly feedback</li>
+            </ul>
+        </div>
+    </details>
+    """, unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════════════════════
 # DASHBOARD TAB
