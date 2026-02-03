@@ -846,9 +846,9 @@ with col_a:
             st.markdown(f"**{label}**")
             c1, c2, c3 = st.columns([1, 1, 2])
             with c1:
-                st.metric("Pass", pass_count, delta=None)
+                st.success(f"Pass: {pass_count}")
             with c2:
-                st.metric("Fail", fail_count, delta=None)
+                st.error(f"Fail: {fail_count}")
             with c3:
                 st.progress(pass_pct / 100 if pass_pct > 0 else 0.01, text=f"{pass_pct}% compliant")
             st.divider()
@@ -863,19 +863,20 @@ with col_b:
             total = pass_count + fail_count
             pass_pct = int((pass_count / total * 100)) if total > 0 else 0
 
+            # Severity label with color
             if sev == "high":
-                st.markdown(f":red[**{sev.upper()}**]")
+                st.error(f"**{sev.upper()}**")
             elif sev == "medium":
-                st.markdown(f":orange[**{sev.upper()}**]")
+                st.warning(f"**{sev.upper()}**")
             else:
-                st.markdown(f":blue[**{sev.upper()}**]")
+                st.info(f"**{sev.upper()}**")
 
             if total > 0:
                 c1, c2, c3 = st.columns([1, 1, 2])
                 with c1:
-                    st.metric("Pass", pass_count, delta=None)
+                    st.success(f"Pass: {pass_count}")
                 with c2:
-                    st.metric("Fail", fail_count, delta=None)
+                    st.error(f"Fail: {fail_count}")
                 with c3:
                     st.progress(pass_pct / 100 if pass_pct > 0 else 0.01, text=f"{pass_pct}% compliant")
             else:
@@ -896,46 +897,56 @@ findings = db_get_findings(source=source_param, status=status_param, severity=se
 if not findings:
     st.info("No findings match the current filters. Try adjusting your filter criteria.")
 else:
-    import pandas as pd
+    # Table header
+    header_cols = st.columns([3, 2, 1, 1, 1, 1, 2])
+    header_cols[0].markdown("**Policy**")
+    header_cols[1].markdown("**Source**")
+    header_cols[2].markdown("**Status**")
+    header_cols[3].markdown("**Violations**")
+    header_cols[4].markdown("**Severity**")
+    header_cols[5].markdown("**Category**")
+    header_cols[6].markdown("**Resource**")
+    st.divider()
 
-    # Build dataframe
-    table_data = []
+    # Table rows with colors
     for f in findings:
         source_label = "Cloud Custodian" if f['source'] == "cloudcustodian" else "CoreStack"
-        table_data.append({
-            "Policy": f['policy_name'],
-            "Source": source_label,
-            "Status": f['status'],
-            "Violations": f['violations_count'],
-            "Severity": f['severity'].upper(),
-            "Category": f['category'],
-            "Resource Type": f['resource_types']
-        })
+        cols = st.columns([3, 2, 1, 1, 1, 1, 2])
 
-    df = pd.DataFrame(table_data)
+        # Policy name
+        cols[0].markdown(f"**{f['policy_name']}**")
 
-    # Use st.dataframe with column_config for styling
-    st.dataframe(
-        df,
-        use_container_width=True,
-        hide_index=True,
-        column_config={
-            "Policy": st.column_config.TextColumn("Policy", width="large"),
-            "Source": st.column_config.TextColumn("Source", width="medium"),
-            "Status": st.column_config.TextColumn("Status", width="small"),
-            "Violations": st.column_config.NumberColumn(
-                "Violations",
-                width="small",
-                format="%d",
-            ),
-            "Severity": st.column_config.TextColumn("Severity", width="small"),
-            "Category": st.column_config.TextColumn("Category", width="small"),
-            "Resource Type": st.column_config.TextColumn("Resource Type", width="medium"),
-        }
-    )
+        # Source
+        cols[1].caption(source_label)
 
-    # Add legend
-    st.caption("Legend: PASS = Compliant | FAIL = Non-compliant | Violations bar shows count")
+        # Status with color
+        if f['status'] == "PASS":
+            cols[2].success("PASS")
+        else:
+            cols[2].error("FAIL")
+
+        # Violations with color
+        if f['violations_count'] > 0:
+            cols[3].error(str(f['violations_count']))
+        else:
+            cols[3].success("0")
+
+        # Severity with color
+        sev = f['severity'].upper()
+        if sev == "HIGH":
+            cols[4].error(sev)
+        elif sev == "MEDIUM":
+            cols[4].warning(sev)
+        else:
+            cols[4].info(sev)
+
+        # Category
+        cols[5].caption(f['category'])
+
+        # Resource type
+        cols[6].caption(f['resource_types'])
+
+        st.divider()
 
 # ── Drill-down Section ───────────────────────────────────────────────────────
 
@@ -957,7 +968,7 @@ if policy_options:
         # Resources
         resources = db_get_resources(selected_id)
         if resources:
-            st.markdown(f"#### 🎯 Violating Resources ({len(resources)})")
+            st.markdown("**Violating Resources**")
             res_data = []
             for r in resources:
                 res_data.append({
@@ -968,21 +979,44 @@ if policy_options:
                 })
             st.dataframe(res_data, use_container_width=True, hide_index=True)
         else:
-            st.success("✓ No violations found — this policy is compliant!")
+            st.success("No violations found — this policy is compliant!")
 
     with col2:
         # Quick stats for selected policy
         selected_finding = next((f for f in findings if f["policy_id"] == selected_id), None)
         if selected_finding:
-            st.markdown("#### 📊 Quick Stats")
-            st.metric("Violations", selected_finding["violations_count"])
-            st.metric("Severity", selected_finding["severity"].upper())
-            st.metric("Category", selected_finding["category"].title())
+            with st.container(border=True):
+                st.markdown("**Quick Stats**")
+
+                # Violations with color
+                viol_count = selected_finding["violations_count"]
+                if viol_count > 0:
+                    st.error(f"Violations: {viol_count}")
+                else:
+                    st.success(f"Violations: {viol_count}")
+
+                # Severity with color
+                sev = selected_finding["severity"].upper()
+                if sev == "HIGH":
+                    st.error(f"Severity: {sev}")
+                elif sev == "MEDIUM":
+                    st.warning(f"Severity: {sev}")
+                else:
+                    st.info(f"Severity: {sev}")
+
+                # Status with color
+                status = selected_finding["status"]
+                if status == "PASS":
+                    st.success(f"Status: {status}")
+                else:
+                    st.error(f"Status: {status}")
+
+                st.caption(f"Category: {selected_finding['category'].title()}")
 
     # Evidence
     evidence_list = db_get_evidence(selected_id)
     if evidence_list:
-        with st.expander("📄 Raw Evidence JSON (Click to expand)", expanded=False):
+        with st.expander("Raw Evidence JSON (Click to expand)", expanded=False):
             for ev in evidence_list:
                 st.markdown(f"**Run ID**: `{ev['run_id']}`")
                 try:
@@ -993,7 +1027,7 @@ if policy_options:
     else:
         st.info("No evidence data available for this policy.")
 else:
-    st.info("👆 Select filters above to view findings, then choose a policy to drill down.")
+    st.info("Select filters above to view findings, then choose a policy to drill down.")
 
 # ── Footer ───────────────────────────────────────────────────────────────────
 
