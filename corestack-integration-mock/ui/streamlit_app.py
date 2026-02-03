@@ -237,10 +237,17 @@ st.markdown(f"""
         [data-testid="stVerticalBlockBorderWrapper"] > div {{
             border: 2px solid {CORESTACK_BLUE} !important;
             border-radius: 8px !important;
+            background-color: #FFFFFF !important;
         }}
 
         /* KPI card borders */
         .kpi-card {{
+            border: 2px solid {CORESTACK_BLUE} !important;
+            border-radius: 8px !important;
+        }}
+
+        /* Bordered box */
+        .bordered-box {{
             border: 2px solid {CORESTACK_BLUE} !important;
         }}
     }}
@@ -338,6 +345,12 @@ st.markdown(f"""
         /* KPI card borders */
         .kpi-card {{
             border: 2px solid {CORESTACK_BLUE} !important;
+            border-radius: 8px !important;
+        }}
+
+        /* Bordered box */
+        .bordered-box {{
+            border: 2px solid {CORESTACK_BLUE} !important;
         }}
 
         /* Scrollable dataframes */
@@ -401,6 +414,8 @@ st.markdown(f"""
             gap: 1rem !important;
             padding: 0.75rem 1rem !important;
             background: #FFFFFF !important;
+            border: 2px solid {CORESTACK_BLUE} !important;
+            border-radius: 8px !important;
         }}
 
         .kpi-icon {{
@@ -414,6 +429,11 @@ st.markdown(f"""
 
         .kpi-label {{
             color: #2D3748 !important;
+        }}
+
+        /* Bordered box */
+        .bordered-box {{
+            border: 2px solid {CORESTACK_BLUE} !important;
         }}
 
         /* Header banner - keep white */
