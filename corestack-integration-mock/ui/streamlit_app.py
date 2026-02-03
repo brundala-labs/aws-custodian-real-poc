@@ -1574,11 +1574,11 @@ with tab_executive:
                 // CoreStack Native
                 native [label="CoreStack Native\\nIAM • CloudTrail • Budget", fillcolor="#276749", fontcolor="white"];
 
-                // SQLite
-                db [label="SQLite Database\\nUnified Schema", fillcolor="#003d7a", fontcolor="white"];
+                // CoreStack DB
+                db [label="CoreStack DB\\nUnified Schema", fillcolor="#003d7a", fontcolor="white"];
 
-                // Dashboard
-                dashboard [label="Streamlit Dashboard\\nCompliance View", fillcolor="#E53E3E", fontcolor="white"];
+                // CoreStack Recommendation Dashboard
+                dashboard [label="CoreStack\\nRecommendation Dashboard", fillcolor="#E53E3E", fontcolor="white"];
 
                 // Flow
                 aws -> custodian [label="scan"];
@@ -1600,8 +1600,8 @@ with tab_executive:
         {"Step": "4", "Component": "Ingestion Layer", "Description": "Reads Custodian output directories"},
         {"Step": "5", "Component": "Normalizer", "Description": "Converts findings to unified schema (policy_id, status, violations)"},
         {"Step": "6", "Component": "Native Policies", "Description": "Seeds CoreStack-specific policies (IAM MFA, CloudTrail, Budget)"},
-        {"Step": "7", "Component": "SQLite Database", "Description": "Stores policies, findings, resources, and evidence"},
-        {"Step": "8", "Component": "Streamlit Dashboard", "Description": "Presents unified compliance view to end users"},
+        {"Step": "7", "Component": "CoreStack DB", "Description": "Stores policies, findings, resources, and evidence"},
+        {"Step": "8", "Component": "CoreStack Recommendation Dashboard", "Description": "Presents unified compliance view to end users"},
     ]
 
     import pandas as pd
