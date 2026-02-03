@@ -745,5 +745,49 @@ Message: Redesign dashboard with CoreStack branding and professional UI
 2. `c6edd15` — Add CoreStack integration mock (15 files)
 3. `477b07e` — Add project documentation
 4. `e4043c9` — Redesign dashboard with CoreStack branding and professional UI
+5. `6756f30` — Use pandas styled DataFrame for findings table
 
 **Total Files**: 51 files across both projects
+
+---
+
+## 15. Streamlit Cloud Deployment
+
+### Live Dashboard URL
+
+**https://corestackintegration.streamlit.app**
+
+The dashboard is now publicly accessible. Share this link with stakeholders for feedback.
+
+### Deployment Details
+
+| Setting | Value |
+|---------|-------|
+| Platform | Streamlit Community Cloud |
+| Repository | `brundala-labs/aws-custodian-real-poc` |
+| Branch | `main` |
+| Main File | `corestack-integration-mock/ui/streamlit_app.py` |
+| Database | SQLite (bundled in repo) |
+
+### Features Available in Cloud Version
+
+- KPI Cards (Total, Passing, Failing, Last Evaluated)
+- Compliance Breakdown by Source & Severity
+- Policy Compliance Findings Table with colored indicators
+- Policy Deep Dive with violating resources
+- Raw Evidence JSON viewer
+- Filters (Source, Status, Severity)
+
+### No API Required
+
+The cloud version reads directly from the bundled SQLite database (`corestack.db`), so no separate API server is needed.
+
+---
+
+## 16. Quick Links Summary
+
+| Resource | URL |
+|----------|-----|
+| **Live Dashboard** | https://corestackintegration.streamlit.app |
+| **GitHub Repo** | https://github.com/brundala-labs/aws-custodian-real-poc |
+| **CoreStack Website** | https://www.corestack.io |
