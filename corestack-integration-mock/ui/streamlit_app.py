@@ -8,6 +8,8 @@ import os
 import sqlite3
 from pathlib import Path
 import streamlit as st
+import pandas as pd
+import plotly.graph_objects as go
 
 # ── Database Path ─────────────────────────────────────────────────────────────
 # Look for database in multiple locations for flexibility
@@ -1075,8 +1077,6 @@ with tab_dashboard:
 
     st.markdown(f'<h4 style="color: {CORESTACK_DARK_BLUE}; margin-bottom: 0.5rem;">Compliance Breakdown</h4>', unsafe_allow_html=True)
 
-    import plotly.graph_objects as go
-
     # By Policy Source (Top) - Bar Chart
     with st.container(border=True):
         st.markdown(f'<p style="color: {CORESTACK_BLUE}; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem;">By Policy Source</p>', unsafe_allow_html=True)
@@ -1185,8 +1185,6 @@ with tab_dashboard:
     if not findings:
         st.info("No findings match the current filters. Try adjusting your filter criteria.")
     else:
-        import pandas as pd
-
         # Build dataframe with display values
         table_data = []
         for f in findings:
@@ -1604,7 +1602,6 @@ with tab_executive:
         {"Step": "8", "Component": "CoreStack Recommendation Dashboard", "Description": "Presents unified compliance view to end users"},
     ]
 
-    import pandas as pd
     flow_df = pd.DataFrame(flow_data)
     st.dataframe(flow_df, use_container_width=True, hide_index=True)
 
