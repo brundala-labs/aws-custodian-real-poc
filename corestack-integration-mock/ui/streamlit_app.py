@@ -834,63 +834,57 @@ st.markdown("#### Compliance Breakdown")
 col_a, col_b = st.columns(2)
 
 with col_a:
-    # Build source breakdown HTML with border
-    source_html = f'<div class="bordered-box"><h4 style="margin-top:0; color:{CORESTACK_DARK_BLUE};">By Policy Source</h4>'
-    for src, counts in summary.get("by_source", {}).items():
-        label = "Cloud Custodian" if src == "cloudcustodian" else "CoreStack"
-        pass_count = counts.get("PASS", 0)
-        fail_count = counts.get("FAIL", 0)
-        total = pass_count + fail_count
-        pass_pct = int((pass_count / total * 100)) if total > 0 else 0
+    with st.container(border=True):
+        st.markdown("**By Policy Source**")
+        for src, counts in summary.get("by_source", {}).items():
+            label = "Cloud Custodian" if src == "cloudcustodian" else "CoreStack"
+            pass_count = counts.get("PASS", 0)
+            fail_count = counts.get("FAIL", 0)
+            total = pass_count + fail_count
+            pass_pct = int((pass_count / total * 100)) if total > 0 else 0
 
-        source_html += f'''
-        <div style="margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid #E2E8F0;">
-            <div style="font-weight: 700; margin-bottom: 0.5rem;">{label}</div>
-            <div style="display: flex; gap: 1rem; align-items: center;">
-                <span style="background: #C6F6D5; color: #276749; padding: 4px 12px; border-radius: 4px; font-weight: 700;">Pass: {pass_count}</span>
-                <span style="background: #FED7D7; color: #C53030; padding: 4px 12px; border-radius: 4px; font-weight: 700;">Fail: {fail_count}</span>
-                <div style="flex: 1; background: #E2E8F0; border-radius: 4px; height: 20px; overflow: hidden;">
-                    <div style="width: {pass_pct}%; background: linear-gradient(90deg, #38A169, #48BB78); height: 100%;"></div>
-                </div>
-                <span style="font-weight: 600; color: {CORESTACK_TEXT_MID};">{pass_pct}%</span>
-            </div>
-        </div>
-        '''
-    source_html += '</div>'
-    st.markdown(source_html, unsafe_allow_html=True)
+            st.markdown(f"**{label}**")
+            c1, c2, c3 = st.columns([1, 1, 2])
+            with c1:
+                st.metric("Pass", pass_count, delta=None)
+            with c2:
+                st.metric("Fail", fail_count, delta=None)
+            with c3:
+                st.progress(pass_pct / 100 if pass_pct > 0 else 0.01, text=f"{pass_pct}% compliant")
+            st.divider()
 
 with col_b:
-    # Build severity breakdown HTML with border
-    severity_html = f'<div class="bordered-box"><h4 style="margin-top:0; color:{CORESTACK_DARK_BLUE};">By Severity Level</h4>'
-    severity_colors = {"high": "#E53E3E", "medium": "#DD6B20", "low": "#3182CE"}
+    with st.container(border=True):
+        st.markdown("**By Severity Level**")
+        for sev in ["high", "medium", "low"]:
+            counts = summary.get("by_severity", {}).get(sev, {})
+            pass_count = counts.get("PASS", 0)
+            fail_count = counts.get("FAIL", 0)
+            total = pass_count + fail_count
+            pass_pct = int((pass_count / total * 100)) if total > 0 else 0
 
-    for sev in ["high", "medium", "low"]:
-        counts = summary.get("by_severity", {}).get(sev, {})
-        pass_count = counts.get("PASS", 0)
-        fail_count = counts.get("FAIL", 0)
-        total = pass_count + fail_count
-        pass_pct = int((pass_count / total * 100)) if total > 0 else 0
-        sev_color = severity_colors.get(sev, CORESTACK_TEXT_MID)
+            if sev == "high":
+                st.markdown(f":red[**{sev.upper()}**]")
+            elif sev == "medium":
+                st.markdown(f":orange[**{sev.upper()}**]")
+            else:
+                st.markdown(f":blue[**{sev.upper()}**]")
 
-        severity_html += f'''
-        <div style="margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid #E2E8F0;">
-            <div style="font-weight: 700; margin-bottom: 0.5rem; color: {sev_color};">{sev.upper()}</div>
-            <div style="display: flex; gap: 1rem; align-items: center;">
-                <span style="background: #C6F6D5; color: #276749; padding: 4px 12px; border-radius: 4px; font-weight: 700;">Pass: {pass_count}</span>
-                <span style="background: #FED7D7; color: #C53030; padding: 4px 12px; border-radius: 4px; font-weight: 700;">Fail: {fail_count}</span>
-                <div style="flex: 1; background: #E2E8F0; border-radius: 4px; height: 20px; overflow: hidden;">
-                    <div style="width: {pass_pct}%; background: linear-gradient(90deg, #38A169, #48BB78); height: 100%;"></div>
-                </div>
-                <span style="font-weight: 600; color: {CORESTACK_TEXT_MID};">{pass_pct}%</span>
-            </div>
-        </div>
-        '''
-    severity_html += '</div>'
-    st.markdown(severity_html, unsafe_allow_html=True)
+            if total > 0:
+                c1, c2, c3 = st.columns([1, 1, 2])
+                with c1:
+                    st.metric("Pass", pass_count, delta=None)
+                with c2:
+                    st.metric("Fail", fail_count, delta=None)
+                with c3:
+                    st.progress(pass_pct / 100 if pass_pct > 0 else 0.01, text=f"{pass_pct}% compliant")
+            else:
+                st.caption("No policies")
+            st.divider()
 
 # ── Findings Table ───────────────────────────────────────────────────────────
 
-st.markdown(f"#### Policy Compliance Findings")
+st.markdown("#### Policy Compliance Findings")
 
 # Apply filters
 source_param = None if source_filter == "All Sources" else source_filter
@@ -902,57 +896,48 @@ findings = db_get_findings(source=source_param, status=status_param, severity=se
 if not findings:
     st.info("No findings match the current filters. Try adjusting your filter criteria.")
 else:
-    # Build HTML table with highlights
-    table_html = '''
-    <table class="findings-table">
-        <thead>
-            <tr>
-                <th>Policy Name</th>
-                <th>Source</th>
-                <th>Status</th>
-                <th>Violations</th>
-                <th>Severity</th>
-                <th>Category</th>
-                <th>Resource Type</th>
-            </tr>
-        </thead>
-        <tbody>
-    '''
+    import pandas as pd
 
+    # Build dataframe
+    table_data = []
     for f in findings:
         source_label = "Cloud Custodian" if f['source'] == "cloudcustodian" else "CoreStack"
-        is_pass = f['status'] == "PASS"
-        row_class = "row-pass" if is_pass else "row-fail"
+        table_data.append({
+            "Policy": f['policy_name'],
+            "Source": source_label,
+            "Status": f['status'],
+            "Violations": f['violations_count'],
+            "Severity": f['severity'].upper(),
+            "Category": f['category'],
+            "Resource Type": f['resource_types']
+        })
 
-        # Status badge
-        status_badge = '<span class="badge-pass">PASS</span>' if is_pass else '<span class="badge-fail">FAIL</span>'
+    df = pd.DataFrame(table_data)
 
-        # Violations badge
-        viol_class = "violations-green" if f['violations_count'] == 0 else "violations-red"
-        violations_badge = f'<span class="violations-count {viol_class}">{f["violations_count"]}</span>'
+    # Use st.dataframe with column_config for styling
+    st.dataframe(
+        df,
+        use_container_width=True,
+        hide_index=True,
+        column_config={
+            "Policy": st.column_config.TextColumn("Policy", width="large"),
+            "Source": st.column_config.TextColumn("Source", width="medium"),
+            "Status": st.column_config.TextColumn("Status", width="small"),
+            "Violations": st.column_config.ProgressColumn(
+                "Violations",
+                width="small",
+                format="%d",
+                min_value=0,
+                max_value=max(df['Violations'].max(), 1),
+            ),
+            "Severity": st.column_config.TextColumn("Severity", width="small"),
+            "Category": st.column_config.TextColumn("Category", width="small"),
+            "Resource Type": st.column_config.TextColumn("Resource Type", width="medium"),
+        }
+    )
 
-        # Severity badge
-        sev_class = f"badge-{f['severity']}"
-        severity_badge = f'<span class="{sev_class}">{f["severity"].upper()}</span>'
-
-        table_html += f'''
-            <tr class="{row_class}">
-                <td><strong>{f['policy_name']}</strong></td>
-                <td>{source_label}</td>
-                <td>{status_badge}</td>
-                <td>{violations_badge}</td>
-                <td>{severity_badge}</td>
-                <td>{f['category']}</td>
-                <td>{f['resource_types']}</td>
-            </tr>
-        '''
-
-    table_html += '''
-        </tbody>
-    </table>
-    '''
-
-    st.markdown(table_html, unsafe_allow_html=True)
+    # Add legend
+    st.caption("Legend: PASS = Compliant | FAIL = Non-compliant | Violations bar shows count")
 
 # ── Drill-down Section ───────────────────────────────────────────────────────
 
