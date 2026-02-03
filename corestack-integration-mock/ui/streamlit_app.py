@@ -897,56 +897,57 @@ findings = db_get_findings(source=source_param, status=status_param, severity=se
 if not findings:
     st.info("No findings match the current filters. Try adjusting your filter criteria.")
 else:
-    # Table header
-    header_cols = st.columns([3, 2, 1, 1, 1, 1, 2])
-    header_cols[0].markdown("**Policy**")
-    header_cols[1].markdown("**Source**")
-    header_cols[2].markdown("**Status**")
-    header_cols[3].markdown("**Violations**")
-    header_cols[4].markdown("**Severity**")
-    header_cols[5].markdown("**Category**")
-    header_cols[6].markdown("**Resource**")
-    st.divider()
-
-    # Table rows with colors
-    for f in findings:
-        source_label = "Cloud Custodian" if f['source'] == "cloudcustodian" else "CoreStack"
-        cols = st.columns([3, 2, 1, 1, 1, 1, 2])
-
-        # Policy name
-        cols[0].markdown(f"**{f['policy_name']}**")
-
-        # Source
-        cols[1].caption(source_label)
-
-        # Status with color
-        if f['status'] == "PASS":
-            cols[2].success("PASS")
-        else:
-            cols[2].error("FAIL")
-
-        # Violations with color
-        if f['violations_count'] > 0:
-            cols[3].error(str(f['violations_count']))
-        else:
-            cols[3].success("0")
-
-        # Severity with color
-        sev = f['severity'].upper()
-        if sev == "HIGH":
-            cols[4].error(sev)
-        elif sev == "MEDIUM":
-            cols[4].warning(sev)
-        else:
-            cols[4].info(sev)
-
-        # Category
-        cols[5].caption(f['category'])
-
-        # Resource type
-        cols[6].caption(f['resource_types'])
-
+    with st.container(border=True):
+        # Table header
+        header_cols = st.columns([3, 2, 1, 1, 1, 1, 2])
+        header_cols[0].markdown("**Policy**")
+        header_cols[1].markdown("**Source**")
+        header_cols[2].markdown("**Status**")
+        header_cols[3].markdown("**Violations**")
+        header_cols[4].markdown("**Severity**")
+        header_cols[5].markdown("**Category**")
+        header_cols[6].markdown("**Resource**")
         st.divider()
+
+        # Table rows with colored text (no background)
+        for f in findings:
+            source_label = "Cloud Custodian" if f['source'] == "cloudcustodian" else "CoreStack"
+            cols = st.columns([3, 2, 1, 1, 1, 1, 2])
+
+            # Policy name
+            cols[0].markdown(f"**{f['policy_name']}**")
+
+            # Source
+            cols[1].caption(source_label)
+
+            # Status with colored text only
+            if f['status'] == "PASS":
+                cols[2].markdown(":green[**PASS**]")
+            else:
+                cols[2].markdown(":red[**FAIL**]")
+
+            # Violations with colored text only
+            if f['violations_count'] > 0:
+                cols[3].markdown(f":red[**{f['violations_count']}**]")
+            else:
+                cols[3].markdown(":green[**0**]")
+
+            # Severity with colored text only
+            sev = f['severity'].upper()
+            if sev == "HIGH":
+                cols[4].markdown(f":red[**{sev}**]")
+            elif sev == "MEDIUM":
+                cols[4].markdown(f":orange[**{sev}**]")
+            else:
+                cols[4].markdown(f":blue[**{sev}**]")
+
+            # Category
+            cols[5].caption(f['category'])
+
+            # Resource type
+            cols[6].caption(f['resource_types'])
+
+            st.divider()
 
 # ── Drill-down Section ───────────────────────────────────────────────────────
 
