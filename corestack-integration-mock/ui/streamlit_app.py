@@ -936,13 +936,38 @@ with tab_dashboard:
     # ── Filters ───────────────────────────────────────────────────────────────
     st.markdown('<div class="section-title"><span class="material-symbols-outlined">filter_alt</span>Filters</div>', unsafe_allow_html=True)
 
+    # All filters in one row
+    filter_cols = st.columns([2, 2, 3])
+
     # Source Filter
-    st.markdown("**Source**")
-    src_cols = st.columns([1, 1, 2])
-    with src_cols[0]:
-        src_custodian = st.checkbox("Cloud Custodian", value=True, key="src_custodian")
-    with src_cols[1]:
-        src_corestack = st.checkbox("CoreStack", value=True, key="src_corestack")
+    with filter_cols[0]:
+        st.markdown("**Source**")
+        src_inner = st.columns(2)
+        with src_inner[0]:
+            src_custodian = st.checkbox("Cloud Custodian", value=True, key="src_custodian")
+        with src_inner[1]:
+            src_corestack = st.checkbox("CoreStack", value=True, key="src_corestack")
+
+    # Status Filter
+    with filter_cols[1]:
+        st.markdown("**Status**")
+        stat_inner = st.columns(2)
+        with stat_inner[0]:
+            stat_pass = st.checkbox("PASS", value=True, key="stat_pass")
+        with stat_inner[1]:
+            stat_fail = st.checkbox("FAIL", value=True, key="stat_fail")
+
+    # Severity Filter
+    with filter_cols[2]:
+        st.markdown("**Severity**")
+        sev_inner = st.columns(3)
+        with sev_inner[0]:
+            sev_high = st.checkbox("High", value=True, key="sev_high")
+        with sev_inner[1]:
+            sev_medium = st.checkbox("Medium", value=True, key="sev_medium")
+        with sev_inner[2]:
+            sev_low = st.checkbox("Low", value=True, key="sev_low")
+
     # Determine source filter
     if src_custodian and src_corestack:
         source_param = None  # All
@@ -953,13 +978,6 @@ with tab_dashboard:
     else:
         source_param = None  # None selected = show all
 
-    # Status Filter
-    st.markdown("**Status**")
-    stat_cols = st.columns([1, 1, 2])
-    with stat_cols[0]:
-        stat_pass = st.checkbox("PASS", value=True, key="stat_pass")
-    with stat_cols[1]:
-        stat_fail = st.checkbox("FAIL", value=True, key="stat_fail")
     # Determine status filter
     if stat_pass and stat_fail:
         status_param = None  # All
@@ -970,16 +988,7 @@ with tab_dashboard:
     else:
         status_param = None  # None selected = show all
 
-    # Severity Filter
-    st.markdown("**Severity**")
-    sev_cols = st.columns([1, 1, 1, 1])
-    with sev_cols[0]:
-        sev_high = st.checkbox("High", value=True, key="sev_high")
-    with sev_cols[1]:
-        sev_medium = st.checkbox("Medium", value=True, key="sev_medium")
-    with sev_cols[2]:
-        sev_low = st.checkbox("Low", value=True, key="sev_low")
-    # Determine severity filter (simplified - takes first selected)
+    # Determine severity filter
     if sev_high and sev_medium and sev_low:
         severity_param = None  # All
     elif sev_high and not sev_medium and not sev_low:
