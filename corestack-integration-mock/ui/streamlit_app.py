@@ -73,17 +73,20 @@ st.markdown(f"""
         font-family: 'Nunito Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     }}
 
-    /* Force light theme */
+    /* Force light theme with explicit text colors */
     .stApp {{
         background-color: #FFFFFF !important;
+        color: #1A202C !important;
     }}
 
     .main {{
         background-color: #FFFFFF !important;
+        color: #1A202C !important;
     }}
 
     [data-testid="stAppViewContainer"] {{
         background-color: #FFFFFF !important;
+        color: #1A202C !important;
     }}
 
     [data-testid="stHeader"] {{
@@ -92,6 +95,7 @@ st.markdown(f"""
 
     section[data-testid="stSidebar"] {{
         background-color: #F7FAFC !important;
+        color: #1A202C !important;
     }}
 
     .main .block-container {{
@@ -99,6 +103,88 @@ st.markdown(f"""
         padding-bottom: 2rem;
         max-width: 1400px;
         background-color: #FFFFFF !important;
+        color: #1A202C !important;
+    }}
+
+    /* Force dark text on all Streamlit elements */
+    .stMarkdown, .stMarkdown p, .stMarkdown li, .stMarkdown span {{
+        color: #1A202C !important;
+    }}
+
+    /* Tabs text color */
+    .stTabs [data-baseweb="tab"] {{
+        color: #1A202C !important;
+    }}
+
+    .stTabs [aria-selected="true"] {{
+        color: {CORESTACK_BLUE} !important;
+    }}
+
+    /* Radio button labels */
+    .stRadio label, .stRadio span {{
+        color: #1A202C !important;
+    }}
+
+    /* Selectbox and other inputs */
+    .stSelectbox label, .stTextInput label {{
+        color: #1A202C !important;
+    }}
+
+    /* Container text */
+    [data-testid="stVerticalBlockBorderWrapper"] {{
+        color: #1A202C !important;
+    }}
+
+    /* Info/warning boxes */
+    .stAlert {{
+        color: #1A202C !important;
+    }}
+
+    /* Expander text */
+    .streamlit-expanderHeader {{
+        color: #1A202C !important;
+    }}
+
+    /* Caption text */
+    .stCaption {{
+        color: #4A5568 !important;
+    }}
+
+    /* Dataframe text colors */
+    [data-testid="stDataFrame"] {{
+        color: #1A202C !important;
+    }}
+
+    [data-testid="stDataFrame"] td, [data-testid="stDataFrame"] th {{
+        color: #1A202C !important;
+        background-color: #FFFFFF !important;
+    }}
+
+    /* Table headers */
+    [data-testid="stDataFrame"] th {{
+        background-color: #0076e1 !important;
+        color: white !important;
+    }}
+
+    /* Bordered containers background */
+    [data-testid="stVerticalBlockBorderWrapper"] > div {{
+        background-color: #FFFFFF !important;
+        color: #1A202C !important;
+    }}
+
+    /* Bold text */
+    strong, b {{
+        color: inherit !important;
+    }}
+
+    /* Links */
+    a {{
+        color: {CORESTACK_BLUE} !important;
+    }}
+
+    /* Headings */
+    h1, h2, h3, h4, h5, h6 {{
+        color: #1A202C !important;
     }}
 
     /* Mobile Responsive - Tablet */
@@ -420,12 +506,13 @@ st.markdown(f"""
         grid-template-columns: repeat(6, 1fr);
     }}
     .kpi-card {{
-        background: {CORESTACK_CARD_BG};
+        background: {CORESTACK_CARD_BG} !important;
         border-radius: 12px;
         padding: 1.5rem;
         box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
         border: 1px solid #E2E8F0;
         transition: transform 0.2s, box-shadow 0.2s;
+        color: {CORESTACK_TEXT_DARK} !important;
     }}
     .kpi-card:hover {{
         transform: translateY(-2px);
@@ -441,20 +528,20 @@ st.markdown(f"""
         font-size: 1.5rem;
         margin-bottom: 1rem;
     }}
-    .kpi-icon.blue {{ background: rgba(0, 102, 204, 0.2); color: {CORESTACK_BLUE}; }}
-    .kpi-icon.green {{ background: rgba(39, 103, 73, 0.2); color: {CORESTACK_SUCCESS}; }}
-    .kpi-icon.red {{ background: rgba(197, 48, 48, 0.2); color: {CORESTACK_DANGER}; }}
-    .kpi-icon.orange {{ background: rgba(192, 86, 33, 0.2); color: {CORESTACK_WARNING}; }}
+    .kpi-icon.blue {{ background: rgba(0, 102, 204, 0.2) !important; color: {CORESTACK_BLUE} !important; }}
+    .kpi-icon.green {{ background: rgba(39, 103, 73, 0.2) !important; color: {CORESTACK_SUCCESS} !important; }}
+    .kpi-icon.red {{ background: rgba(197, 48, 48, 0.2) !important; color: {CORESTACK_DANGER} !important; }}
+    .kpi-icon.orange {{ background: rgba(192, 86, 33, 0.2) !important; color: {CORESTACK_WARNING} !important; }}
     .kpi-value {{
         font-size: 2.5rem;
         font-weight: 800;
-        color: {CORESTACK_TEXT_DARK};
+        color: {CORESTACK_TEXT_DARK} !important;
         line-height: 1;
         margin-bottom: 0.25rem;
     }}
     .kpi-label {{
         font-size: 0.9rem;
-        color: {CORESTACK_TEXT_MID};
+        color: {CORESTACK_TEXT_MID} !important;
         font-weight: 600;
     }}
     .kpi-trend {{
@@ -464,8 +551,8 @@ st.markdown(f"""
         border-radius: 20px;
         display: inline-block;
     }}
-    .kpi-trend.up {{ background: rgba(39, 103, 73, 0.2); color: {CORESTACK_SUCCESS}; }}
-    .kpi-trend.down {{ background: rgba(197, 48, 48, 0.2); color: {CORESTACK_DANGER}; }}
+    .kpi-trend.up {{ background: rgba(39, 103, 73, 0.2) !important; color: {CORESTACK_SUCCESS} !important; }}
+    .kpi-trend.down {{ background: rgba(197, 48, 48, 0.2) !important; color: {CORESTACK_DANGER} !important; }}
 
     /* Status Badges */
     .status-pass {{
