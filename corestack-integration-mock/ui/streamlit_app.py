@@ -511,7 +511,7 @@ st.markdown(f"""
         min-width: 100% !important;
     }}
 
-    /* Checkbox styling */
+    /* Checkbox styling for mobile */
     .stCheckbox {{
         padding: 0.25rem 0 !important;
     }}
@@ -519,34 +519,10 @@ st.markdown(f"""
     .stCheckbox label {{
         font-size: 0.85rem !important;
         color: {TEXT} !important;
-        border: 1px solid {BORDER} !important;
-        border-radius: 6px !important;
-        padding: 0.5rem 0.75rem !important;
-        background: {BG} !important;
     }}
 
     .stCheckbox label span {{
         color: {TEXT} !important;
-    }}
-
-    /* Green checkbox when checked */
-    .stCheckbox input[type="checkbox"]:checked + div {{
-        background-color: {SUCCESS} !important;
-        border-color: {SUCCESS} !important;
-    }}
-
-    .stCheckbox input[type="checkbox"]:checked + div svg {{
-        fill: white !important;
-        stroke: white !important;
-    }}
-
-    /* Checkbox box styling */
-    .stCheckbox [data-testid="stCheckbox"] > div:first-child {{
-        border-color: {SUCCESS} !important;
-    }}
-
-    .stCheckbox [data-testid="stCheckbox"] > div:first-child[aria-checked="true"] {{
-        background-color: {SUCCESS} !important;
     }}
 
     /* ═══════════════════════════════════════════════════════════════════════
