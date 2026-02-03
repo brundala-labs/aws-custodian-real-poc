@@ -47,6 +47,25 @@ CORESTACK_WARNING = "#DD6B20"
 st.markdown(f"""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0');
+
+    .material-symbols-outlined {{
+        font-family: 'Material Symbols Outlined';
+        font-weight: normal;
+        font-style: normal;
+        font-size: 24px;
+        line-height: 1;
+        letter-spacing: normal;
+        text-transform: none;
+        display: inline-block;
+        white-space: nowrap;
+        word-wrap: normal;
+        direction: ltr;
+        -webkit-font-feature-settings: 'liga';
+        font-feature-settings: 'liga';
+        -webkit-font-smoothing: antialiased;
+        vertical-align: middle;
+    }}
 
     * {{
         font-family: 'Nunito Sans', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -259,61 +278,99 @@ st.markdown(f"""
         font-size: 1rem;
     }}
 
-    /* Breakdown Cards */
-    .breakdown-grid {{
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
-        margin-top: 1rem;
-    }}
-    .breakdown-card {{
+    /* Diff-style Breakdown */
+    .diff-container {{
         background: {CORESTACK_CARD_BG};
-        border-radius: 10px;
-        padding: 1.25rem;
+        border-radius: 12px;
+        padding: 1.5rem;
         border: 1px solid #E2E8F0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }}
-    .breakdown-card h4 {{
-        margin: 0 0 1rem 0;
-        font-size: 0.95rem;
+    .diff-header {{
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid #E2E8F0;
+    }}
+    .diff-header h4 {{
+        margin: 0;
+        font-size: 1rem;
         font-weight: 700;
+        color: {CORESTACK_TEXT_DARK};
+    }}
+    .diff-row {{
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #F1F5F9;
+    }}
+    .diff-row:last-child {{
+        border-bottom: none;
+    }}
+    .diff-label {{
+        width: 140px;
+        font-weight: 600;
         color: {CORESTACK_TEXT_DARK};
         display: flex;
         align-items: center;
         gap: 0.5rem;
     }}
-    .breakdown-item {{
+    .diff-label .material-symbols-outlined {{
+        font-size: 20px;
+    }}
+    .diff-bar-container {{
+        flex: 1;
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        padding: 0.5rem 0;
-        border-bottom: 1px solid #EDF2F7;
-    }}
-    .breakdown-item:last-child {{
-        border-bottom: none;
-    }}
-    .breakdown-label {{
-        font-weight: 600;
-        color: {CORESTACK_TEXT_MID};
-    }}
-    .breakdown-values {{
-        display: flex;
         gap: 0.5rem;
+        height: 28px;
     }}
-    .breakdown-pass {{
-        background: rgba(56, 161, 105, 0.1);
+    .diff-bar {{
+        height: 100%;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: white;
+        min-width: 36px;
+        transition: width 0.3s ease;
+    }}
+    .diff-bar.pass {{
+        background: linear-gradient(135deg, {CORESTACK_SUCCESS} 0%, #2F855A 100%);
+    }}
+    .diff-bar.fail {{
+        background: linear-gradient(135deg, {CORESTACK_DANGER} 0%, #C53030 100%);
+    }}
+    .diff-bar.empty {{
+        background: #E2E8F0;
+        color: #A0AEC0;
+    }}
+    .diff-stats {{
+        display: flex;
+        gap: 1rem;
+        margin-left: auto;
+        min-width: 120px;
+        justify-content: flex-end;
+    }}
+    .diff-stat {{
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }}
+    .diff-stat.pass {{
         color: {CORESTACK_SUCCESS};
-        padding: 0.2rem 0.5rem;
-        border-radius: 4px;
-        font-size: 0.8rem;
-        font-weight: 700;
     }}
-    .breakdown-fail {{
-        background: rgba(229, 62, 62, 0.1);
+    .diff-stat.fail {{
         color: {CORESTACK_DANGER};
-        padding: 0.2rem 0.5rem;
-        border-radius: 4px;
-        font-size: 0.8rem;
-        font-weight: 700;
+    }}
+    .diff-stat .material-symbols-outlined {{
+        font-size: 18px;
     }}
 
     /* Sidebar Styling */
@@ -610,7 +667,7 @@ with st.sidebar:
     """, unsafe_allow_html=True)
 
     st.markdown("---")
-    st.markdown("### 🔍 Filters")
+    st.markdown("### Filters")
 
     source_filter = st.selectbox(
         "Policy Source",
@@ -647,83 +704,119 @@ compliance_rate = round((summary['passing'] / max(summary['total_policies'], 1))
 st.markdown(f"""
 <div class="kpi-container">
     <div class="kpi-card">
-        <div class="kpi-icon blue">📋</div>
+        <div class="kpi-icon blue"><span class="material-symbols-outlined">policy</span></div>
         <div class="kpi-value">{summary['total_policies']}</div>
         <div class="kpi-label">Total Policies</div>
-        <div class="kpi-trend up">Unified View</div>
+        <div class="kpi-trend up"><span class="material-symbols-outlined" style="font-size:14px;">visibility</span> Unified View</div>
     </div>
     <div class="kpi-card">
-        <div class="kpi-icon green">✓</div>
+        <div class="kpi-icon green"><span class="material-symbols-outlined">check_circle</span></div>
         <div class="kpi-value" style="color:{CORESTACK_SUCCESS};">{summary['passing']}</div>
         <div class="kpi-label">Compliant</div>
-        <div class="kpi-trend up">↑ {compliance_rate}% Rate</div>
+        <div class="kpi-trend up"><span class="material-symbols-outlined" style="font-size:14px;">trending_up</span> {compliance_rate}% Rate</div>
     </div>
     <div class="kpi-card">
-        <div class="kpi-icon red">✗</div>
+        <div class="kpi-icon red"><span class="material-symbols-outlined">cancel</span></div>
         <div class="kpi-value" style="color:{CORESTACK_DANGER};">{summary['failing']}</div>
         <div class="kpi-label">Non-Compliant</div>
-        <div class="kpi-trend down">Requires Action</div>
+        <div class="kpi-trend down"><span class="material-symbols-outlined" style="font-size:14px;">priority_high</span> Requires Action</div>
     </div>
     <div class="kpi-card">
-        <div class="kpi-icon orange">⏱</div>
+        <div class="kpi-icon orange"><span class="material-symbols-outlined">schedule</span></div>
         <div class="kpi-value" style="font-size:1rem;">{summary.get('last_evaluated', 'N/A')[:10] if summary.get('last_evaluated') else 'N/A'}</div>
         <div class="kpi-label">Last Evaluated</div>
-        <div class="kpi-trend up">Auto-Sync Enabled</div>
+        <div class="kpi-trend up"><span class="material-symbols-outlined" style="font-size:14px;">sync</span> Auto-Sync</div>
     </div>
 </div>
 """, unsafe_allow_html=True)
 
 # ── Breakdown Section ────────────────────────────────────────────────────────
 
-with st.expander("📊 Compliance Breakdown by Source & Severity", expanded=True):
-    st.markdown('<div class="breakdown-grid">', unsafe_allow_html=True)
+col_a, col_b = st.columns(2)
 
-    col_a, col_b = st.columns(2)
+with col_a:
+    # By Source - Diff style
+    source_html = f'''
+    <div class="diff-container">
+        <div class="diff-header">
+            <span class="material-symbols-outlined" style="color:{CORESTACK_BLUE};">cloud</span>
+            <h4>By Policy Source</h4>
+        </div>
+    '''
+    for src, counts in summary.get("by_source", {}).items():
+        label = "Cloud Custodian" if src == "cloudcustodian" else "CoreStack"
+        icon = "cloud" if src == "cloudcustodian" else "domain"
+        pass_count = counts.get("PASS", 0)
+        fail_count = counts.get("FAIL", 0)
+        total = pass_count + fail_count
+        pass_pct = (pass_count / total * 100) if total > 0 else 0
+        fail_pct = (fail_count / total * 100) if total > 0 else 0
 
-    with col_a:
-        st.markdown('<div class="breakdown-card">', unsafe_allow_html=True)
-        st.markdown('<h4>☁ By Policy Source</h4>', unsafe_allow_html=True)
-        for src, counts in summary.get("by_source", {}).items():
-            label = "Cloud Custodian" if src == "cloudcustodian" else "CoreStack" if src == "corestack" else src
-            pass_count = counts.get("PASS", 0)
-            fail_count = counts.get("FAIL", 0)
-            st.markdown(f"""
-            <div class="breakdown-item">
-                <span class="breakdown-label">{label}</span>
-                <div class="breakdown-values">
-                    <span class="breakdown-pass">✓ {pass_count}</span>
-                    <span class="breakdown-fail">✗ {fail_count}</span>
-                </div>
+        source_html += f'''
+        <div class="diff-row">
+            <div class="diff-label">
+                <span class="material-symbols-outlined">{icon}</span>
+                {label}
             </div>
-            """, unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
-
-    with col_b:
-        st.markdown('<div class="breakdown-card">', unsafe_allow_html=True)
-        st.markdown('<h4>⚡ By Severity Level</h4>', unsafe_allow_html=True)
-        for sev in ["high", "medium", "low"]:
-            counts = summary.get("by_severity", {}).get(sev, {})
-            pass_count = counts.get("PASS", 0)
-            fail_count = counts.get("FAIL", 0)
-            icon = "●" if sev == "high" else "◐" if sev == "medium" else "○"
-            st.markdown(f"""
-            <div class="breakdown-item">
-                <span class="breakdown-label">{icon} {sev.title()}</span>
-                <div class="breakdown-values">
-                    <span class="breakdown-pass">✓ {pass_count}</span>
-                    <span class="breakdown-fail">✗ {fail_count}</span>
-                </div>
+            <div class="diff-bar-container">
+                <div class="diff-bar pass" style="width: {max(pass_pct, 8)}%;">{pass_count}</div>
+                <div class="diff-bar fail" style="width: {max(fail_pct, 8)}%;">{fail_count}</div>
             </div>
-            """, unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
+            <div class="diff-stats">
+                <span class="diff-stat pass"><span class="material-symbols-outlined">check_circle</span>{pass_count}</span>
+                <span class="diff-stat fail"><span class="material-symbols-outlined">cancel</span>{fail_count}</span>
+            </div>
+        </div>
+        '''
+    source_html += '</div>'
+    st.markdown(source_html, unsafe_allow_html=True)
 
-    st.markdown('</div>', unsafe_allow_html=True)
+with col_b:
+    # By Severity - Diff style
+    severity_icons = {"high": "error", "medium": "warning", "low": "info"}
+    severity_colors = {"high": CORESTACK_DANGER, "medium": CORESTACK_WARNING, "low": CORESTACK_BLUE}
+
+    severity_html = f'''
+    <div class="diff-container">
+        <div class="diff-header">
+            <span class="material-symbols-outlined" style="color:{CORESTACK_WARNING};">shield</span>
+            <h4>By Severity Level</h4>
+        </div>
+    '''
+    for sev in ["high", "medium", "low"]:
+        counts = summary.get("by_severity", {}).get(sev, {})
+        pass_count = counts.get("PASS", 0)
+        fail_count = counts.get("FAIL", 0)
+        total = pass_count + fail_count
+        pass_pct = (pass_count / total * 100) if total > 0 else 0
+        fail_pct = (fail_count / total * 100) if total > 0 else 0
+        icon = severity_icons.get(sev, "info")
+        color = severity_colors.get(sev, CORESTACK_TEXT_MID)
+
+        severity_html += f'''
+        <div class="diff-row">
+            <div class="diff-label">
+                <span class="material-symbols-outlined" style="color:{color};">{icon}</span>
+                {sev.title()}
+            </div>
+            <div class="diff-bar-container">
+                <div class="diff-bar pass" style="width: {max(pass_pct, 8) if total > 0 else 0}%;">{pass_count if total > 0 else ''}</div>
+                <div class="diff-bar fail" style="width: {max(fail_pct, 8) if total > 0 else 0}%;">{fail_count if total > 0 else ''}</div>
+            </div>
+            <div class="diff-stats">
+                <span class="diff-stat pass"><span class="material-symbols-outlined">check_circle</span>{pass_count}</span>
+                <span class="diff-stat fail"><span class="material-symbols-outlined">cancel</span>{fail_count}</span>
+            </div>
+        </div>
+        '''
+    severity_html += '</div>'
+    st.markdown(severity_html, unsafe_allow_html=True)
 
 # ── Findings Table ───────────────────────────────────────────────────────────
 
-st.markdown("""
+st.markdown(f"""
 <div class="section-header">
-    <div class="section-icon">📋</div>
+    <div class="section-icon"><span class="material-symbols-outlined" style="color:white; font-size:20px;">assignment</span></div>
     <h3>Policy Compliance Findings</h3>
 </div>
 """, unsafe_allow_html=True)
@@ -736,29 +829,54 @@ severity_param = None if severity_filter == "All Severities" else severity_filte
 findings = db_get_findings(source=source_param, status=status_param, severity=severity_param)
 
 if not findings:
-    st.info("🔍 No findings match the current filters. Try adjusting your filter criteria.")
+    st.markdown(f'''
+    <div style="padding: 1rem; background: #EDF2F7; border-radius: 8px; display: flex; align-items: center; gap: 0.5rem;">
+        <span class="material-symbols-outlined" style="color: {CORESTACK_BLUE};">search</span>
+        <span>No findings match the current filters. Try adjusting your filter criteria.</span>
+    </div>
+    ''', unsafe_allow_html=True)
 else:
     import pandas as pd
 
     # Build dataframe for display
     table_data = []
     for f in findings:
-        source_icon = "☁️" if f['source'] == "cloudcustodian" else "◈"
         source_label = "Cloud Custodian" if f['source'] == "cloudcustodian" else "CoreStack"
-        status_icon = "✅" if f['status'] == "PASS" else "❌"
-        severity_icon = "🔴" if f['severity'] == "high" else "🟠" if f['severity'] == "medium" else "🔵"
+        status_display = "PASS" if f['status'] == "PASS" else "FAIL"
+        severity_display = f['severity'].upper()
 
         table_data.append({
             "Policy": f['policy_name'],
-            "Source": f"{source_icon} {source_label}",
-            "Status": f"{status_icon} {f['status']}",
+            "Source": source_label,
+            "Status": status_display,
             "Violations": f['violations_count'],
-            "Severity": f"{severity_icon} {f['severity'].upper()}",
+            "Severity": severity_display,
             "Category": f['category'],
             "Resource Type": f['resource_types']
         })
 
     df = pd.DataFrame(table_data)
+
+    # Custom styling function
+    def style_status(val):
+        if val == "PASS":
+            return f'background-color: rgba(56, 161, 105, 0.15); color: {CORESTACK_SUCCESS}; font-weight: 700;'
+        else:
+            return f'background-color: rgba(229, 62, 62, 0.15); color: {CORESTACK_DANGER}; font-weight: 700;'
+
+    def style_severity(val):
+        if val == "HIGH":
+            return f'color: {CORESTACK_DANGER}; font-weight: 700;'
+        elif val == "MEDIUM":
+            return f'color: {CORESTACK_WARNING}; font-weight: 700;'
+        else:
+            return f'color: {CORESTACK_BLUE}; font-weight: 600;'
+
+    def style_source(val):
+        if val == "Cloud Custodian":
+            return f'background-color: rgba(0, 118, 225, 0.1); color: {CORESTACK_BLUE}; font-weight: 600;'
+        else:
+            return f'background-color: rgba(0, 71, 137, 0.1); color: {CORESTACK_DARK_BLUE}; font-weight: 600;'
 
     # Display as styled dataframe
     st.dataframe(
@@ -769,7 +887,7 @@ else:
             "Policy": st.column_config.TextColumn("Policy", width="large"),
             "Source": st.column_config.TextColumn("Source", width="medium"),
             "Status": st.column_config.TextColumn("Status", width="small"),
-            "Violations": st.column_config.NumberColumn("Violations", width="small"),
+            "Violations": st.column_config.NumberColumn("Violations", width="small", format="%d"),
             "Severity": st.column_config.TextColumn("Severity", width="small"),
             "Category": st.column_config.TextColumn("Category", width="small"),
             "Resource Type": st.column_config.TextColumn("Resource Type", width="medium"),
@@ -778,9 +896,9 @@ else:
 
 # ── Drill-down Section ───────────────────────────────────────────────────────
 
-st.markdown("""
+st.markdown(f"""
 <div class="section-header">
-    <div class="section-icon">🔎</div>
+    <div class="section-icon"><span class="material-symbols-outlined" style="color:white; font-size:20px;">search</span></div>
     <h3>Policy Deep Dive & Evidence</h3>
 </div>
 """, unsafe_allow_html=True)
