@@ -939,23 +939,49 @@ with tab_dashboard:
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        source_opt = st.radio("Source", ["All", "Cloud Custodian", "CoreStack"],
-                              horizontal=True, key="src")
-        source_param = None
-        if source_opt == "Cloud Custodian":
+        st.markdown("**Source**")
+        src_custodian = st.checkbox("Cloud Custodian", value=True, key="src_custodian")
+        src_corestack = st.checkbox("CoreStack", value=True, key="src_corestack")
+        # Determine source filter
+        if src_custodian and src_corestack:
+            source_param = None  # All
+        elif src_custodian:
             source_param = "cloudcustodian"
-        elif source_opt == "CoreStack":
+        elif src_corestack:
             source_param = "corestack"
+        else:
+            source_param = None  # None selected = show all
 
     with col2:
-        status_opt = st.radio("Status", ["All", "PASS", "FAIL"],
-                              horizontal=True, key="stat")
-        status_param = None if status_opt == "All" else status_opt
+        st.markdown("**Status**")
+        stat_pass = st.checkbox("PASS", value=True, key="stat_pass")
+        stat_fail = st.checkbox("FAIL", value=True, key="stat_fail")
+        # Determine status filter
+        if stat_pass and stat_fail:
+            status_param = None  # All
+        elif stat_pass:
+            status_param = "PASS"
+        elif stat_fail:
+            status_param = "FAIL"
+        else:
+            status_param = None  # None selected = show all
 
     with col3:
-        severity_opt = st.radio("Severity", ["All", "High", "Medium", "Low"],
-                                horizontal=True, key="sev")
-        severity_param = None if severity_opt == "All" else severity_opt.lower()
+        st.markdown("**Severity**")
+        sev_high = st.checkbox("High", value=True, key="sev_high")
+        sev_medium = st.checkbox("Medium", value=True, key="sev_medium")
+        sev_low = st.checkbox("Low", value=True, key="sev_low")
+        # Determine severity filter (simplified - takes first selected)
+        if sev_high and sev_medium and sev_low:
+            severity_param = None  # All
+        elif sev_high and not sev_medium and not sev_low:
+            severity_param = "high"
+        elif sev_medium and not sev_high and not sev_low:
+            severity_param = "medium"
+        elif sev_low and not sev_high and not sev_medium:
+            severity_param = "low"
+        else:
+            severity_param = None  # Multiple or none = show all
 
     # ── Get Data ──────────────────────────────────────────────────────────────
     summary = db_get_summary(source=source_param, status=status_param, severity=severity_param)
