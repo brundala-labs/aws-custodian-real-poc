@@ -240,6 +240,27 @@ st.markdown(f"""
             padding: 0.5rem !important;
         }}
 
+        /* Force all text dark on mobile */
+        body, .stApp, .main, [data-testid="stAppViewContainer"] {{
+            color: #1A202C !important;
+            background-color: #FFFFFF !important;
+        }}
+
+        /* All text elements dark */
+        p, span, li, div, label {{
+            color: #1A202C !important;
+        }}
+
+        /* Bold text */
+        strong, b {{
+            color: #1A202C !important;
+        }}
+
+        /* Captions */
+        .stCaption, [data-testid="stCaptionContainer"] {{
+            color: #4A5568 !important;
+        }}
+
         /* KPI cards - 2 columns on phone */
         .kpi-container, .kpi-6-cols {{
             grid-template-columns: repeat(2, 1fr) !important;
@@ -248,14 +269,18 @@ st.markdown(f"""
 
         .kpi-card {{
             padding: 0.75rem !important;
+            background: #FFFFFF !important;
+            color: #1A202C !important;
         }}
 
         .kpi-value {{
             font-size: 1.5rem !important;
+            color: #1A202C !important;
         }}
 
         .kpi-label {{
             font-size: 0.75rem !important;
+            color: #2D3748 !important;
         }}
 
         .kpi-icon {{
@@ -270,20 +295,13 @@ st.markdown(f"""
             padding: 0.15rem 0.4rem !important;
         }}
 
-        /* Header */
+        /* Header - keep white text */
         .header-banner {{
             padding: 1rem !important;
             margin-bottom: 1rem !important;
-            color: white !important;
         }}
 
-        .header-banner h1 {{
-            font-size: 1.1rem !important;
-            color: white !important;
-        }}
-
-        .header-banner p {{
-            font-size: 0.75rem !important;
+        .header-banner, .header-banner h1, .header-banner p, .header-banner * {{
             color: white !important;
         }}
 
@@ -344,6 +362,11 @@ st.markdown(f"""
 
     /* Mobile Responsive - Small Phone */
     @media (max-width: 480px) {{
+        /* Force all text dark */
+        p, span, li, div, label, strong, b {{
+            color: #1A202C !important;
+        }}
+
         .kpi-container, .kpi-6-cols {{
             grid-template-columns: repeat(2, 1fr) !important;
             gap: 0.5rem !important;
@@ -354,6 +377,7 @@ st.markdown(f"""
             align-items: center !important;
             gap: 1rem !important;
             padding: 0.75rem 1rem !important;
+            background: #FFFFFF !important;
         }}
 
         .kpi-icon {{
@@ -362,40 +386,57 @@ st.markdown(f"""
 
         .kpi-value {{
             font-size: 1.3rem !important;
+            color: #1A202C !important;
+        }}
+
+        .kpi-label {{
+            color: #2D3748 !important;
+        }}
+
+        /* Header banner - keep white */
+        .header-banner, .header-banner h1, .header-banner p, .header-banner * {{
+            color: white !important;
         }}
 
         .header-banner h1 {{
             font-size: 1rem !important;
-            color: white !important;
         }}
 
         .header-banner p {{
             font-size: 0.7rem !important;
             line-height: 1.3 !important;
-            color: white !important;
         }}
 
         h4, .stMarkdown h4 {{
             font-size: 0.9rem !important;
+            color: {CORESTACK_BLUE} !important;
         }}
 
         h3, .stMarkdown h3 {{
             font-size: 1rem !important;
+            color: {CORESTACK_BLUE} !important;
         }}
 
         /* Smaller text overall */
         .stMarkdown p, .stMarkdown li {{
             font-size: 0.8rem !important;
+            color: #1A202C !important;
         }}
 
         /* Dataframe smaller on very small screens */
         [data-testid="stDataFrame"] {{
             font-size: 0.7rem !important;
+            color: #1A202C !important;
         }}
 
         /* Container borders - less padding */
         [data-testid="stVerticalBlockBorderWrapper"] {{
             padding: 0.5rem !important;
+        }}
+
+        [data-testid="stVerticalBlockBorderWrapper"] > div {{
+            background-color: #FFFFFF !important;
+            color: #1A202C !important;
         }}
 
         /* Material icons smaller */
