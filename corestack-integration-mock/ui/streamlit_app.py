@@ -279,13 +279,13 @@ st.markdown(f"""
 
         /* KPI card borders */
         .kpi-card {{
-            border: 2px solid {CORESTACK_BLUE} !important;
+            border: none !important;
             border-radius: 8px !important;
         }}
 
         /* Bordered box */
         .bordered-box {{
-            border: 2px solid {CORESTACK_BLUE} !important;
+            border: none !important;
         }}
     }}
 
@@ -387,13 +387,13 @@ st.markdown(f"""
 
         /* KPI card borders */
         .kpi-card {{
-            border: 2px solid {CORESTACK_BLUE} !important;
+            border: none !important;
             border-radius: 8px !important;
         }}
 
         /* Bordered box */
         .bordered-box {{
-            border: 2px solid {CORESTACK_BLUE} !important;
+            border: none !important;
         }}
 
         /* Scrollable dataframes */
@@ -463,7 +463,7 @@ st.markdown(f"""
             gap: 1rem !important;
             padding: 0.75rem 1rem !important;
             background: #FFFFFF !important;
-            border: 2px solid {CORESTACK_BLUE} !important;
+            border: none !important;
             border-radius: 8px !important;
         }}
 
@@ -680,13 +680,12 @@ st.markdown(f"""
         border-radius: 12px;
         padding: 1.5rem;
         box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-        border: 2px solid {CORESTACK_BLUE};
+        border: none !important;
         transition: transform 0.2s, box-shadow 0.2s;
         color: {CORESTACK_TEXT_DARK} !important;
     }}
     .kpi-card:hover {{
         transform: translateY(-2px);
-        border-color: {CORESTACK_DARK_BLUE};
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
     }}
     .kpi-icon {{
@@ -699,10 +698,10 @@ st.markdown(f"""
         font-size: 1.5rem;
         margin-bottom: 1rem;
     }}
-    .kpi-icon.blue {{ background: rgba(0, 102, 204, 0.15) !important; color: {CORESTACK_BLUE} !important; border: 2px solid {CORESTACK_BLUE} !important; }}
-    .kpi-icon.green {{ background: rgba(39, 103, 73, 0.15) !important; color: {CORESTACK_SUCCESS} !important; border: 2px solid {CORESTACK_SUCCESS} !important; }}
-    .kpi-icon.red {{ background: rgba(197, 48, 48, 0.15) !important; color: {CORESTACK_DANGER} !important; border: 2px solid {CORESTACK_DANGER} !important; }}
-    .kpi-icon.orange {{ background: rgba(192, 86, 33, 0.15) !important; color: {CORESTACK_WARNING} !important; border: 2px solid {CORESTACK_WARNING} !important; }}
+    .kpi-icon.blue {{ background: rgba(0, 102, 204, 0.15) !important; color: {CORESTACK_BLUE} !important; border: none !important; }}
+    .kpi-icon.green {{ background: rgba(39, 103, 73, 0.15) !important; color: {CORESTACK_SUCCESS} !important; border: none !important; }}
+    .kpi-icon.red {{ background: rgba(197, 48, 48, 0.15) !important; color: {CORESTACK_DANGER} !important; border: none !important; }}
+    .kpi-icon.orange {{ background: rgba(192, 86, 33, 0.15) !important; color: {CORESTACK_WARNING} !important; border: none !important; }}
     .kpi-value {{
         font-size: 2.5rem;
         font-weight: 800;
@@ -722,8 +721,8 @@ st.markdown(f"""
         border-radius: 20px;
         display: inline-block;
     }}
-    .kpi-trend.up {{ background: rgba(39, 103, 73, 0.15) !important; color: {CORESTACK_SUCCESS} !important; border: 1px solid {CORESTACK_SUCCESS} !important; }}
-    .kpi-trend.down {{ background: rgba(197, 48, 48, 0.15) !important; color: {CORESTACK_DANGER} !important; border: 1px solid {CORESTACK_DANGER} !important; }}
+    .kpi-trend.up {{ background: rgba(39, 103, 73, 0.15) !important; color: {CORESTACK_SUCCESS} !important; border: none !important; }}
+    .kpi-trend.down {{ background: rgba(197, 48, 48, 0.15) !important; color: {CORESTACK_DANGER} !important; border: none !important; }}
 
     /* Status Badges */
     .status-pass {{
