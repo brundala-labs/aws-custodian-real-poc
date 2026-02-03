@@ -1262,8 +1262,7 @@ with tab_dashboard:
             st.dataframe(
                 styled_df,
                 use_container_width=True,
-                hide_index=True,
-                height=400
+                hide_index=True
             )
 
     # ── Drill-down Section ─────────────────────────────────────────────────────
