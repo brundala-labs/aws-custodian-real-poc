@@ -1488,45 +1488,6 @@ with tab_executive:
             - Terraform / Pulumi
             """)
 
-    # ── Project Overview ─────────────────────────────────────────────────────
-    st.markdown(f'<h4 style="color: {CORESTACK_BLUE}; margin-top: 2rem;">Project Overview</h4>', unsafe_allow_html=True)
-
-    with st.container(border=True):
-        overview_cols = st.columns(2)
-
-        with overview_cols[0]:
-            st.markdown("**Objective**")
-            st.markdown("""
-            - Demonstrate unified compliance visibility
-            - Integrate Cloud Custodian with CoreStack
-            - Real-time policy evaluation against AWS resources
-            - Single pane of glass for multi-engine governance
-            """)
-
-            st.markdown("**Policy Sources**")
-            st.markdown("""
-            - **Cloud Custodian**: Open-source cloud security rules
-            - **CoreStack Native**: Enterprise governance policies
-            """)
-
-        with overview_cols[1]:
-            st.markdown("**AWS Resources Scanned**")
-            st.markdown("""
-            - S3 Buckets (encryption, public access)
-            - EC2 Instances (required tags)
-            - EBS Volumes (encryption, attachment status)
-            - IAM Users (MFA compliance)
-            - CloudTrail (logging status)
-            """)
-
-            st.markdown("**Technology Stack**")
-            st.markdown("""
-            - **Cloud Custodian**: Policy-as-code engine
-            - **SQLite**: Findings persistence
-            - **Streamlit**: Dashboard UI
-            - **Python**: Integration layer
-            """)
-
     # ── Output Options ───────────────────────────────────────────────────────
     st.markdown(f'<h4 style="color: {CORESTACK_BLUE}; margin-top: 2rem;">Output Options</h4>', unsafe_allow_html=True)
 
