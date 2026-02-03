@@ -106,9 +106,24 @@ st.markdown(f"""
         color: #1A202C !important;
     }}
 
-    /* Force dark text on all Streamlit elements */
-    .stMarkdown, .stMarkdown p, .stMarkdown li, .stMarkdown span {{
+    /* Force dark text on all Streamlit elements - except header banner */
+    .stMarkdown:not(:has(.header-banner)),
+    .stMarkdown p:not(.header-banner-subtitle),
+    .stMarkdown li,
+    .stMarkdown span:not(.header-banner *) {{
         color: #1A202C !important;
+    }}
+
+    /* Header banner white text - highest specificity */
+    .stMarkdown .header-banner,
+    .stMarkdown .header-banner h1,
+    .stMarkdown .header-banner p,
+    .stMarkdown .header-banner-title,
+    .stMarkdown .header-banner-subtitle,
+    div.header-banner,
+    div.header-banner h1,
+    div.header-banner p {{
+        color: #FFFFFF !important;
     }}
 
     /* Tabs text color */
