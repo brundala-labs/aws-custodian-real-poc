@@ -504,10 +504,37 @@ st.markdown(f"""
         margin-top: 2rem;
     }}
 
+    /* Mobile: Stack columns vertically */
+    [data-testid="column"] {{
+        width: 100% !important;
+        flex: 1 1 100% !important;
+        min-width: 100% !important;
+    }}
+
+    /* Checkbox styling for mobile */
+    .stCheckbox {{
+        padding: 0.25rem 0 !important;
+    }}
+
+    .stCheckbox label {{
+        font-size: 0.85rem !important;
+        color: {TEXT} !important;
+    }}
+
+    .stCheckbox label span {{
+        color: {TEXT} !important;
+    }}
+
     /* ═══════════════════════════════════════════════════════════════════════
        TABLET (min-width: 640px)
        ═══════════════════════════════════════════════════════════════════════ */
     @media (min-width: 640px) {{
+        /* Allow columns side by side on tablet+ */
+        [data-testid="column"] {{
+            width: auto !important;
+            flex: 1 1 auto !important;
+            min-width: auto !important;
+        }}
         .header {{
             padding: 1.25rem 1.5rem;
         }}
