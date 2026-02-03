@@ -520,25 +520,49 @@ st.markdown(f"""
         font-size: 0.85rem !important;
         color: {TEXT} !important;
         background: transparent !important;
+        background-color: transparent !important;
     }}
 
     .stCheckbox label span {{
         color: {TEXT} !important;
+        background: transparent !important;
     }}
 
-    /* Green checkbox color instead of red */
-    .stCheckbox label > div:first-child {{
+    /* Remove green background from all checkbox elements */
+    .stCheckbox label > span,
+    .stCheckbox label > div,
+    .stCheckbox > label,
+    [data-testid="stCheckbox"] label,
+    [data-testid="stCheckbox"] label > span {{
+        background: transparent !important;
+        background-color: transparent !important;
+    }}
+
+    /* Green checkbox color instead of red - target all possible selectors */
+    .stCheckbox svg,
+    [data-testid="stCheckbox"] svg {{
+        fill: {SUCCESS} !important;
+        stroke: {SUCCESS} !important;
+        color: {SUCCESS} !important;
+    }}
+
+    .stCheckbox path,
+    [data-testid="stCheckbox"] path {{
+        fill: {SUCCESS} !important;
+        stroke: {SUCCESS} !important;
+    }}
+
+    /* Target the checkbox box itself */
+    .stCheckbox label > div:first-child,
+    [data-baseweb="checkbox"] > div:first-child {{
         border-color: {SUCCESS} !important;
-    }}
-
-    .stCheckbox label > div:first-child[data-checked="true"] {{
         background-color: {SUCCESS} !important;
-        border-color: {SUCCESS} !important;
     }}
 
-    [data-baseweb="checkbox"] input:checked + div {{
-        background-color: {SUCCESS} !important;
-        border-color: {SUCCESS} !important;
+    /* Override any red/pink colors */
+    .stCheckbox *[style*="background"],
+    [data-testid="stCheckbox"] *[style*="background"] {{
+        background-color: transparent !important;
     }}
 
     /* ═══════════════════════════════════════════════════════════════════════
