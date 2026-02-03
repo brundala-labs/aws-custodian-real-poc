@@ -1000,42 +1000,44 @@ tab_executive, tab_dashboard = st.tabs(["Executive Summary", "Dashboard"])
 with tab_dashboard:
     # ── Clickable Filters ─────────────────────────────────────────────────────
 
-    with st.container(border=True):
-        st.markdown("**Select Filters:**")
+    st.markdown("**Select Filters:**")
 
-        filter_cols = st.columns(3)
+    filter_cols = st.columns(3)
 
-        with filter_cols[0]:
+    with filter_cols[0]:
+        with st.container(border=True):
             source_filter = st.radio(
                 "Source",
                 ["All", "Cloud Custodian", "CoreStack"],
                 horizontal=True,
                 key="source_radio"
             )
-            # Convert display value to db value
-            source_param = None
-            if source_filter == "Cloud Custodian":
-                source_param = "cloudcustodian"
-            elif source_filter == "CoreStack":
-                source_param = "corestack"
+        # Convert display value to db value
+        source_param = None
+        if source_filter == "Cloud Custodian":
+            source_param = "cloudcustodian"
+        elif source_filter == "CoreStack":
+            source_param = "corestack"
 
-        with filter_cols[1]:
+    with filter_cols[1]:
+        with st.container(border=True):
             status_filter = st.radio(
                 "Status",
                 ["All", "PASS", "FAIL"],
                 horizontal=True,
                 key="status_radio"
             )
-            status_param = None if status_filter == "All" else status_filter
+        status_param = None if status_filter == "All" else status_filter
 
-        with filter_cols[2]:
+    with filter_cols[2]:
+        with st.container(border=True):
             severity_filter = st.radio(
                 "Severity",
                 ["All", "High", "Medium", "Low"],
                 horizontal=True,
                 key="severity_radio"
             )
-            severity_param = None if severity_filter == "All" else severity_filter.lower()
+        severity_param = None if severity_filter == "All" else severity_filter.lower()
 
     # ── Get Filtered Data ─────────────────────────────────────────────────────
 
