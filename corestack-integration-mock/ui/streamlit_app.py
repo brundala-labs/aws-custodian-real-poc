@@ -511,7 +511,7 @@ st.markdown(f"""
         min-width: 100% !important;
     }}
 
-    /* Checkbox styling for mobile */
+    /* Checkbox styling */
     .stCheckbox {{
         padding: 0.25rem 0 !important;
     }}
@@ -519,10 +519,26 @@ st.markdown(f"""
     .stCheckbox label {{
         font-size: 0.85rem !important;
         color: {TEXT} !important;
+        background: transparent !important;
     }}
 
     .stCheckbox label span {{
         color: {TEXT} !important;
+    }}
+
+    /* Green checkbox color instead of red */
+    .stCheckbox label > div:first-child {{
+        border-color: {SUCCESS} !important;
+    }}
+
+    .stCheckbox label > div:first-child[data-checked="true"] {{
+        background-color: {SUCCESS} !important;
+        border-color: {SUCCESS} !important;
+    }}
+
+    [data-baseweb="checkbox"] input:checked + div {{
+        background-color: {SUCCESS} !important;
+        border-color: {SUCCESS} !important;
     }}
 
     /* ═══════════════════════════════════════════════════════════════════════
