@@ -142,9 +142,15 @@ st.markdown(f"""
         font-weight: 600 !important;
     }}
 
-    /* Container text */
+    /* Container text and borders */
     [data-testid="stVerticalBlockBorderWrapper"] {{
         color: #1A202C !important;
+    }}
+
+    /* Make container borders visible with blue color */
+    [data-testid="stVerticalBlockBorderWrapper"] > div {{
+        border: 2px solid {CORESTACK_BLUE} !important;
+        border-radius: 8px !important;
     }}
 
     /* Info/warning boxes */
@@ -405,7 +411,7 @@ st.markdown(f"""
 
     /* Bordered containers */
     .bordered-box {{
-        border: 2px solid #E2E8F0;
+        border: 2px solid {CORESTACK_BLUE};
         border-radius: 12px;
         padding: 1.25rem;
         margin-bottom: 1rem;
@@ -417,7 +423,7 @@ st.markdown(f"""
     .findings-table {{
         width: 100%;
         border-collapse: collapse;
-        border: 2px solid #E2E8F0;
+        border: 2px solid {CORESTACK_BLUE};
         border-radius: 8px;
         overflow: hidden;
         margin-top: 1rem;
@@ -434,7 +440,7 @@ st.markdown(f"""
     }}
     .findings-table td {{
         padding: 12px 16px;
-        border-bottom: 1px solid #E2E8F0;
+        border-bottom: 1px solid {CORESTACK_BLUE}40;
         font-size: 0.9rem;
     }}
     .findings-table tr:last-child td {{
@@ -539,12 +545,13 @@ st.markdown(f"""
         border-radius: 12px;
         padding: 1.5rem;
         box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-        border: 1px solid #E2E8F0;
+        border: 2px solid {CORESTACK_BLUE};
         transition: transform 0.2s, box-shadow 0.2s;
         color: {CORESTACK_TEXT_DARK} !important;
     }}
     .kpi-card:hover {{
         transform: translateY(-2px);
+        border-color: {CORESTACK_DARK_BLUE};
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
     }}
     .kpi-icon {{
@@ -651,7 +658,7 @@ st.markdown(f"""
         border-radius: 12px;
         overflow: hidden;
         box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-        border: 1px solid #E2E8F0;
+        border: 2px solid {CORESTACK_BLUE};
     }}
     .data-table thead {{
         background: linear-gradient(180deg, #F8FAFC 0%, #EDF2F7 100%);
@@ -660,11 +667,11 @@ st.markdown(f"""
         padding: 1rem;
         text-align: left;
         font-weight: 700;
-        color: {CORESTACK_TEXT_DARK};
+        color: {CORESTACK_BLUE};
         font-size: 0.85rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        border-bottom: 2px solid #E2E8F0;
+        border-bottom: 2px solid {CORESTACK_BLUE};
     }}
     .data-table td {{
         padding: 1rem;
@@ -689,13 +696,13 @@ st.markdown(f"""
         gap: 0.75rem;
         margin: 2rem 0 1rem 0;
         padding-bottom: 0.75rem;
-        border-bottom: 2px solid #E2E8F0;
+        border-bottom: 2px solid {CORESTACK_BLUE};
     }}
     .section-header h3 {{
         margin: 0;
         font-size: 1.25rem;
         font-weight: 700;
-        color: {CORESTACK_TEXT_DARK};
+        color: {CORESTACK_BLUE};
     }}
     .section-icon {{
         width: 36px;
@@ -1450,10 +1457,10 @@ with tab_dashboard:
             .applymap(color_status, subset=['Status'])\
             .applymap(color_violations, subset=['Violations'])\
             .applymap(color_severity, subset=['Severity'])\
-            .set_properties(**{'border': '1px solid #E2E8F0', 'padding': '10px'})\
+            .set_properties(**{'border': '1px solid #0066cc', 'padding': '10px'})\
             .set_table_styles([
-                {'selector': 'th', 'props': [('background-color', '#0076e1'), ('color', 'white'), ('font-weight', 'bold'), ('padding', '12px'), ('border', '1px solid #004789')]},
-                {'selector': 'td', 'props': [('border', '1px solid #E2E8F0')]},
+                {'selector': 'th', 'props': [('background-color', '#0066cc'), ('color', 'white'), ('font-weight', 'bold'), ('padding', '12px'), ('border', '1px solid #003d7a')]},
+                {'selector': 'td', 'props': [('border', '1px solid #0066cc40')]},
             ])
 
         with st.container(border=True):
