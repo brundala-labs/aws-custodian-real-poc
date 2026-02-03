@@ -160,24 +160,25 @@ st.markdown(f"""
     /* Header Banner */
     .header {{
         background: linear-gradient(135deg, {BLUE} 0%, {DARK_BLUE} 100%);
-        padding: 1rem;
+        padding: 1.5rem;
         margin-bottom: 1rem;
     }}
 
     .header h1, .header p, .header * {{
-        color: white !important;
+        color: #FFFFFF !important;
     }}
 
     .header h1 {{
-        font-size: 1.25rem !important;
+        font-size: 1.75rem !important;
         font-weight: 700;
-        margin: 0 0 0.25rem 0;
+        margin: 0 0 0.5rem 0;
+        color: #FFFFFF !important;
     }}
 
     .header p {{
-        font-size: 0.8rem;
+        font-size: 0.9rem;
         margin: 0;
-        opacity: 0.9;
+        color: #FFFFFF !important;
     }}
 
     /* Section Titles */
