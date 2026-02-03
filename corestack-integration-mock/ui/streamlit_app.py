@@ -66,25 +66,53 @@ st.markdown(f"""
         color: {DARK_BLUE};
     }}
 
-    /* Fix expander - hide broken icon, use CSS arrow */
-    [data-testid="stExpander"] {{
-        border: 1px solid {BORDER} !important;
-        border-radius: 8px !important;
-        margin: 0.5rem 1rem !important;
+    /* Custom Expander Styling */
+    .custom-expander {{
+        border: 1px solid {BORDER};
+        border-radius: 8px;
+        margin: 0.5rem 1rem;
+        background: {BG};
     }}
 
-    [data-testid="stExpander"] summary {{
-        padding: 0.75rem 1rem !important;
-        list-style: none !important;
+    .custom-expander summary {{
+        padding: 0.75rem 1rem;
+        cursor: pointer;
+        font-weight: 500;
+        color: {TEXT};
+        list-style: none;
+        display: flex;
+        align-items: center;
     }}
 
-    [data-testid="stExpander"] summary::-webkit-details-marker {{
-        display: none !important;
+    .custom-expander summary::-webkit-details-marker {{
+        display: none;
     }}
 
-    /* Hide the problematic icon span */
-    [data-testid="stExpander"] summary > div > div:first-child {{
-        display: none !important;
+    .custom-expander summary::before {{
+        content: "▶";
+        font-size: 0.7rem;
+        margin-right: 0.75rem;
+        transition: transform 0.2s;
+        color: {DARK_BLUE};
+    }}
+
+    .custom-expander[open] summary::before {{
+        transform: rotate(90deg);
+    }}
+
+    .custom-expander .expander-content {{
+        padding: 0 1rem 1rem 2rem;
+        color: {TEXT_LIGHT};
+    }}
+
+    .custom-expander ul {{
+        margin: 0;
+        padding-left: 1rem;
+    }}
+
+    .custom-expander li {{
+        margin: 0.25rem 0;
+        color: {TEXT_LIGHT} !important;
     }}
 
     /* Hide Streamlit elements */
@@ -810,26 +838,38 @@ with tab_summary:
     # ── Use Cases ─────────────────────────────────────────────────────────────
     st.markdown('<div class="section-title"><span class="material-symbols-outlined">cases</span>Use Cases</div>', unsafe_allow_html=True)
 
-    with st.expander("Compliance Audits", expanded=False):
-        st.markdown("""
-        - Generate audit-ready reports
-        - Provide evidence for SOC2, HIPAA, PCI-DSS
-        - Track compliance trends over time
-        """)
-
-    with st.expander("Security Operations", expanded=False):
-        st.markdown("""
-        - Monitor security posture in real-time
-        - Prioritize remediation by severity
-        - Integrate with SIEM/SOAR platforms
-        """)
-
-    with st.expander("DevSecOps", expanded=False):
-        st.markdown("""
-        - Shift-left security in CI/CD
-        - Automate policy checks in pipelines
-        - Provide developer-friendly feedback
-        """)
+    st.markdown(f"""
+    <details class="custom-expander">
+        <summary>Compliance Audits</summary>
+        <div class="expander-content">
+            <ul>
+                <li>Generate audit-ready reports</li>
+                <li>Provide evidence for SOC2, HIPAA, PCI-DSS</li>
+                <li>Track compliance trends over time</li>
+            </ul>
+        </div>
+    </details>
+    <details class="custom-expander">
+        <summary>Security Operations</summary>
+        <div class="expander-content">
+            <ul>
+                <li>Monitor security posture in real-time</li>
+                <li>Prioritize remediation by severity</li>
+                <li>Integrate with SIEM/SOAR platforms</li>
+            </ul>
+        </div>
+    </details>
+    <details class="custom-expander">
+        <summary>DevSecOps</summary>
+        <div class="expander-content">
+            <ul>
+                <li>Shift-left security in CI/CD</li>
+                <li>Automate policy checks in pipelines</li>
+                <li>Provide developer-friendly feedback</li>
+            </ul>
+        </div>
+    </details>
+    """, unsafe_allow_html=True)
 
     # ── Data Flow ─────────────────────────────────────────────────────────────
     st.markdown('<div class="section-title"><span class="material-symbols-outlined">account_tree</span>Data Flow Architecture</div>', unsafe_allow_html=True)
