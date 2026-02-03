@@ -3,3 +3,6 @@ __pycache__/
 *.pyc
 .cache/
 *.egg-info/
+*.db
+*.db-shm
+*.db-wal
