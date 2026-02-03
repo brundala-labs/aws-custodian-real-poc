@@ -77,6 +77,103 @@ st.markdown(f"""
         max-width: 1400px;
     }}
 
+    /* Bordered containers */
+    .bordered-box {{
+        border: 2px solid #E2E8F0;
+        border-radius: 12px;
+        padding: 1.25rem;
+        margin-bottom: 1rem;
+        background: white;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }}
+
+    /* Findings Table */
+    .findings-table {{
+        width: 100%;
+        border-collapse: collapse;
+        border: 2px solid #E2E8F0;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-top: 1rem;
+    }}
+    .findings-table th {{
+        background: linear-gradient(135deg, {CORESTACK_BLUE} 0%, {CORESTACK_DARK_BLUE} 100%);
+        color: white;
+        padding: 12px 16px;
+        text-align: left;
+        font-weight: 700;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }}
+    .findings-table td {{
+        padding: 12px 16px;
+        border-bottom: 1px solid #E2E8F0;
+        font-size: 0.9rem;
+    }}
+    .findings-table tr:last-child td {{
+        border-bottom: none;
+    }}
+    .findings-table tr.row-pass {{
+        background-color: #F0FFF4;
+    }}
+    .findings-table tr.row-fail {{
+        background-color: #FFF5F5;
+    }}
+    .findings-table tr:hover {{
+        filter: brightness(0.97);
+    }}
+
+    /* Status badges */
+    .badge-pass {{
+        background: #38A169;
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 0.8rem;
+    }}
+    .badge-fail {{
+        background: #E53E3E;
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 0.8rem;
+    }}
+
+    /* Severity badges */
+    .badge-high {{
+        color: #E53E3E;
+        font-weight: 700;
+    }}
+    .badge-medium {{
+        color: #DD6B20;
+        font-weight: 700;
+    }}
+    .badge-low {{
+        color: #3182CE;
+        font-weight: 700;
+    }}
+
+    /* Violations count */
+    .violations-count {{
+        display: inline-block;
+        min-width: 28px;
+        text-align: center;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-weight: 700;
+    }}
+    .violations-red {{
+        background: #FED7D7;
+        color: #C53030;
+    }}
+    .violations-green {{
+        background: #C6F6D5;
+        color: #276749;
+    }}
+
     /* Header Banner */
     .header-banner {{
         background: linear-gradient(135deg, {CORESTACK_BLUE} 0%, {CORESTACK_DARK_BLUE} 100%);
@@ -737,7 +834,8 @@ st.markdown("#### Compliance Breakdown")
 col_a, col_b = st.columns(2)
 
 with col_a:
-    st.markdown("**By Policy Source**")
+    # Build source breakdown HTML with border
+    source_html = f'<div class="bordered-box"><h4 style="margin-top:0; color:{CORESTACK_DARK_BLUE};">By Policy Source</h4>'
     for src, counts in summary.get("by_source", {}).items():
         label = "Cloud Custodian" if src == "cloudcustodian" else "CoreStack"
         pass_count = counts.get("PASS", 0)
@@ -745,52 +843,54 @@ with col_a:
         total = pass_count + fail_count
         pass_pct = int((pass_count / total * 100)) if total > 0 else 0
 
-        with st.container():
-            st.markdown(f"**{label}**")
-            cols = st.columns([1, 1, 2])
-            with cols[0]:
-                st.metric(label="Pass", value=pass_count, delta=f"{pass_pct}%", delta_color="normal")
-            with cols[1]:
-                st.metric(label="Fail", value=fail_count, delta=f"{100-pass_pct}%", delta_color="inverse")
-            with cols[2]:
-                st.progress(pass_pct / 100 if total > 0 else 0, text=f"{pass_pct}% Compliant")
+        source_html += f'''
+        <div style="margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid #E2E8F0;">
+            <div style="font-weight: 700; margin-bottom: 0.5rem;">{label}</div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <span style="background: #C6F6D5; color: #276749; padding: 4px 12px; border-radius: 4px; font-weight: 700;">Pass: {pass_count}</span>
+                <span style="background: #FED7D7; color: #C53030; padding: 4px 12px; border-radius: 4px; font-weight: 700;">Fail: {fail_count}</span>
+                <div style="flex: 1; background: #E2E8F0; border-radius: 4px; height: 20px; overflow: hidden;">
+                    <div style="width: {pass_pct}%; background: linear-gradient(90deg, #38A169, #48BB78); height: 100%;"></div>
+                </div>
+                <span style="font-weight: 600; color: {CORESTACK_TEXT_MID};">{pass_pct}%</span>
+            </div>
+        </div>
+        '''
+    source_html += '</div>'
+    st.markdown(source_html, unsafe_allow_html=True)
 
 with col_b:
-    st.markdown("**By Severity Level**")
+    # Build severity breakdown HTML with border
+    severity_html = f'<div class="bordered-box"><h4 style="margin-top:0; color:{CORESTACK_DARK_BLUE};">By Severity Level</h4>'
+    severity_colors = {"high": "#E53E3E", "medium": "#DD6B20", "low": "#3182CE"}
+
     for sev in ["high", "medium", "low"]:
         counts = summary.get("by_severity", {}).get(sev, {})
         pass_count = counts.get("PASS", 0)
         fail_count = counts.get("FAIL", 0)
         total = pass_count + fail_count
         pass_pct = int((pass_count / total * 100)) if total > 0 else 0
+        sev_color = severity_colors.get(sev, CORESTACK_TEXT_MID)
 
-        with st.container():
-            if sev == "high":
-                st.markdown(f":red[**{sev.upper()}**]")
-            elif sev == "medium":
-                st.markdown(f":orange[**{sev.upper()}**]")
-            else:
-                st.markdown(f":blue[**{sev.upper()}**]")
-
-            if total > 0:
-                cols = st.columns([1, 1, 2])
-                with cols[0]:
-                    st.metric(label="Pass", value=pass_count)
-                with cols[1]:
-                    st.metric(label="Fail", value=fail_count)
-                with cols[2]:
-                    st.progress(pass_pct / 100, text=f"{pass_pct}% Compliant")
-            else:
-                st.caption("No policies in this category")
+        severity_html += f'''
+        <div style="margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid #E2E8F0;">
+            <div style="font-weight: 700; margin-bottom: 0.5rem; color: {sev_color};">{sev.upper()}</div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <span style="background: #C6F6D5; color: #276749; padding: 4px 12px; border-radius: 4px; font-weight: 700;">Pass: {pass_count}</span>
+                <span style="background: #FED7D7; color: #C53030; padding: 4px 12px; border-radius: 4px; font-weight: 700;">Fail: {fail_count}</span>
+                <div style="flex: 1; background: #E2E8F0; border-radius: 4px; height: 20px; overflow: hidden;">
+                    <div style="width: {pass_pct}%; background: linear-gradient(90deg, #38A169, #48BB78); height: 100%;"></div>
+                </div>
+                <span style="font-weight: 600; color: {CORESTACK_TEXT_MID};">{pass_pct}%</span>
+            </div>
+        </div>
+        '''
+    severity_html += '</div>'
+    st.markdown(severity_html, unsafe_allow_html=True)
 
 # ── Findings Table ───────────────────────────────────────────────────────────
 
-st.markdown(f"""
-<div class="section-header">
-    <div class="section-icon"><span class="material-symbols-outlined" style="color:white; font-size:20px;">assignment</span></div>
-    <h3>Policy Compliance Findings</h3>
-</div>
-""", unsafe_allow_html=True)
+st.markdown(f"#### Policy Compliance Findings")
 
 # Apply filters
 source_param = None if source_filter == "All Sources" else source_filter
@@ -802,59 +902,61 @@ findings = db_get_findings(source=source_param, status=status_param, severity=se
 if not findings:
     st.info("No findings match the current filters. Try adjusting your filter criteria.")
 else:
-    # Display each finding as an expandable card
+    # Build HTML table with highlights
+    table_html = '''
+    <table class="findings-table">
+        <thead>
+            <tr>
+                <th>Policy Name</th>
+                <th>Source</th>
+                <th>Status</th>
+                <th>Violations</th>
+                <th>Severity</th>
+                <th>Category</th>
+                <th>Resource Type</th>
+            </tr>
+        </thead>
+        <tbody>
+    '''
+
     for f in findings:
         source_label = "Cloud Custodian" if f['source'] == "cloudcustodian" else "CoreStack"
         is_pass = f['status'] == "PASS"
+        row_class = "row-pass" if is_pass else "row-fail"
 
-        # Status indicator with color
-        if is_pass:
-            status_icon = ":green[PASS]"
-            container_type = "success"
-        else:
-            status_icon = ":red[FAIL]"
-            container_type = "error"
+        # Status badge
+        status_badge = '<span class="badge-pass">PASS</span>' if is_pass else '<span class="badge-fail">FAIL</span>'
 
-        # Severity with color
-        if f['severity'] == "high":
-            sev_display = ":red[HIGH]"
-        elif f['severity'] == "medium":
-            sev_display = ":orange[MEDIUM]"
-        else:
-            sev_display = ":blue[LOW]"
+        # Violations badge
+        viol_class = "violations-green" if f['violations_count'] == 0 else "violations-red"
+        violations_badge = f'<span class="violations-count {viol_class}">{f["violations_count"]}</span>'
 
-        # Create a row for each finding
-        cols = st.columns([3, 2, 1, 1, 1, 2])
+        # Severity badge
+        sev_class = f"badge-{f['severity']}"
+        severity_badge = f'<span class="{sev_class}">{f["severity"].upper()}</span>'
 
-        with cols[0]:
-            st.markdown(f"**{f['policy_name']}**")
-        with cols[1]:
-            st.caption(source_label)
-        with cols[2]:
-            if is_pass:
-                st.success("PASS")
-            else:
-                st.error("FAIL")
-        with cols[3]:
-            if f['violations_count'] > 0:
-                st.error(f"{f['violations_count']}")
-            else:
-                st.success("0")
-        with cols[4]:
-            st.markdown(sev_display)
-        with cols[5]:
-            st.caption(f"{f['category']} | {f['resource_types']}")
+        table_html += f'''
+            <tr class="{row_class}">
+                <td><strong>{f['policy_name']}</strong></td>
+                <td>{source_label}</td>
+                <td>{status_badge}</td>
+                <td>{violations_badge}</td>
+                <td>{severity_badge}</td>
+                <td>{f['category']}</td>
+                <td>{f['resource_types']}</td>
+            </tr>
+        '''
 
-        st.divider()
+    table_html += '''
+        </tbody>
+    </table>
+    '''
+
+    st.markdown(table_html, unsafe_allow_html=True)
 
 # ── Drill-down Section ───────────────────────────────────────────────────────
 
-st.markdown(f"""
-<div class="section-header">
-    <div class="section-icon"><span class="material-symbols-outlined" style="color:white; font-size:20px;">search</span></div>
-    <h3>Policy Deep Dive & Evidence</h3>
-</div>
-""", unsafe_allow_html=True)
+st.markdown("#### Policy Deep Dive & Evidence")
 
 policy_options = {f["policy_name"]: f["policy_id"] for f in findings} if findings else {}
 
