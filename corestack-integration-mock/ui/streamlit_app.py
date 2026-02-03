@@ -31,16 +31,16 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# ── CoreStack Brand Colors ───────────────────────────────────────────────────
-CORESTACK_BLUE = "#0076e1"
-CORESTACK_DARK_BLUE = "#004789"
-CORESTACK_LIGHT_BG = "#F7FAFC"
+# ── CoreStack Brand Colors (Darker for better visibility) ────────────────────
+CORESTACK_BLUE = "#0066cc"
+CORESTACK_DARK_BLUE = "#003d7a"
+CORESTACK_LIGHT_BG = "#EDF2F7"
 CORESTACK_CARD_BG = "#FFFFFF"
 CORESTACK_TEXT_DARK = "#1A202C"
-CORESTACK_TEXT_MID = "#495974"
-CORESTACK_SUCCESS = "#38A169"
-CORESTACK_DANGER = "#E53E3E"
-CORESTACK_WARNING = "#DD6B20"
+CORESTACK_TEXT_MID = "#2D3748"
+CORESTACK_SUCCESS = "#276749"  # Darker green
+CORESTACK_DANGER = "#C53030"   # Darker red
+CORESTACK_WARNING = "#C05621"  # Darker orange
 
 # ── Custom CSS with CoreStack Branding ───────────────────────────────────────
 
@@ -357,10 +357,10 @@ st.markdown(f"""
         font-size: 1.5rem;
         margin-bottom: 1rem;
     }}
-    .kpi-icon.blue {{ background: rgba(0, 118, 225, 0.1); color: {CORESTACK_BLUE}; }}
-    .kpi-icon.green {{ background: rgba(56, 161, 105, 0.1); color: {CORESTACK_SUCCESS}; }}
-    .kpi-icon.red {{ background: rgba(229, 62, 62, 0.1); color: {CORESTACK_DANGER}; }}
-    .kpi-icon.orange {{ background: rgba(221, 107, 32, 0.1); color: {CORESTACK_WARNING}; }}
+    .kpi-icon.blue {{ background: rgba(0, 102, 204, 0.2); color: {CORESTACK_BLUE}; }}
+    .kpi-icon.green {{ background: rgba(39, 103, 73, 0.2); color: {CORESTACK_SUCCESS}; }}
+    .kpi-icon.red {{ background: rgba(197, 48, 48, 0.2); color: {CORESTACK_DANGER}; }}
+    .kpi-icon.orange {{ background: rgba(192, 86, 33, 0.2); color: {CORESTACK_WARNING}; }}
     .kpi-value {{
         font-size: 2.5rem;
         font-weight: 800;
@@ -380,8 +380,8 @@ st.markdown(f"""
         border-radius: 20px;
         display: inline-block;
     }}
-    .kpi-trend.up {{ background: rgba(56, 161, 105, 0.1); color: {CORESTACK_SUCCESS}; }}
-    .kpi-trend.down {{ background: rgba(229, 62, 62, 0.1); color: {CORESTACK_DANGER}; }}
+    .kpi-trend.up {{ background: rgba(39, 103, 73, 0.2); color: {CORESTACK_SUCCESS}; }}
+    .kpi-trend.down {{ background: rgba(197, 48, 48, 0.2); color: {CORESTACK_DANGER}; }}
 
     /* Status Badges */
     .status-pass {{
@@ -877,6 +877,19 @@ if not Path(DB_PATH).exists():
     st.stop()
 
 
+# ── Hide Sidebar ─────────────────────────────────────────────────────────────
+
+st.markdown("""
+<style>
+    [data-testid="stSidebar"] {
+        display: none !important;
+    }
+    [data-testid="collapsedControl"] {
+        display: none !important;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 # ── Header Banner ────────────────────────────────────────────────────────────
 
 st.markdown("""
@@ -886,45 +899,37 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# ── Sidebar ──────────────────────────────────────────────────────────────────
+# ── Filters in Main Area ─────────────────────────────────────────────────────
 
-with st.sidebar:
-    st.markdown("""
-    <div style="text-align:center; margin-bottom:1.5rem;">
-        <div style="font-size:2rem; margin-bottom:0.5rem;">◈</div>
-        <div style="font-weight:700; color:#0076e1; font-size:1.1rem;">CoreStack</div>
-        <div style="font-size:0.75rem; color:#495974;">Cloud Governance Platform</div>
-    </div>
-    """, unsafe_allow_html=True)
+with st.container(border=True):
+    filter_cols = st.columns([1, 1, 1, 1])
 
-    st.markdown("---")
-    st.markdown("### Filters")
+    with filter_cols[0]:
+        st.markdown("**Filters**")
 
-    source_filter = st.selectbox(
-        "Policy Source",
-        ["All Sources", "cloudcustodian", "corestack"],
-        format_func=lambda x: "All Sources" if x == "All Sources" else ("☁ Cloud Custodian" if x == "cloudcustodian" else "◈ CoreStack")
-    )
+    with filter_cols[1]:
+        source_filter = st.selectbox(
+            "Source",
+            ["All Sources", "cloudcustodian", "corestack"],
+            format_func=lambda x: "All" if x == "All Sources" else ("Cloud Custodian" if x == "cloudcustodian" else "CoreStack"),
+            label_visibility="collapsed"
+        )
 
-    status_filter = st.selectbox(
-        "Compliance Status",
-        ["All Statuses", "FAIL", "PASS"],
-        format_func=lambda x: "All Statuses" if x == "All Statuses" else ("✗ Failing" if x == "FAIL" else "✓ Passing")
-    )
+    with filter_cols[2]:
+        status_filter = st.selectbox(
+            "Status",
+            ["All Statuses", "FAIL", "PASS"],
+            format_func=lambda x: "All Status" if x == "All Statuses" else x,
+            label_visibility="collapsed"
+        )
 
-    severity_filter = st.selectbox(
-        "Severity Level",
-        ["All Severities", "high", "medium", "low"],
-        format_func=lambda x: "All Severities" if x == "All Severities" else f"{'●' if x=='high' else '◐' if x=='medium' else '○'} {x.title()}"
-    )
-
-    st.markdown("---")
-    st.markdown("""
-    <div style="font-size:0.75rem; color:#718096; text-align:center;">
-        <div>Powered by CoreStack</div>
-        <div style="margin-top:0.25rem;">AI-Powered Cloud Governance</div>
-    </div>
-    """, unsafe_allow_html=True)
+    with filter_cols[3]:
+        severity_filter = st.selectbox(
+            "Severity",
+            ["All Severities", "high", "medium", "low"],
+            format_func=lambda x: "All Severity" if x == "All Severities" else x.title(),
+            label_visibility="collapsed"
+        )
 
 # ── KPI Cards ────────────────────────────────────────────────────────────────
 
