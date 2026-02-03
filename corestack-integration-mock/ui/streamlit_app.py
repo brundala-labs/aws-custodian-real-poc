@@ -99,11 +99,23 @@ st.markdown(f"""
     }}
 
     .main .block-container {{
-        padding-top: 1rem;
+        padding-top: 0 !important;
         padding-bottom: 2rem;
         max-width: 1400px;
         background-color: #FFFFFF !important;
         color: #1A202C !important;
+    }}
+
+    /* Remove Streamlit header space */
+    [data-testid="stHeader"] {{
+        height: 0 !important;
+        min-height: 0 !important;
+        padding: 0 !important;
+    }}
+
+    /* Remove top margin/padding from app */
+    [data-testid="stAppViewContainer"] > div:first-child {{
+        padding-top: 0 !important;
     }}
 
     /* Force dark text on all Streamlit elements - except header banner */
