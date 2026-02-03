@@ -4,5 +4,6 @@ __pycache__/
 .cache/
 *.egg-info/
 *.db
+!corestack-integration-mock/corestack.db
 *.db-shm
 *.db-wal

@@ -1,11 +1,28 @@
-"""Streamlit UI: CoreStack – Unified Policy Compliance (POC)."""
+"""Streamlit UI: CoreStack – Unified Policy Compliance (POC).
+
+Standalone version that reads directly from SQLite for Streamlit Cloud deployment.
+"""
 
 import json
 import os
-import requests
+import sqlite3
+from pathlib import Path
 import streamlit as st
 
-API_BASE = os.environ.get("CORESTACK_API_URL", "http://localhost:8080")
+# ── Database Path ─────────────────────────────────────────────────────────────
+# Look for database in multiple locations for flexibility
+def get_db_path():
+    candidates = [
+        Path(__file__).parent.parent / "corestack.db",  # ../corestack.db from ui/
+        Path.cwd() / "corestack.db",
+        Path.cwd() / "corestack-integration-mock" / "corestack.db",
+    ]
+    for p in candidates:
+        if p.exists():
+            return str(p)
+    return str(candidates[0])  # Default to first candidate
+
+DB_PATH = get_db_path()
 
 st.set_page_config(
     page_title="CoreStack – Unified Policy Compliance",
@@ -349,33 +366,191 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 
-# ── Helpers ──────────────────────────────────────────────────────────────────
+# ── Database Functions ────────────────────────────────────────────────────────
 
-def api_get(path: str, params: dict = None):
-    try:
-        r = requests.get(f"{API_BASE}{path}", params=params, timeout=10)
-        r.raise_for_status()
-        return r.json()
-    except requests.ConnectionError:
-        st.error(f"Cannot connect to API at {API_BASE}. Is the API server running?")
-        st.stop()
-    except Exception as e:
-        st.error(f"API error: {e}")
-        st.stop()
+def get_db():
+    """Get database connection."""
+    return sqlite3.connect(DB_PATH, check_same_thread=False)
 
 
-def api_post(path: str, params: dict = None):
-    try:
-        r = requests.post(f"{API_BASE}{path}", params=params, timeout=30)
-        r.raise_for_status()
-        return r.json()
-    except requests.ConnectionError:
-        st.error(f"Cannot connect to API at {API_BASE}. Is the API server running?")
-        return None
-    except Exception as e:
-        st.error(f"API error: {e}")
-        return None
+def db_get_summary():
+    """Get summary statistics from database."""
+    conn = get_db()
+    cursor = conn.cursor()
 
+    # Total policies
+    cursor.execute("SELECT COUNT(*) FROM policies")
+    total = cursor.fetchone()[0]
+
+    # Passing/Failing counts
+    cursor.execute("""
+        SELECT status, COUNT(*) FROM findings
+        WHERE (policy_id, run_id) IN (
+            SELECT policy_id, MAX(run_id) FROM findings GROUP BY policy_id
+        )
+        GROUP BY status
+    """)
+    status_counts = dict(cursor.fetchall())
+    passing = status_counts.get("PASS", 0)
+    failing = status_counts.get("FAIL", 0)
+
+    # Last evaluated
+    cursor.execute("SELECT MAX(last_evaluated) FROM findings")
+    last_eval = cursor.fetchone()[0]
+
+    # By source breakdown
+    cursor.execute("""
+        SELECT p.source, f.status, COUNT(*)
+        FROM findings f
+        JOIN policies p ON f.policy_id = p.policy_id
+        WHERE (f.policy_id, f.run_id) IN (
+            SELECT policy_id, MAX(run_id) FROM findings GROUP BY policy_id
+        )
+        GROUP BY p.source, f.status
+    """)
+    by_source = {}
+    for source, status, count in cursor.fetchall():
+        if source not in by_source:
+            by_source[source] = {}
+        by_source[source][status] = count
+
+    # By severity breakdown
+    cursor.execute("""
+        SELECT p.severity, f.status, COUNT(*)
+        FROM findings f
+        JOIN policies p ON f.policy_id = p.policy_id
+        WHERE (f.policy_id, f.run_id) IN (
+            SELECT policy_id, MAX(run_id) FROM findings GROUP BY policy_id
+        )
+        GROUP BY p.severity, f.status
+    """)
+    by_severity = {}
+    for severity, status, count in cursor.fetchall():
+        if severity not in by_severity:
+            by_severity[severity] = {}
+        by_severity[severity][status] = count
+
+    conn.close()
+
+    return {
+        "total_policies": total,
+        "passing": passing,
+        "failing": failing,
+        "last_evaluated": last_eval,
+        "by_source": by_source,
+        "by_severity": by_severity
+    }
+
+
+def db_get_findings(source=None, status=None, severity=None):
+    """Get findings with optional filters."""
+    conn = get_db()
+    cursor = conn.cursor()
+
+    query = """
+        SELECT
+            f.policy_id,
+            p.name as policy_name,
+            p.source,
+            f.status,
+            f.violations_count,
+            p.severity,
+            p.category,
+            p.resource_types,
+            f.last_evaluated
+        FROM findings f
+        JOIN policies p ON f.policy_id = p.policy_id
+        WHERE (f.policy_id, f.run_id) IN (
+            SELECT policy_id, MAX(run_id) FROM findings GROUP BY policy_id
+        )
+    """
+    params = []
+
+    if source:
+        query += " AND p.source = ?"
+        params.append(source)
+    if status:
+        query += " AND f.status = ?"
+        params.append(status)
+    if severity:
+        query += " AND p.severity = ?"
+        params.append(severity)
+
+    query += " ORDER BY f.status DESC, p.severity DESC, p.name"
+
+    cursor.execute(query, params)
+    rows = cursor.fetchall()
+    conn.close()
+
+    return [
+        {
+            "policy_id": r[0],
+            "policy_name": r[1],
+            "source": r[2],
+            "status": r[3],
+            "violations_count": r[4],
+            "severity": r[5],
+            "category": r[6],
+            "resource_types": r[7],
+            "last_evaluated": r[8]
+        }
+        for r in rows
+    ]
+
+
+def db_get_resources(policy_id):
+    """Get resources for a policy."""
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT resource_key, raw_id, type, region, account_id, tags_json
+        FROM resources
+        WHERE policy_id = ?
+        ORDER BY resource_key
+    """, (policy_id,))
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    return [
+        {
+            "resource_key": r[0],
+            "raw_id": r[1],
+            "type": r[2],
+            "region": r[3],
+            "account_id": r[4],
+            "tags_json": r[5]
+        }
+        for r in rows
+    ]
+
+
+def db_get_evidence(policy_id):
+    """Get evidence for a policy."""
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT run_id, evidence_json
+        FROM evidence
+        WHERE policy_id = ?
+        ORDER BY run_id DESC
+    """, (policy_id,))
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    return [
+        {
+            "run_id": r[0],
+            "evidence_json": r[1]
+        }
+        for r in rows
+    ]
+
+
+# ── HTML Helpers ──────────────────────────────────────────────────────────────
 
 def status_html(status: str) -> str:
     cls = "status-pass" if status == "PASS" else "status-fail"
@@ -399,6 +574,21 @@ def severity_html(sev: str) -> str:
     return f'<span class="severity-{sev}">{icons.get(sev, "○")} {sev.upper()}</span>'
 
 
+# ── Check Database Exists ─────────────────────────────────────────────────────
+
+if not Path(DB_PATH).exists():
+    st.error(f"""
+    **Database not found at:** `{DB_PATH}`
+
+    Please run the ingestion script first:
+    ```bash
+    cd corestack-integration-mock
+    python scripts/ingest_once.py
+    ```
+    """)
+    st.stop()
+
+
 # ── Header Banner ────────────────────────────────────────────────────────────
 
 st.markdown("""
@@ -418,30 +608,6 @@ with st.sidebar:
         <div style="font-size:0.75rem; color:#495974;">Cloud Governance Platform</div>
     </div>
     """, unsafe_allow_html=True)
-
-    st.markdown("---")
-
-    st.markdown("### 📥 Data Ingestion")
-    default_path = os.environ.get("CUSTODIAN_RUN_DIR", "")
-    ingest_path = st.text_input("Custodian Run Directory", value=default_path,
-                                 help="Path to Cloud Custodian outputs folder")
-
-    if st.button("🔄 Re-Ingest Data", type="primary", use_container_width=True):
-        if ingest_path:
-            with st.spinner("Ingesting compliance data..."):
-                result = api_post("/ingest", params={"path": ingest_path})
-            if result and result.get("status") == "ok":
-                st.success(
-                    f"✓ Ingested **{result['run_id']}**\n\n"
-                    f"• {result['policies_ingested']} policies\n"
-                    f"• {result['findings_ingested']} findings\n"
-                    f"• {result['resources_ingested']} resources"
-                )
-                st.rerun()
-            elif result:
-                st.error(f"Ingest failed: {result}")
-        else:
-            st.warning("Enter a path to the custodian run directory.")
 
     st.markdown("---")
     st.markdown("### 🔍 Filters")
@@ -474,7 +640,7 @@ with st.sidebar:
 
 # ── KPI Cards ────────────────────────────────────────────────────────────────
 
-summary = api_get("/summary")
+summary = db_get_summary()
 
 compliance_rate = round((summary['passing'] / max(summary['total_policies'], 1)) * 100)
 
@@ -562,15 +728,12 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-params = {}
-if source_filter != "All Sources":
-    params["source"] = source_filter
-if status_filter != "All Statuses":
-    params["status"] = status_filter
-if severity_filter != "All Severities":
-    params["severity"] = severity_filter
+# Apply filters
+source_param = None if source_filter == "All Sources" else source_filter
+status_param = None if status_filter == "All Statuses" else status_filter
+severity_param = None if severity_filter == "All Severities" else severity_filter
 
-findings = api_get("/findings", params=params)
+findings = db_get_findings(source=source_param, status=status_param, severity=severity_param)
 
 if not findings:
     st.info("🔍 No findings match the current filters. Try adjusting your filter criteria.")
@@ -591,7 +754,7 @@ else:
     <tbody>
     """
     for f in findings:
-        violations_display = f'<strong style="color:{CORESTACK_DANGER};">{f["violations_count"]}</strong>' if f["violations_count"] > 0 else '<span style="color:{CORESTACK_SUCCESS};">0</span>'
+        violations_display = f'<strong style="color:{CORESTACK_DANGER};">{f["violations_count"]}</strong>' if f["violations_count"] > 0 else f'<span style="color:{CORESTACK_SUCCESS};">0</span>'
         table_html += f"""
         <tr>
             <td><strong>{f['policy_name']}</strong></td>
@@ -629,7 +792,7 @@ if policy_options:
 
     with col1:
         # Resources
-        resources = api_get("/policies/resources", params={"policy_id": selected_id})
+        resources = db_get_resources(selected_id)
         if resources:
             st.markdown(f"#### 🎯 Violating Resources ({len(resources)})")
             res_data = []
@@ -654,7 +817,7 @@ if policy_options:
             st.metric("Category", selected_finding["category"].title())
 
     # Evidence
-    evidence_list = api_get("/policies/evidence", params={"policy_id": selected_id})
+    evidence_list = db_get_evidence(selected_id)
     if evidence_list:
         with st.expander("📄 Raw Evidence JSON (Click to expand)", expanded=False):
             for ev in evidence_list:
