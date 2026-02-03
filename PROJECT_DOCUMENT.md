@@ -309,6 +309,96 @@ Cleanup complete. All demo resources removed.
 
 ## 4. Architecture & Design Decisions
 
+### Dataflow Diagram
+
+```mermaid
+flowchart TB
+    subgraph AWS["☁️ AWS Cloud"]
+        S3["🪣 S3 Buckets"]
+        EC2["💻 EC2 Instances"]
+        EBS["💾 EBS Volumes"]
+        IAM["🔐 IAM Users"]
+        CT["📝 CloudTrail"]
+    end
+
+    subgraph Custodian["⚙️ Cloud Custodian"]
+        Policies["📋 Policy YAML Files"]
+        Runner["🏃 Custodian Runner"]
+        Outputs["📁 JSON Outputs"]
+    end
+
+    subgraph CoreStack["◈ CoreStack Integration"]
+        Ingest["📥 Ingestion Layer"]
+        Normalize["🔄 Normalizer"]
+        Seed["🌱 Native Policies"]
+        DB[("🗄️ SQLite Database")]
+    end
+
+    subgraph Dashboard["📊 Streamlit Dashboard"]
+        KPI["📈 KPI Cards"]
+        Breakdown["📉 Compliance Breakdown"]
+        Findings["📋 Findings Table"]
+        DrillDown["🔍 Policy Deep Dive"]
+    end
+
+    subgraph Users["👥 Users"]
+        Browser["🌐 Web Browser"]
+    end
+
+    %% AWS to Custodian
+    S3 --> Runner
+    EC2 --> Runner
+    EBS --> Runner
+    Policies --> Runner
+    Runner --> Outputs
+
+    %% Custodian to CoreStack
+    Outputs --> Ingest
+    Ingest --> Normalize
+    Seed --> Normalize
+    Normalize --> DB
+
+    %% CoreStack to Dashboard
+    DB --> KPI
+    DB --> Breakdown
+    DB --> Findings
+    DB --> DrillDown
+
+    %% Dashboard to Users
+    KPI --> Browser
+    Breakdown --> Browser
+    Findings --> Browser
+    DrillDown --> Browser
+
+    %% Styling
+    classDef aws fill:#FF9900,stroke:#232F3E,color:#232F3E
+    classDef custodian fill:#6C63FF,stroke:#4B47CC,color:white
+    classDef corestack fill:#0066cc,stroke:#003d7a,color:white
+    classDef dashboard fill:#FF4B4B,stroke:#CC3B3B,color:white
+    classDef user fill:#00C853,stroke:#00A844,color:white
+
+    class S3,EC2,EBS,IAM,CT aws
+    class Policies,Runner,Outputs custodian
+    class Ingest,Normalize,Seed,DB corestack
+    class KPI,Breakdown,Findings,DrillDown dashboard
+    class Browser user
+```
+
+### Data Flow Description
+
+| Step | Component | Description |
+|------|-----------|-------------|
+| 1 | **AWS Resources** | S3 buckets, EC2 instances, EBS volumes scanned via AWS APIs |
+| 2 | **Cloud Custodian** | Executes policy YAML files against AWS resources |
+| 3 | **JSON Outputs** | Generates `resources.json` and `metadata.json` per policy |
+| 4 | **Ingestion Layer** | Reads Custodian output directories |
+| 5 | **Normalizer** | Converts findings to unified schema (policy_id, status, violations) |
+| 6 | **Native Policies** | Seeds CoreStack-specific policies (IAM MFA, CloudTrail, Budget) |
+| 7 | **SQLite Database** | Stores policies, findings, resources, and evidence |
+| 8 | **Streamlit Dashboard** | Presents unified compliance view to end users |
+
+---
+
 ### Resource Design (Intentional FAIL/PASS)
 
 ```
