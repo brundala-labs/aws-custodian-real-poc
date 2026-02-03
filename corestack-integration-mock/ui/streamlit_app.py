@@ -115,6 +115,20 @@ st.markdown(f"""
         color: {TEXT_LIGHT} !important;
     }}
 
+    /* Detail section headers */
+    .detail-section {{
+        padding: 0.75rem 1rem;
+        margin: 0.5rem 1rem;
+        border: 1px solid {BORDER};
+        border-radius: 8px;
+        background: {BG};
+        color: {TEXT} !important;
+    }}
+
+    .detail-section strong {{
+        color: {DARK_BLUE} !important;
+    }}
+
     /* Hide Streamlit elements */
     #MainMenu, footer, header {{
         visibility: hidden;
@@ -1087,14 +1101,14 @@ with tab_dashboard:
             evidence = db_get_evidence(policy_id)
 
             if resources:
-                with st.expander(f"Resources ({len(resources)})", expanded=False):
-                    res_df = pd.DataFrame(resources)[['resource_key', 'type', 'region']]
-                    st.dataframe(res_df, use_container_width=True, hide_index=True)
+                st.markdown(f'<div class="detail-section"><strong>▶ Resources ({len(resources)})</strong></div>', unsafe_allow_html=True)
+                res_df = pd.DataFrame(resources)[['resource_key', 'type', 'region']]
+                st.dataframe(res_df, use_container_width=True, hide_index=True)
 
             if evidence:
-                with st.expander("Evidence", expanded=False):
-                    for ev in evidence[:2]:
-                        st.code(ev['evidence_json'][:500] + "..." if len(ev['evidence_json']) > 500 else ev['evidence_json'])
+                st.markdown('<div class="detail-section"><strong>▶ Evidence</strong></div>', unsafe_allow_html=True)
+                for ev in evidence[:2]:
+                    st.code(ev['evidence_json'][:500] + "..." if len(ev['evidence_json']) > 500 else ev['evidence_json'])
 
 # ══════════════════════════════════════════════════════════════════════════════
 # FOOTER
