@@ -1756,13 +1756,13 @@ with tab_executive:
 
     with benefit_cols[0]:
         with st.container(border=True):
-            st.markdown(f'<div style="text-align: center;"><span class="material-symbols-outlined" style="font-size: 48px; color: {CORESTACK_SUCCESS};">speed</span></div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="text-align: center;"><span class="material-symbols-outlined" style="font-size: 48px; color: {CORESTACK_DARK_BLUE};">speed</span></div>', unsafe_allow_html=True)
             st.markdown("**80% Faster**")
             st.caption("Reduce time spent on compliance reporting")
 
     with benefit_cols[1]:
         with st.container(border=True):
-            st.markdown(f'<div style="text-align: center;"><span class="material-symbols-outlined" style="font-size: 48px; color: {CORESTACK_BLUE};">visibility</span></div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="text-align: center;"><span class="material-symbols-outlined" style="font-size: 48px; color: {CORESTACK_DARK_BLUE};">visibility</span></div>', unsafe_allow_html=True)
             st.markdown("**100% Visibility**")
             st.caption("Complete view across all policy engines")
 
@@ -1774,7 +1774,7 @@ with tab_executive:
 
     with benefit_cols[3]:
         with st.container(border=True):
-            st.markdown(f'<div style="text-align: center;"><span class="material-symbols-outlined" style="font-size: 48px; color: {CORESTACK_SUCCESS};">savings</span></div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="text-align: center;"><span class="material-symbols-outlined" style="font-size: 48px; color: {CORESTACK_DARK_BLUE};">savings</span></div>', unsafe_allow_html=True)
             st.markdown("**Cost Savings**")
             st.caption("Eliminate manual consolidation work")
 
