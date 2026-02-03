@@ -35,8 +35,8 @@ st.set_page_config(
 # ── Brand Colors ──────────────────────────────────────────────────────────────
 BLUE = "#0066cc"
 DARK_BLUE = "#003d7a"
-SUCCESS = "#276749"
-DANGER = "#C53030"
+SUCCESS = "#48BB78"
+DANGER = "#F56565"
 WARNING = "#C05621"
 TEXT = "#1A202C"
 TEXT_LIGHT = "#4A5568"
@@ -170,7 +170,7 @@ st.markdown(f"""
     }}
 
     .header h1 {{
-        font-size: 2.25rem !important;
+        font-size: 3rem !important;
         font-weight: 700;
         margin: 0 0 0.5rem 0;
         color: #FFFFFF !important;
@@ -582,7 +582,7 @@ st.markdown(f"""
         }}
 
         .header h1 {{
-            font-size: 1.5rem !important;
+            font-size: 2.25rem !important;
         }}
 
         .header p {{
@@ -630,7 +630,7 @@ st.markdown(f"""
         }}
 
         .header h1 {{
-            font-size: 1.75rem !important;
+            font-size: 2.5rem !important;
         }}
 
         .kpi-grid {{
