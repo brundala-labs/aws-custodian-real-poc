@@ -1,0 +1,11 @@
+policies:
+- name: s3-default-encryption-enabled
+  description: Verify S3 buckets have default encryption enabled
+  resource: s3
+  filters:
+  - type: bucket-encryption
+    state: false
+  tags:
+  - severity:high
+  - owner:AgenticBricks
+  - category:security

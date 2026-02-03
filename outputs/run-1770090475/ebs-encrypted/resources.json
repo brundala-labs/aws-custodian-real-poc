@@ -1,0 +1,31 @@
+[
+  {
+    "Iops": 3000,
+    "VolumeType": "gp3",
+    "MultiAttachEnabled": false,
+    "Throughput": 125,
+    "Operator": {
+      "Managed": false
+    },
+    "VolumeId": "vol-0ad97b39fe3e2a5a0",
+    "Size": 8,
+    "SnapshotId": "snap-0750cdd98dfb39b01",
+    "AvailabilityZone": "us-east-1c",
+    "State": "in-use",
+    "CreateTime": "2026-02-03T03:45:59.291000+00:00",
+    "Attachments": [
+      {
+        "DeleteOnTermination": true,
+        "VolumeId": "vol-0ad97b39fe3e2a5a0",
+        "InstanceId": "i-097633a6d9b657baf",
+        "Device": "/dev/xvda",
+        "State": "attached",
+        "AttachTime": "2026-02-03T03:45:59+00:00"
+      }
+    ],
+    "Encrypted": false,
+    "c7n:MatchedFilters": [
+      "Encrypted"
+    ]
+  }
+]

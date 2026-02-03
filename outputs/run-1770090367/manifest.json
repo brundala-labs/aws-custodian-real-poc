@@ -1,0 +1,46 @@
+{
+  "run_id": "run-1770090367",
+  "timestamp": "2026-02-03T03:46:08Z",
+  "account_id": "864387741092",
+  "region": "us-east-1",
+  "policies_run": [
+    "ebs-encrypted",
+    "ebs-unused-volumes",
+    "ec2-required-tags",
+    "s3-default-encryption",
+    "s3-public-bucket"
+  ],
+  "output_dir": "/Users/rajeshbrundala/aws-custodian-real-poc/outputs/run-1770090367",
+  "results": [
+    {
+      "policy_file": "/Users/rajeshbrundala/aws-custodian-real-poc/policies/ebs-encrypted.yml",
+      "name": "ebs-encrypted",
+      "status": "ok",
+      "returncode": 0
+    },
+    {
+      "policy_file": "/Users/rajeshbrundala/aws-custodian-real-poc/policies/ebs-unused-volumes.yml",
+      "name": "ebs-unused-volumes",
+      "status": "ok",
+      "returncode": 0
+    },
+    {
+      "policy_file": "/Users/rajeshbrundala/aws-custodian-real-poc/policies/ec2-required-tags.yml",
+      "name": "ec2-required-tags",
+      "status": "ok",
+      "returncode": 0
+    },
+    {
+      "policy_file": "/Users/rajeshbrundala/aws-custodian-real-poc/policies/s3-default-encryption.yml",
+      "name": "s3-default-encryption",
+      "status": "ok",
+      "returncode": 0
+    },
+    {
+      "policy_file": "/Users/rajeshbrundala/aws-custodian-real-poc/policies/s3-public-bucket.yml",
+      "name": "s3-public-bucket",
+      "status": "ok",
+      "returncode": 0
+    }
+  ]
+}

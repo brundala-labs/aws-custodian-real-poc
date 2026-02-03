@@ -1,0 +1,7 @@
+{
+  "s3-public-bucket": "FAIL",
+  "s3-default-encryption-enabled": "PASS",
+  "ec2-required-tags": "FAIL",
+  "ebs-unused-volumes": "FAIL",
+  "ebs-encrypted": "PASS"
+}

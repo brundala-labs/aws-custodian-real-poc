@@ -1,0 +1,13 @@
+{
+  "prefix": "cscc-poc-1770090351",
+  "region": "us-east-1",
+  "safe_mode": false,
+  "bucket_name": "cscc-poc-1770090351-public-bucket",
+  "instance_id": "i-097633a6d9b657baf",
+  "volume_id": "vol-0b274ce64fa2f2296",
+  "availability_zone": "us-east-1c",
+  "created_at": "2026-02-03T03:45:58Z",
+  "last_run_id": "run-1770090475",
+  "last_run_output_dir": "/Users/rajeshbrundala/aws-custodian-real-poc/outputs/run-1770090475",
+  "cleaned_up": true
+}

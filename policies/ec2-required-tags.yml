@@ -1,0 +1,12 @@
+policies:
+- name: ec2-required-tags
+  description: EC2 instances must have CostCenter and Environment tags
+  resource: ec2
+  filters:
+  - or:
+    - tag:CostCenter: absent
+    - tag:Environment: absent
+  tags:
+  - severity:medium
+  - owner:AgenticBricks
+  - category:governance

@@ -1,0 +1,10 @@
+policies:
+- name: ebs-encrypted
+  description: Find EBS volumes that are NOT encrypted
+  resource: ebs
+  filters:
+  - Encrypted: false
+  tags:
+  - severity:high
+  - owner:AgenticBricks
+  - category:security

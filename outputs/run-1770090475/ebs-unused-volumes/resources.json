@@ -1,0 +1,45 @@
+[
+  {
+    "Iops": 3000,
+    "Tags": [
+      {
+        "Key": "Name",
+        "Value": "cscc-poc-1770090351-demo-volume"
+      },
+      {
+        "Key": "Demo",
+        "Value": "CoreStackCustodianPOC"
+      },
+      {
+        "Key": "CreatedBy",
+        "Value": "claude"
+      },
+      {
+        "Key": "TTLHours",
+        "Value": "24"
+      },
+      {
+        "Key": "Owner",
+        "Value": "AgenticBricks"
+      }
+    ],
+    "VolumeType": "gp3",
+    "MultiAttachEnabled": false,
+    "Throughput": 125,
+    "Operator": {
+      "Managed": false
+    },
+    "VolumeId": "vol-0b274ce64fa2f2296",
+    "Size": 1,
+    "SnapshotId": "",
+    "AvailabilityZone": "us-east-1c",
+    "State": "available",
+    "CreateTime": "2026-02-03T03:45:58.904000+00:00",
+    "Attachments": [],
+    "Encrypted": true,
+    "KmsKeyId": "arn:aws:kms:us-east-1:864387741092:key/8f4128dd-5833-49a7-bab0-8e8bdd7d88ea",
+    "c7n:MatchedFilters": [
+      "State"
+    ]
+  }
+]

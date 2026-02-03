@@ -1,0 +1,81 @@
+{
+  "policy": {
+    "name": "ebs-encrypted",
+    "description": "Find EBS volumes that are NOT encrypted",
+    "resource": "ebs",
+    "filters": [
+      {
+        "Encrypted": false
+      }
+    ],
+    "tags": [
+      "severity:high",
+      "owner:AgenticBricks",
+      "category:security"
+    ]
+  },
+  "version": "0.9.45",
+  "execution": {
+    "id": "b39e75ce-af50-491f-94a6-1e43567e70b7",
+    "start": 1770090476.501031,
+    "end_time": 1770090477.166208,
+    "duration": 0.6651771068572998
+  },
+  "config": {
+    "region": "us-east-1",
+    "regions": [
+      "us-east-1"
+    ],
+    "cache": "~/.cache/cloud-custodian.cache",
+    "profile": null,
+    "account_id": "864387741092",
+    "assume_role": null,
+    "session_policy": null,
+    "external_id": null,
+    "log_group": null,
+    "tracer": null,
+    "metrics_enabled": null,
+    "metrics": null,
+    "output_dir": "/Users/rajeshbrundala/aws-custodian-real-poc/outputs/run-1770090475",
+    "cache_period": 15,
+    "dryrun": false,
+    "authorization_file": null,
+    "subparser": "run",
+    "config": null,
+    "configs": [
+      "/Users/rajeshbrundala/aws-custodian-real-poc/policies/ebs-encrypted.yml"
+    ],
+    "policy_filters": [],
+    "resource_types": [],
+    "verbose": null,
+    "quiet": null,
+    "debug": false,
+    "skip_validation": false,
+    "command": "c7n.commands.run",
+    "vars": null
+  },
+  "sys-stats": {},
+  "api-stats": {
+    "ec2.DescribeVolumes": 1
+  },
+  "metrics": [
+    {
+      "MetricName": "ResourceCount",
+      "Timestamp": "2026-02-02T19:47:57.165994",
+      "Value": 1,
+      "Unit": "Count"
+    },
+    {
+      "MetricName": "ResourceTime",
+      "Timestamp": "2026-02-02T19:47:57.165999",
+      "Value": 0.6609861850738525,
+      "Unit": "Seconds"
+    },
+    {
+      "MetricName": "ActionTime",
+      "Timestamp": "2026-02-02T19:47:57.166203",
+      "Value": 9.5367431640625e-07,
+      "Unit": "Seconds"
+    }
+  ]
+}

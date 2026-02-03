@@ -1,0 +1,48 @@
+[
+  {
+    "Name": "cscc-poc-1770090351-public-bucket",
+    "CreationDate": "2026-02-03T03:45:53+00:00",
+    "Location": {
+      "LocationConstraint": null
+    },
+    "Tags": [
+      {
+        "Key": "Owner",
+        "Value": "AgenticBricks"
+      },
+      {
+        "Key": "TTLHours",
+        "Value": "24"
+      },
+      {
+        "Key": "CreatedBy",
+        "Value": "claude"
+      },
+      {
+        "Key": "Demo",
+        "Value": "CoreStackCustodianPOC"
+      }
+    ],
+    "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"PublicReadDemo\",\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":\"s3:GetObject\",\"Resource\":\"arn:aws:s3:::cscc-poc-1770090351-public-bucket/*\"}]}",
+    "Acl": {
+      "Owner": {
+        "ID": "7507cc334c283b4ffec4a350e0d131da4cccc6196d191e2383266a3dadf4b60c"
+      },
+      "Grants": [
+        {
+          "Grantee": {
+            "ID": "7507cc334c283b4ffec4a350e0d131da4cccc6196d191e2383266a3dadf4b60c",
+            "Type": "CanonicalUser"
+          },
+          "Permission": "FULL_CONTROL"
+        }
+      ]
+    },
+    "Replication": null,
+    "Versioning": {},
+    "Website": null,
+    "Logging": {},
+    "Notification": {},
+    "Lifecycle": null
+  }
+]

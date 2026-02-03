@@ -1,0 +1,13 @@
+policies:
+- name: s3-public-bucket
+  description: Detect S3 buckets with public access via bucket policy
+  resource: s3
+  filters:
+  - type: has-statement
+    statements:
+    - Effect: Allow
+      Principal: '*'
+  tags:
+  - severity:high
+  - owner:AgenticBricks
+  - category:security

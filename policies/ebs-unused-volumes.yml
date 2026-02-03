@@ -1,0 +1,10 @@
+policies:
+- name: ebs-unused-volumes
+  description: Find EBS volumes that are not attached to any instance
+  resource: ebs
+  filters:
+  - State: available
+  tags:
+  - severity:low
+  - owner:AgenticBricks
+  - category:cost
