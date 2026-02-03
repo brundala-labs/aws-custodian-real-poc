@@ -113,21 +113,33 @@ st.markdown(f"""
 
     /* Tabs text color */
     .stTabs [data-baseweb="tab"] {{
-        color: #1A202C !important;
+        color: {CORESTACK_DARK_BLUE} !important;
     }}
 
     .stTabs [aria-selected="true"] {{
         color: {CORESTACK_BLUE} !important;
+        font-weight: 700 !important;
+    }}
+
+    /* Tab indicator line */
+    .stTabs [data-baseweb="tab-highlight"] {{
+        background-color: {CORESTACK_BLUE} !important;
     }}
 
     /* Radio button labels */
-    .stRadio label, .stRadio span {{
-        color: #1A202C !important;
+    .stRadio > label {{
+        color: {CORESTACK_BLUE} !important;
+        font-weight: 600 !important;
+    }}
+
+    .stRadio span {{
+        color: {CORESTACK_DARK_BLUE} !important;
     }}
 
     /* Selectbox and other inputs */
     .stSelectbox label, .stTextInput label {{
-        color: #1A202C !important;
+        color: {CORESTACK_BLUE} !important;
+        font-weight: 600 !important;
     }}
 
     /* Container text */
@@ -184,7 +196,12 @@ st.markdown(f"""
 
     /* Headings - exclude header-banner which needs white text */
     h1:not(.header-banner h1), h2, h3, h4, h5, h6 {{
-        color: #1A202C !important;
+        color: {CORESTACK_BLUE} !important;
+    }}
+
+    /* Material icons in headings */
+    h3 .material-symbols-outlined, h4 .material-symbols-outlined {{
+        color: {CORESTACK_BLUE} !important;
     }}
 
     /* Ensure header banner text stays white */
