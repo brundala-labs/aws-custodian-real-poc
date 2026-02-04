@@ -170,7 +170,7 @@ st.markdown(f"""
     }}
 
     .header h1 {{
-        font-size: 3.5rem !important;
+        font-size: 4rem !important;
         font-weight: 700;
         margin: 0 0 0.5rem 0;
         color: #FFFFFF !important;
@@ -582,7 +582,7 @@ st.markdown(f"""
         }}
 
         .header h1 {{
-            font-size: 2.75rem !important;
+            font-size: 3.5rem !important;
         }}
 
         .header p {{
@@ -630,7 +630,7 @@ st.markdown(f"""
         }}
 
         .header h1 {{
-            font-size: 3rem !important;
+            font-size: 4rem !important;
         }}
 
         .kpi-grid {{
