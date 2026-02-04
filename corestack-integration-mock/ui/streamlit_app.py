@@ -1236,14 +1236,14 @@ with tab_dashboard:
             evidence = db_get_evidence(policy_id)
 
             if resources:
-                st.markdown(f'<div class="detail-section"><strong>▶ Resources ({len(resources)})</strong></div>', unsafe_allow_html=True)
-                res_df = pd.DataFrame(resources)[['resource_key', 'type', 'region']]
-                st.dataframe(res_df, use_container_width=True, hide_index=True)
+                with st.expander(f"📦 Resources ({len(resources)})", expanded=True):
+                    res_df = pd.DataFrame(resources)[['resource_key', 'type', 'region']]
+                    st.dataframe(res_df, use_container_width=True, hide_index=True)
 
             if evidence:
-                st.markdown('<div class="detail-section"><strong>▶ Evidence</strong></div>', unsafe_allow_html=True)
-                for ev in evidence[:2]:
-                    st.code(ev['evidence_json'][:500] + "..." if len(ev['evidence_json']) > 500 else ev['evidence_json'])
+                with st.expander("📋 Evidence", expanded=True):
+                    for ev in evidence[:2]:
+                        st.code(ev['evidence_json'][:500] + "..." if len(ev['evidence_json']) > 500 else ev['evidence_json'])
 
 # ══════════════════════════════════════════════════════════════════════════════
 # FOOTER
