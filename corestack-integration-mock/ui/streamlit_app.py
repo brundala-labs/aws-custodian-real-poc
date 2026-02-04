@@ -1219,16 +1219,7 @@ with tab_dashboard:
         st.markdown('<div class="section-title"><span class="material-symbols-outlined">search</span>Policy Details</div>', unsafe_allow_html=True)
 
         policy_options = {f["policy_name"]: f["policy_id"] for f in findings}
-        policy_names = list(policy_options.keys())
-
-        # Default to first failed policy
-        default_index = 0
-        for i, f in enumerate(findings):
-            if f.get("status") == "FAIL":
-                default_index = i
-                break
-
-        selected = st.selectbox("Select a policy", policy_names, index=default_index)
+        selected = st.selectbox("Select a policy", list(policy_options.keys()))
 
         if selected:
             policy_id = policy_options[selected]
@@ -1236,14 +1227,14 @@ with tab_dashboard:
             evidence = db_get_evidence(policy_id)
 
             if resources:
-                with st.expander(f"📦 Resources ({len(resources)})", expanded=True):
-                    res_df = pd.DataFrame(resources)[['resource_key', 'type', 'region']]
-                    st.dataframe(res_df, use_container_width=True, hide_index=True)
+                st.markdown(f'<div class="detail-section"><strong>▶ Resources ({len(resources)})</strong></div>', unsafe_allow_html=True)
+                res_df = pd.DataFrame(resources)[['resource_key', 'type', 'region']]
+                st.dataframe(res_df, use_container_width=True, hide_index=True)
 
             if evidence:
-                with st.expander("📋 Evidence", expanded=True):
-                    for ev in evidence[:2]:
-                        st.code(ev['evidence_json'][:500] + "..." if len(ev['evidence_json']) > 500 else ev['evidence_json'])
+                st.markdown('<div class="detail-section"><strong>▶ Evidence</strong></div>', unsafe_allow_html=True)
+                for ev in evidence[:2]:
+                    st.code(ev['evidence_json'][:500] + "..." if len(ev['evidence_json']) > 500 else ev['evidence_json'])
 
 # ══════════════════════════════════════════════════════════════════════════════
 # FOOTER
