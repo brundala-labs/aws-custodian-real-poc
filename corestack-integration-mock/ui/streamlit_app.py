@@ -201,6 +201,15 @@ st.markdown(f"""
         gap: 0.5rem;
     }}
 
+    /* Bordered Section Container */
+    .bordered-section {{
+        border: 1px solid {BORDER};
+        border-radius: 8px;
+        padding: 1rem;
+        margin: 0.5rem 1rem 1rem 1rem;
+        background: {BG};
+    }}
+
     /* KPI Grid - Mobile: 2 columns */
     .kpi-grid {{
         display: grid;
@@ -925,59 +934,66 @@ with tab_summary:
     st.markdown('<div class="section-title"><span class="material-symbols-outlined">lightbulb</span>Solution Overview</div>', unsafe_allow_html=True)
 
     st.markdown("""
-    **CoreStack Unified Governance** provides:
-    - **Single Pane of Glass**: Aggregate findings from Cloud Custodian, AWS Config, Azure Policy
-    - **Normalized Data Model**: Consistent schema across all policy engines
-    - **Real-Time Visibility**: Continuous compliance monitoring
-    - **Evidence Collection**: Automated capture of violation details
-    """)
+    <div class="bordered-section">
+    <strong>CoreStack Unified Governance</strong> provides:
+    <ul>
+    <li><strong>Single Pane of Glass</strong>: Aggregate findings from Cloud Custodian, AWS Config, Azure Policy</li>
+    <li><strong>Normalized Data Model</strong>: Consistent schema across all policy engines</li>
+    <li><strong>Real-Time Visibility</strong>: Continuous compliance monitoring</li>
+    <li><strong>Evidence Collection</strong>: Automated capture of violation details</li>
+    </ul>
+    </div>
+    """, unsafe_allow_html=True)
 
     # ── Data Flow ─────────────────────────────────────────────────────────────
     st.markdown('<div class="section-title"><span class="material-symbols-outlined">account_tree</span>Data Flow Architecture</div>', unsafe_allow_html=True)
 
-    st.graphviz_chart('''
-        digraph G {
-            rankdir=TB;
-            bgcolor="transparent";
-            node [shape=box, style="rounded,filled", fontname="Nunito Sans", fontsize=10, margin="0.2"];
-            edge [fontname="Nunito Sans", fontsize=8, color="#718096"];
+    with st.container(border=True):
+        st.graphviz_chart('''
+            digraph G {
+                rankdir=TB;
+                bgcolor="transparent";
+                node [shape=box, style="rounded,filled", fontname="Nunito Sans", fontsize=10, margin="0.2"];
+                edge [fontname="Nunito Sans", fontsize=8, color="#718096"];
 
-            aws [label="AWS Cloud", fillcolor="#FF9900", fontcolor="white"];
-            custodian [label="Cloud Custodian", fillcolor="#6C63FF", fontcolor="white"];
-            ingest [label="Ingestion Layer", fillcolor="#0066cc", fontcolor="white"];
-            db [label="CoreStack DB", fillcolor="#003d7a", fontcolor="white"];
-            dashboard [label="Recommendation Dashboard", fillcolor="#276749", fontcolor="white"];
+                aws [label="AWS Cloud", fillcolor="#FF9900", fontcolor="white"];
+                custodian [label="Cloud Custodian", fillcolor="#6C63FF", fontcolor="white"];
+                ingest [label="Ingestion Layer", fillcolor="#0066cc", fontcolor="white"];
+                db [label="CoreStack DB", fillcolor="#003d7a", fontcolor="white"];
+                dashboard [label="Recommendation Dashboard", fillcolor="#276749", fontcolor="white"];
 
-            aws -> custodian -> ingest -> db -> dashboard;
-        }
-    ''')
+                aws -> custodian -> ingest -> db -> dashboard;
+            }
+        ''')
 
     # ── Integrations ──────────────────────────────────────────────────────────
     st.markdown('<div class="section-title"><span class="material-symbols-outlined">hub</span>Supported Integrations</div>', unsafe_allow_html=True)
 
-    col1, col2 = st.columns(2)
+    with st.container(border=True):
+        col1, col2 = st.columns(2)
 
-    with col1:
-        st.markdown("""
-        **Policy Engines**
-        - Cloud Custodian
-        - AWS Config Rules
-        - Azure Policy
-        - Open Policy Agent
-        """)
+        with col1:
+            st.markdown("""
+            **Policy Engines**
+            - Cloud Custodian
+            - AWS Config Rules
+            - Azure Policy
+            - Open Policy Agent
+            """)
 
-    with col2:
-        st.markdown("""
-        **Cloud Providers**
-        - Amazon Web Services
-        - Microsoft Azure
-        - Google Cloud Platform
-        """)
+        with col2:
+            st.markdown("""
+            **Cloud Providers**
+            - Amazon Web Services
+            - Microsoft Azure
+            - Google Cloud Platform
+            """)
 
     # ── Use Cases ─────────────────────────────────────────────────────────────
     st.markdown('<div class="section-title"><span class="material-symbols-outlined">cases</span>Use Cases</div>', unsafe_allow_html=True)
 
     st.markdown(f"""
+    <div class="bordered-section">
     <details class="custom-expander">
         <summary>Compliance Audits</summary>
         <div class="expander-content">
@@ -1008,6 +1024,7 @@ with tab_summary:
             </ul>
         </div>
     </details>
+    </div>
     """, unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════════════════════
