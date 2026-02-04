@@ -1219,7 +1219,16 @@ with tab_dashboard:
         st.markdown('<div class="section-title"><span class="material-symbols-outlined">search</span>Policy Details</div>', unsafe_allow_html=True)
 
         policy_options = {f["policy_name"]: f["policy_id"] for f in findings}
-        selected = st.selectbox("Select a policy", list(policy_options.keys()))
+        policy_names = list(policy_options.keys())
+
+        # Default to first failed policy
+        default_index = 0
+        for i, f in enumerate(findings):
+            if f.get("status") == "FAIL":
+                default_index = i
+                break
+
+        selected = st.selectbox("Select a policy", policy_names, index=default_index)
 
         if selected:
             policy_id = policy_options[selected]
