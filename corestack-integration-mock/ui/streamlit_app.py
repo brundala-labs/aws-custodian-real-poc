@@ -873,22 +873,22 @@ with tab_summary:
     st.markdown(f"""
     <div class="benefits-grid">
         <div class="benefit-card">
-            <div class="benefit-icon"><span class="material-symbols-outlined" style="font-size:2rem;color:{DARK_BLUE};">speed</span></div>
+            <div class="benefit-icon"><span class="material-symbols-outlined" style="font-size:2rem;color:#FF6B35;">speed</span></div>
             <div class="benefit-title">80% Faster</div>
             <div class="benefit-desc">Reduce compliance reporting time</div>
         </div>
         <div class="benefit-card">
-            <div class="benefit-icon"><span class="material-symbols-outlined" style="font-size:2rem;color:{DARK_BLUE};">visibility</span></div>
+            <div class="benefit-icon"><span class="material-symbols-outlined" style="font-size:2rem;color:#3B82F6;">visibility</span></div>
             <div class="benefit-title">100% Visibility</div>
             <div class="benefit-desc">Complete view across engines</div>
         </div>
         <div class="benefit-card">
-            <div class="benefit-icon"><span class="material-symbols-outlined" style="font-size:2rem;color:{DARK_BLUE};">security</span></div>
+            <div class="benefit-icon"><span class="material-symbols-outlined" style="font-size:2rem;color:#8B5CF6;">security</span></div>
             <div class="benefit-title">Reduced Risk</div>
             <div class="benefit-desc">Catch violations early</div>
         </div>
         <div class="benefit-card">
-            <div class="benefit-icon"><span class="material-symbols-outlined" style="font-size:2rem;color:{DARK_BLUE};">savings</span></div>
+            <div class="benefit-icon"><span class="material-symbols-outlined" style="font-size:2rem;color:#10B981;">savings</span></div>
             <div class="benefit-title">Cost Savings</div>
             <div class="benefit-desc">Eliminate manual work</div>
         </div>
