@@ -170,11 +170,16 @@ st.markdown(f"""
     }}
 
     .header h1 {{
-        font-size: 4rem !important;
+        font-size: 5rem !important;
         font-weight: 700;
         margin: 0 0 0.5rem 0;
         color: #FFFFFF !important;
         -webkit-text-fill-color: #FFFFFF !important;
+        line-height: 1.2 !important;
+    }}
+
+    div.header > h1 {{
+        font-size: 5rem !important;
     }}
 
     .header p {{
@@ -582,7 +587,11 @@ st.markdown(f"""
         }}
 
         .header h1 {{
-            font-size: 3.5rem !important;
+            font-size: 4rem !important;
+        }}
+
+        div.header > h1 {{
+            font-size: 4rem !important;
         }}
 
         .header p {{
@@ -630,7 +639,11 @@ st.markdown(f"""
         }}
 
         .header h1 {{
-            font-size: 4rem !important;
+            font-size: 5rem !important;
+        }}
+
+        div.header > h1 {{
+            font-size: 5rem !important;
         }}
 
         .kpi-grid {{
