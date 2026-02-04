@@ -948,48 +948,46 @@ with tab_summary:
     # ── Data Flow ─────────────────────────────────────────────────────────────
     st.markdown('<div class="section-title"><span class="material-symbols-outlined">account_tree</span>Data Flow Architecture</div>', unsafe_allow_html=True)
 
-    st.markdown('<div class="bordered-section">', unsafe_allow_html=True)
-    st.graphviz_chart('''
-        digraph G {
-            rankdir=TB;
-            bgcolor="transparent";
-            node [shape=box, style="rounded,filled", fontname="Nunito Sans", fontsize=10, margin="0.2"];
-            edge [fontname="Nunito Sans", fontsize=8, color="#718096"];
+    with st.container(border=True):
+        st.graphviz_chart('''
+            digraph G {
+                rankdir=TB;
+                bgcolor="transparent";
+                node [shape=box, style="rounded,filled", fontname="Nunito Sans", fontsize=10, margin="0.2"];
+                edge [fontname="Nunito Sans", fontsize=8, color="#718096"];
 
-            aws [label="AWS Cloud", fillcolor="#FF9900", fontcolor="white"];
-            custodian [label="Cloud Custodian", fillcolor="#6C63FF", fontcolor="white"];
-            ingest [label="Ingestion Layer", fillcolor="#0066cc", fontcolor="white"];
-            db [label="CoreStack DB", fillcolor="#003d7a", fontcolor="white"];
-            dashboard [label="Recommendation Dashboard", fillcolor="#276749", fontcolor="white"];
+                aws [label="AWS Cloud", fillcolor="#FF9900", fontcolor="white"];
+                custodian [label="Cloud Custodian", fillcolor="#6C63FF", fontcolor="white"];
+                ingest [label="Ingestion Layer", fillcolor="#0066cc", fontcolor="white"];
+                db [label="CoreStack DB", fillcolor="#003d7a", fontcolor="white"];
+                dashboard [label="Recommendation Dashboard", fillcolor="#276749", fontcolor="white"];
 
-            aws -> custodian -> ingest -> db -> dashboard;
-        }
-    ''')
-    st.markdown('</div>', unsafe_allow_html=True)
+                aws -> custodian -> ingest -> db -> dashboard;
+            }
+        ''')
 
     # ── Integrations ──────────────────────────────────────────────────────────
     st.markdown('<div class="section-title"><span class="material-symbols-outlined">hub</span>Supported Integrations</div>', unsafe_allow_html=True)
 
-    st.markdown('<div class="bordered-section">', unsafe_allow_html=True)
-    col1, col2 = st.columns(2)
+    with st.container(border=True):
+        col1, col2 = st.columns(2)
 
-    with col1:
-        st.markdown("""
-        **Policy Engines**
-        - Cloud Custodian
-        - AWS Config Rules
-        - Azure Policy
-        - Open Policy Agent
-        """)
+        with col1:
+            st.markdown("""
+            **Policy Engines**
+            - Cloud Custodian
+            - AWS Config Rules
+            - Azure Policy
+            - Open Policy Agent
+            """)
 
-    with col2:
-        st.markdown("""
-        **Cloud Providers**
-        - Amazon Web Services
-        - Microsoft Azure
-        - Google Cloud Platform
-        """)
-    st.markdown('</div>', unsafe_allow_html=True)
+        with col2:
+            st.markdown("""
+            **Cloud Providers**
+            - Amazon Web Services
+            - Microsoft Azure
+            - Google Cloud Platform
+            """)
 
     # ── Use Cases ─────────────────────────────────────────────────────────────
     st.markdown('<div class="section-title"><span class="material-symbols-outlined">cases</span>Use Cases</div>', unsafe_allow_html=True)
