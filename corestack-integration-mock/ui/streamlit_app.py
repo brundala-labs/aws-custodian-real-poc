@@ -170,7 +170,7 @@ st.markdown(f"""
     }}
 
     .header h1 {{
-        font-size: 5rem !important;
+        font-size: 2.5rem !important;
         font-weight: 700;
         margin: 0 0 0.5rem 0;
         color: #FFFFFF !important;
@@ -179,7 +179,7 @@ st.markdown(f"""
     }}
 
     div.header > h1 {{
-        font-size: 5rem !important;
+        font-size: 2.5rem !important;
     }}
 
     .header p {{
@@ -582,6 +582,67 @@ st.markdown(f"""
     }}
 
     /* ═══════════════════════════════════════════════════════════════════════
+       MOBILE (max-width: 639px)
+       ═══════════════════════════════════════════════════════════════════════ */
+    @media (max-width: 639px) {{
+        /* Header - compact for mobile */
+        .header h1 {{
+            font-size: 1.75rem !important;
+        }}
+        div.header > h1 {{
+            font-size: 1.75rem !important;
+        }}
+        .header p {{
+            font-size: 0.85rem !important;
+        }}
+
+        /* Force columns to stack vertically */
+        [data-testid="column"] {{
+            width: 100% !important;
+            flex: 1 1 100% !important;
+            min-width: 100% !important;
+        }}
+
+        /* Larger touch targets for radio/checkbox */
+        .stRadio label[data-baseweb="radio"] {{
+            min-height: 44px !important;
+            padding: 0.6rem 0.8rem !important;
+            font-size: 0.9rem !important;
+        }}
+
+        .stCheckbox label {{
+            min-height: 44px !important;
+            padding: 0.5rem !important;
+        }}
+
+        /* KPI cards - smaller values for mobile */
+        .kpi-value {{
+            font-size: 1.25rem !important;
+        }}
+
+        /* Section titles */
+        .section-title {{
+            font-size: 0.95rem !important;
+        }}
+
+        /* Benefits/Output grids - single column on mobile */
+        .benefits-grid, .output-grid {{
+            grid-template-columns: 1fr !important;
+        }}
+
+        /* Charts - reduce height on mobile */
+        [data-testid="stVegaLiteChart"],
+        [data-testid="stPlotlyChart"] {{
+            max-height: 250px !important;
+        }}
+
+        /* Table scroll indicator */
+        [data-testid="stDataFrame"] {{
+            -webkit-overflow-scrolling: touch;
+        }}
+    }}
+
+    /* ═══════════════════════════════════════════════════════════════════════
        TABLET (min-width: 640px)
        ═══════════════════════════════════════════════════════════════════════ */
     @media (min-width: 640px) {{
@@ -596,7 +657,7 @@ st.markdown(f"""
         }}
 
         .header h1 {{
-            font-size: 4rem !important;
+            font-size: 3rem !important;
         }}
 
         div.header > h1 {{
@@ -648,11 +709,11 @@ st.markdown(f"""
         }}
 
         .header h1 {{
-            font-size: 5rem !important;
+            font-size: 3.5rem !important;
         }}
 
         div.header > h1 {{
-            font-size: 5rem !important;
+            font-size: 3.5rem !important;
         }}
 
         .kpi-grid {{
